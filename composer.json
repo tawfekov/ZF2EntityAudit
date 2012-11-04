@@ -1,0 +1,35 @@
+{
+    
+    "name": "tawfekov/zf2entityaudit",
+    "description": " Adding Entity Audit support to ZF2 , alpha version USE IT AT YOUR OWN RISK",
+    "type": "zf-module",
+    "license": "MIT",
+    "keywords": [
+        "entityAudit",
+	"zf2",
+	"zend framework2",
+        "php"
+    ],
+    "homepage": "http://www.ar-php.org/",
+    "authors": [
+        {
+            "name": "tawfek daghistani",
+            "email": "tawfekov@gmail.com",
+            "homepage": "http://www.dagho.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+	"zendframework/zendframework" : "dev-master",
+	"doctrine/doctrine-orm-module": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "ZF2EntityAudit": "src/",
+            "SimpleThings\\EntityAudit": "EntityAudit/src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}

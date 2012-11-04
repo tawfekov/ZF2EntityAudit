@@ -1,0 +1,3 @@
+[submodule "EntityAudit"]
+	path = EntityAudit
+	url = git://github.com/simplethings/EntityAudit.git
