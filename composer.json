@@ -8,7 +8,10 @@
         "entityAudit",
 	"zf2",
 	"zend framework2",
-        "php"
+        "php",
+	"database",
+	"persistence",
+	"Audit"
     ],
     "homepage": "http://www.ar-php.org/",
     "authors": [
@@ -26,7 +29,7 @@
     },
     "autoload": {
         "psr-0": {
-            "ZF2EntityAudit": "src/",
+            "ZF2EntityAudit": "src/"
         },
         "classmap": [
             "./Module.php"
