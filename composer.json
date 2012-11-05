@@ -21,12 +21,12 @@
     "require": {
         "php": ">=5.3.0",
 	"zendframework/zendframework" : "dev-master",
-	"doctrine/doctrine-orm-module": "dev-master"
+	"doctrine/doctrine-orm-module": "dev-master",
+	"simplethings/entity-audit-bundle": "dev-master"
     },
     "autoload": {
         "psr-0": {
             "ZF2EntityAudit": "src/",
-            "SimpleThings\\EntityAudit": "EntityAudit/src/"
         },
         "classmap": [
             "./Module.php"
