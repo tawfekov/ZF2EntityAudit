@@ -2,15 +2,14 @@
 
 namespace ZF2EntityAudit;
 
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Doctrine\ORM\EntityManager;
-use Doctrine\Common\EventManager;
+use Zend\Mvc\MvcEvent;
+
 use SimpleThings\EntityAudit\AuditConfiguration;
 use SimpleThings\EntityAudit\AuditManager;
+use SimpleThings\EntityAudit\EventListener\CreateSchemaListener;
+use SimpleThings\EntityAudit\EventListener\LogRevisionsListener;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ServiceProviderInterface {
+class Module {
 
     public function getAutoloaderConfig() {
         return array(
@@ -24,7 +23,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Se
             ),
         );
     }
+    public function onBootstrap(MvcEvent $e){
+	$sm = $e->getApplication()->getServiceManager();
+        $auditManager = $sm->get("auditManager");	
+	
 
+    }
     public function getConfig() {
         return include'config/module.config.php';
     }
@@ -40,7 +44,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Se
                     $auditconfig->setAuditedEntityClasses($config["audited_entities"]);
 
                     $auditManager = new AuditManager($auditconfig);
-                    $auditManager->registerEvents($evm);
+		    $evm->addEventSubscriber(new CreateSchemaListener($auditManager));
+	            $evm->addEventSubscriber(new LogRevisionsListener($auditManager));
                     return $auditManager;
                 },
                 "auditReader" => function($sm) {
