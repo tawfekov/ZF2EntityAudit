@@ -1,6 +1,6 @@
 #ZF2 Module enable Doctrine to Audit selected entities. 
 -------------------------------------------------------
-#Documentaion :  
+#Documenation :  
 --------------
 1- you can download ZF2EntityAudit form composer 
 ```php
