@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="span12">
+        <h1>Entities changed in revision <span class="label label-notice"><?= $revision->getRev(); ?></span></h1>
+        <table class="table table-striped table-condensed table-hover table-bordered ">
+            <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>Entity Name</td>
+                    <td>Action</td>
+                    <td>Entity details</td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($changedEntities as $ce): ?>
+                    <tr>
+                        <td><p><span class="badge"><?php
+                $id = $ce->getId();
+                echo $id["id"];
+                ;
+                    ?></span></p></td>
+                        <?php /* don't forget to make a link here */?>
+                        <td><p><span class="label label-warning"><?= $ce->getClassName(); ?></span></p></td>
+                        <td><p><?= $ce->getRevisionType() ?></p></td>
+                        <td><?php var_dump($ce->getEntity()); ?></td>
+                    </tr>
+                <? endforeach; ?>
+            </tbody>
+
+        </table>
+    </div>
+</div>
