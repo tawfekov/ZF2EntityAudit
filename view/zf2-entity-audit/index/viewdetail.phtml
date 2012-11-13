@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="span12">
+        <h3>Detail of <?= $className; ?>  with identifiers of <?= $id; ?> at revisions <?= $rev; ?></h3>
+
+        <p><a href="{{ path('simple_things_entity_audit_viewentity', { 'className': className, 'id': id }) }}">Compare revisions</a></p>
+        <table class="table table-striped table-condensed table-hover table-bordered ">
+            <thead><tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr></thead>
+            <tbody>
+                <?php foreach ($data as $field => $value): ?>
+                    <tr>
+                        <td><?= $field; ?></td>
+                        <td>
+                            <?php if ($value instanceof \DateTime): ?>
+                                <?= $value->format("r"); ?>
+                            <?php else : ?>
+                                <?= $value; ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

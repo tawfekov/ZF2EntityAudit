@@ -4,7 +4,6 @@ namespace ZF2EntityAudit\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
 use SimpleThings\EntityAudit\Utils\ArrayDiff;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
@@ -87,8 +86,8 @@ class IndexController extends AbstractActionController {
      * @return \Zend\View\Model\ViewModel
      */
     public function viewEntityAction() {
-        $className = "";
-        $id = "";
+        $className = "Application\Entity\User";
+        $id = "2";
 
         $ids = explode(',', $id);
         $revisions = $this->getAuditReader()->findRevisions($className, $ids);
@@ -107,10 +106,10 @@ class IndexController extends AbstractActionController {
      * @param int $rev
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewDetailAction($className, $id, $rev) {
-        $className = "";
-        $id = "";
-        $rev = "";
+    public function viewDetailAction() {
+        $className = "Application\Entity\User";
+        $id = "1";
+        $rev = "5";
         $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($className);
 
@@ -128,7 +127,7 @@ class IndexController extends AbstractActionController {
                     'data' => $data,
                 ));
     }
-    
+
     /**
      * Compares an entity at 2 different revisions.
      *
@@ -139,14 +138,13 @@ class IndexController extends AbstractActionController {
      * @param null|int $newRev if null, pulled from the query string
      * @return Response
      */
-    public function compareAction()
-    {
-        
+    public function compareAction() {
+
         $request = $this->getRequest();
         $className = "";
         $id = "";
-        $oldRev = "" ? "" : null ;
-        $newRev = "" ? "" : null ;
+        $oldRev = "" ? "" : null;
+        $newRev = "" ? "" : null;
         $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($className);
 
@@ -169,17 +167,15 @@ class IndexController extends AbstractActionController {
         $diff = $differ->diff($oldData, $newData);
 
         return new ViewModel(array(
-            'className' => $className,
-            'id' => $id,
-            'oldRev' => $oldRev,
-            'newRev' => $newRev,
-            'diff' => $diff,
-        ));
+                    'className' => $className,
+                    'id' => $id,
+                    'oldRev' => $oldRev,
+                    'newRev' => $newRev,
+                    'diff' => $diff,
+                ));
     }
-    
-    
-    protected function getEntityValues(ClassMetadata $metadata, $entity)
-    {
+
+    protected function getEntityValues(ClassMetadata $metadata, $entity) {
         $fields = $metadata->getFieldNames();
 
         $return = array();
