@@ -20,7 +20,7 @@
                     <?php  $i = 0;?>
                     <?php foreach ($revisions  as $revision) :?>
                     <tr>
-                        <td><a href="#viewentity_detail"><?=$revision->getRev();?></a></td>
+                        <td><a href="<?=$this->url("audit_viewdetails",array("id" =>$id , "className" => $className, "rev" =>$revision->getRev() ));?>"><?=$revision->getRev();?></a></td>
                         <td><?=$revision->getTimestamp()->format("r");?></td>
                         <td>
                             <?php if($revision->getUsername() == ""):?>
@@ -38,7 +38,7 @@
                 </tbody>
             </table>
 
-            <input type="submit" value="Compare Revisions" />
+            <input type="submit" class="btn btn-large btn-success" value="Compare Revisions" />
         </form>
     </div>
 </div>

@@ -35,6 +35,9 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/audit/revision[/:rev]',
+                    'constraints' => array(
+                        'rev' => '[0-9]*',
+                    ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'zf2entityaudit\Controller',
                         'controller' => 'Index',
@@ -47,6 +50,9 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/audit/entity[/:id[/:className]]',
+                    'constraints' =>array(
+                        'id' => '[0-9]*',
+                    ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'zf2entityaudit\Controller',
                         'controller' => 'Index',
@@ -60,6 +66,10 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/audit/details[/:id[/:className[/:rev]]]',
+                    'constraints' =>array(
+                        'id' => '[0-9]*',
+                        'rev' => '[0-9]*',
+                    ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'zf2entityaudit\Controller',
                         'controller' => 'Index',
@@ -73,15 +83,16 @@ return array(
             'audit_compare' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/audit/compare[/:id[/:className[/:oldRev[/:newRev]]]]',
-                    'constraints' => array(
+                    'route' => '/audit/compare[/:className[/:id]]',
+                    'constraints' =>array(
+                        'id' => '[0-9]*',
+                    ),
+                    'defaults' => array(
                         '__NAMESPACE__' => 'zf2entityaudit\Controller',
                         'controller' => 'Index',
                         'action' => 'compare',
                         'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'className' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'oldRev' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'newRev' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                 )
             ),

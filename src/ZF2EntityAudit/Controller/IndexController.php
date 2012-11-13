@@ -84,8 +84,8 @@ class IndexController extends AbstractActionController {
      * @return \Zend\View\Model\ViewModel
      */
     public function viewEntityAction() {
-        $className = "Application\Entity\User";
-        $id = "2";
+        $className = $this->getEvent()->getRouteMatch()->getParam('className');
+        $id = $this->getEvent()->getRouteMatch()->getParam('id');
 
         $ids = explode(',', $id);
         $revisions = $this->getAuditReader()->findRevisions($className, $ids);
@@ -132,8 +132,8 @@ class IndexController extends AbstractActionController {
      * 
      * @param string $className
      * @param string $id Comma separated list of identifiers
-     * @param null|int $oldRev if null, pulled from the query string
-     * @param null|int $newRev if null, pulled from the query string
+     * @param null|int $oldRev if null, pulled from the posted data
+     * @param null|int $newRev if null, pulled from the posted data
      * @return Response
      */
     public function compareAction() {
@@ -144,15 +144,14 @@ class IndexController extends AbstractActionController {
         
         $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($className);
-        
+        $posted_data = $this->params()->fromPost();
         if (null === $oldRev) {
-            $oldRev = $this->params('oldRev');
+            $oldRev = $posted_data['oldRev'];
         }
 
         if (null === $newRev) {
-            $newRev = $this->params('newRev');
+            $newRev = $posted_data["newRev"];
         }
-        
         $ids = explode(',', $id);
         $oldEntity = $this->getAuditReader()->find($className, $ids, $oldRev);
         $oldData = $this->getEntityValues($metadata, $oldEntity);
