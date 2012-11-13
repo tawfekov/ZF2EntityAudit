@@ -13,7 +13,7 @@
             <tbody>
                 <?php foreach ($revisions as $r): ?>
                     <tr>
-                        <td><?= $r->getRev(); ?></td>
+                        <td><a href="<?php  echo $this->url("audit_viewrevision",array("rev" => $r->getRev()));?>"><?= $r->getRev(); ?></a></td>
                         <td><span class="label label-info"><?= $r->getTimestamp()->format("Y-m-d H:i:s"); ?></span></td>
                         <td><?= $r->getUsername(); ?></td>
 

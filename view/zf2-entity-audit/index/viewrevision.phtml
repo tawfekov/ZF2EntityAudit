@@ -13,12 +13,11 @@
             <tbody>
                 <?php foreach ($changedEntities as $ce): ?>
                     <tr>
-                        <td><p><span class="badge"><?php
-                $id = $ce->getId();
-                echo $id["id"];
-                ;
-                    ?></span></p></td>
-                        <?php /* don't forget to make a link here */?>
+                        <?php $id = $ce->getId(); ?>
+                        <td><p><span class="badge">
+                                    
+                                    <a href="<?=$this->url("audit_viewdetails",array("id" =>$id["id"] , "className" => $ce->getClassName(), "rev" =>$revision->getRev() ));?>">
+                                        <?=$id["id"];?></a></span></p></td>
                         <td><p><span class="label label-warning"><?= $ce->getClassName(); ?></span></p></td>
                         <td><p><?= $ce->getRevisionType() ?></p></td>
                         <td><?php var_dump($ce->getEntity()); ?></td>

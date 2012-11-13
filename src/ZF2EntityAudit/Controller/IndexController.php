@@ -48,7 +48,6 @@ class IndexController extends AbstractActionController {
      */
     public function indexAction() {
         $page = (int) $this->getEvent()->getRouteMatch()->getParam('page');
-        $page = 1;
         $reader = $this->getAuditReader();
         $revisions = $reader->findRevisionHistory(20, 20 * ($page - 1));
         return new ViewModel(
@@ -65,7 +64,6 @@ class IndexController extends AbstractActionController {
      */
     public function viewRevisionAction() {
         $rev = (int) $this->getEvent()->getRouteMatch()->getParam('rev');
-        $rev = 6;
         $revision = $this->getAuditReader()->findRevision($rev);
         if (!$revision) {
             echo(sprintf('Revision %i not found', $rev));
@@ -106,10 +104,10 @@ class IndexController extends AbstractActionController {
      * @param int $rev
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewDetailAction() {
-        $className = "Application\Entity\User";
-        $id = "1";
-        $rev = "5";
+    public function viewdetailAction() {
+        $className = $this->getEvent()->getRouteMatch()->getParam('className');
+        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+        $rev = $this->getEvent()->getRouteMatch()->getParam('rev');
         $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($className);
 
@@ -139,23 +137,22 @@ class IndexController extends AbstractActionController {
      * @return Response
      */
     public function compareAction() {
-
-        $request = $this->getRequest();
-        $className = "";
-        $id = "";
-        $oldRev = "" ? "" : null;
-        $newRev = "" ? "" : null;
+        $className = $this->getEvent()->getRouteMatch()->getParam('className');
+        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+        $oldRev = $this->getEvent()->getRouteMatch()->getParam('oldRev');
+        $newRev = $this->getEvent()->getRouteMatch()->getParam('newRev');
+        
         $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($className);
-
+        
         if (null === $oldRev) {
-            $oldRev = $request->query->get('oldRev');
+            $oldRev = $this->params('oldRev');
         }
 
         if (null === $newRev) {
-            $newRev = $request->query->get('newRev');
+            $newRev = $this->params('newRev');
         }
-
+        
         $ids = explode(',', $id);
         $oldEntity = $this->getAuditReader()->find($className, $ids, $oldRev);
         $oldData = $this->getEntityValues($metadata, $oldEntity);
