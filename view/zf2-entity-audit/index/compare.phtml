@@ -15,7 +15,13 @@
                     <tr>
                         <td><?=$field?></td>
                         <td><?=$value["old"];?></td>
-                        <td><?=$value["same"];?></td>
+                        <td>
+                            <?php if($value["same"] instanceof \DateTime):?>
+                            <?php  echo $value["same"]->format("r");?>
+                            <?php else:?>
+                            <?php  echo $value["same"];?>    
+                            <?php endif ;?>
+                        </td>
                         <td><?=$value["new"];?></td>
                     </tr>
                 <? endforeach; ?>
