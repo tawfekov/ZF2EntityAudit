@@ -1,7 +1,7 @@
 {
     
     "name": "tawfekov/zf2entityaudit",
-    "description": " Adding Entity Audit support to ZF2 , alpha version USE IT AT YOUR OWN RISK",
+    "description": "EntityAudit Module for Zend Framework2 + Doctrine2",
     "type": "zf-module",
     "license": "MIT",
     "keywords": [
@@ -13,12 +13,12 @@
 	"persistence",
 	"Audit"
     ],
-    "homepage": "http://www.dagho.com/",
+    "homepage": "http://www.dagho.com",
     "authors": [
         {
-            "name": "tawfek daghistani",
+            "name": "Tawfek Daghistani",
             "email": "tawfekov@gmail.com",
-            "homepage": "http://www.dagho.com/"
+            "homepage": "http://www.dagho.com"
         }
     ],
     "require": {
