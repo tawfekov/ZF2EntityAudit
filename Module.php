@@ -43,8 +43,12 @@ class Module {
                     $auditconfig->setAuditedEntityClasses($config["audited_entities"]);
                     if ($config["zfcuser.integration"] === true) {
                         $auth = $sm->get('zfcuser_auth_service');
-                        $identity = $auth->getIdentity();
-                        $auditconfig->setCurrentUsername($identity->getDisplayName());
+                        if ($auth->hasIdentity()) {
+                            $identity = $auth->getIdentity();
+                            $auditconfig->setCurrentUsername($identity->getEmail());
+                        } else {
+                            $auditconfig->setCurrentUsername("Anonymous");
+                        }
                     } else {
                         $auditconfig->setCurrentUsername("Anonymous");
                     }
