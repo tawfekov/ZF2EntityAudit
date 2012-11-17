@@ -1,7 +1,7 @@
 {
     
     "name": "tawfekov/zf2entityaudit",
-    "description": "EntityAudit Module for Zend Framework2 + Doctrine2",
+    "description": "EntityAudit Module for Zend Framework2 + Doctrine2, online demo https://entityaudit-dagho.rhcloud.com/",
     "type": "zf-module",
     "license": "MIT",
     "keywords": [
@@ -13,7 +13,7 @@
 	"persistence",
 	"Audit"
     ],
-    "homepage": "http://www.dagho.com",
+    "homepage": "https://entityaudit-dagho.rhcloud.com/",
     "authors": [
         {
             "name": "Tawfek Daghistani",
