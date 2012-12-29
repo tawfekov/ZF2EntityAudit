@@ -4,7 +4,7 @@
 
 you can get a fully working demo application on this git repository : https://github.com/tawfekov/ZF2EntityAudit-demo.
 
-if you would like to checkout online demo , click in the link :https://entityaudit-dagho.rhcloud.com/
+if you would like to checkout online demo , click in the link : http://bit.ly/ZF2EntityAudit
 
 #Documenation :  
 
