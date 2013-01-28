@@ -35,12 +35,18 @@ class Module {
     public function getServiceConfig() {
         return array(
             'factories' => array(
+                "auditConfig"  => function($sm){
+                    $config = $sm->get("Config");
+                    $auditconfig = new AuditConfiguration();
+                    $auditconfig->setAuditedEntityClasses($config["audited_entities"]);
+                    return $auditconfig;
+                },
                 "auditManager" => function ($sm) {
                     $config = $sm->get("Config");
                     $evm = $sm->get("doctrine.eventmanager.orm_default");
-
-                    $auditconfig = new AuditConfiguration();
-                    $auditconfig->setAuditedEntityClasses($config["audited_entities"]);
+                    
+                    $auditconfig = $sm->get("auditConfig");
+                    
                     if ($config["zfcuser.integration"] === true) {
                         $auth = $sm->get('zfcuser_auth_service');
                         if ($auth->hasIdentity()) {
