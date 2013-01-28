@@ -1,17 +1,15 @@
 {
-    
     "name": "tawfekov/zf2entityaudit",
     "description": "EntityAudit Module for Zend Framework2 + Doctrine2, online demo http://bit.ly/ZF2EntityAudit",
     "type": "zf-module",
     "license": "MIT",
     "keywords": [
-        "entityAudit",
-	"zf2",
-	"zend framework2",
-        "php",
-	"database",
-	"persistence",
-	"Audit"
+        "audit",
+        "entity",
+        "Doctrine 2"
+	    "zf2",
+	    "database",
+	    "persistence",
     ],
     "homepage": "http://bit.ly/ZF2EntityAudit",
     "authors": [
@@ -23,9 +21,9 @@
     ],
     "require": {
         "php": ">=5.3.0",
-	"zendframework/zendframework" : "dev-master",
-	"doctrine/doctrine-orm-module": "dev-master",
-	"simplethings/entity-audit-bundle": "dev-master"
+	    "zendframework/zendframework" : ">=2.0.5",
+	    "doctrine/doctrine-orm-module": "dev-master",
+	    "simplethings/entity-audit-bundle": "dev-master"
     },
     "autoload": {
         "psr-0": {
