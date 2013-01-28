@@ -18,6 +18,7 @@
                 </thead>
                 <tbody>
                     <?php  $i = 0;?>
+                    <?php $first = true; ?>
                     <?php foreach ($revisions  as $revision) :?>
                     <tr>
                         <td><a href="<?=$this->url("audit_viewdetails",array("id" =>$id , "className" => $className, "rev" =>$revision->getRev() ));?>"><?=$revision->getRev();?></a></td>
@@ -30,10 +31,11 @@
                             <?php endif;?>
                         </td>
 
-                        <td><input type="radio" name="oldRev" value="<?=$revision->getRev();?>"<?php if($i == "2"):?> checked="checked"<? endif; ?> /></td>
-                        <td><input type="radio" name="newRev" value="<?=$revision->getRev();?>"<?php if($i == "1"):?> checked="checked"<? endif; ?> /></td>
+                        <td><input type="radio" name="oldRev" value="<?=$revision->getRev();?>"<?php if(sizeof($revisions) == 1 or $i == 1):?> checked="checked"<? endif; ?> /></td>
+                        <td><input type="radio" name="newRev" value="<?=$revision->getRev();?>"<?php if($first):?> checked="checked"<? endif; ?> /></td>
                     </tr>
                     <?php $i++;?>
+                    <?php $first = false; ?>
                     <? endforeach;?>
                 </tbody>
             </table>
