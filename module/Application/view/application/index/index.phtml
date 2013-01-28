@@ -25,7 +25,7 @@
     <div class="span6">
         <?php if (!$this->zfcUserIdentity()): ?>
             <!-- display the login form -->
-            <?php echo $this->zfcUserLoginWidget(array('redirect' => 'application')); ?>
+            <?php echo $this->zfcUserLoginWidget(); ?>
 
             <div class="alert alert-error">
                 <button type="button" class="close" data-dismiss="alert">×</button>
