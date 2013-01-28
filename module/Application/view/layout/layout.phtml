@@ -1,0 +1,115 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('ZF2 EntityAudit '); ?>
+
+        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+
+        <!-- Le styles -->
+        <?php
+        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))
+                ->prependStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
+                ->prependStylesheet($this->basePath() . '/css/style.css')
+                ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+        ?>
+
+        <!-- Scripts -->
+        <?php
+        echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+                ->prependFile($this->basePath() . '/js/jquery-1.7.2.min.js')
+        ?>
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="<?php echo $this->url('application') ?>"> EntityAudit</a>
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li><a href="<?php echo $this->url('application') ?>"><i class="icon-home"></i>Home</a></li>
+                            <li><a href="<?php echo $this->url('audit_index') ?>"><i class="icon-edit">   </i>Audit Panel</a></li>
+                        </ul>
+                        <ul class="nav pull-right">
+                            <?php if(!$this->zfcUserIdentity()):?>
+                            <li><a href="<?=$this->url("zfcuser/register");?>">Signup!</a></li>    
+                            <li><a href="<?=$this->url("zfcuser/login");?>">Signin!</a></li>
+                            <?php else :?>
+                                <li><a href="<?=$this->url("zfcuser");?>">Hello, <?=$this->zfcUserIdentity()->getEmail()?></a></li>
+                                <li><a href="<?=$this->url("zfcuser/logout");?>">Signout!</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <?php echo $this->content; ?>
+        </div>
+        <div class="container">
+            <?php if(!$this->zfcUserIdentity()):?>
+            <div class="row">
+                <div class="span12">
+                    <hr/>
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <h1>Tip!</h1>
+                        <p>you can login using this pre defined accounts for testing</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span6">
+                    <table class="table table-bordered  table-hover table-condensed ">
+                        <thead>
+                        <tr>
+                            <th><p>Username</p></th>
+                            <th><p>Password</p></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><p>user1@gmail.com</p></td>
+                            <td><p>123user1</p></td>
+                        </tr>    
+                        </tbody>
+                    </table>
+                </div>
+                <div class="span6">
+                    <table class="table table-bordered  table-hover table-condensed ">
+                        <thead>
+                        <tr>
+                            <th><p>Username</p></th>
+                            <th><p>Password</p></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><p>user2@gmail.com</p></td>
+                            <td><p>123user2</p></td>
+                        </tr>    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php endif ?>
+            <div>
+                <hr/>
+                <footer>
+                    <p>&copy; 2005 - 2012 by Zend Technologies Ltd. All rights reserved.</p>
+                </footer>
+            </div>
+
+        </div>
+
+    </div> <!-- /container -->
+    <?php echo $this->inlineScript() ?>
+</body>
+</html>

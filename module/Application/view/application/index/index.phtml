@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="span6">
+        <h1>Sample Data </h1>
+        <table class="table table-condensed table-bordered  table-hover table-striped">
+            <thead>
+                <tr>
+                    <th><p>id</p></th>
+            <th><p>name</p></th>
+            <th><p>tag</p></th>
+            <th><p>edit</p></th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($records as $r): ?>
+                    <tr>
+                        <td><?= $r->getId(); ?></td>
+                        <td><?= $r->getName(); ?></td>
+                        <td><?= $r->getTag(); ?></td>
+                        <td><a href="<?= $this->url("edit", array("action" => "edit", "id" => $r->getId())) ?>">Edit</a></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="span6">
+        <?php if (!$this->zfcUserIdentity()): ?>
+            <!-- display the login form -->
+            <?php echo $this->zfcUserLoginWidget(array('redirect' => 'application')); ?>
+            
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <h3>Information!</h3>
+                <p>you need to login in order add some testing data , you may use some test accounts below</p>
+            </div>
+            <?php else: ?>
+            <h1>Add new Sample Data</h1>
+            <!-- display the 'display name' of the user -->
+            <?php echo $this->zfcUserIdentity()->getDisplayname(); ?>
+             <?php echo $this->form()->openTag($form); ?>
+            <?php echo $this->formLabel($form->get('name')); ?>
+            <?php echo $this->formInput($form->get('name')); ?>
+            <?php echo $this->formElementErrors($form->get('name')); ?>
+
+
+            <?php echo $this->formLabel($form->get('tag')); ?>
+            <?php echo $this->formInput($form->get('tag')); ?>
+            <?php echo $this->formElementErrors($form->get('tag')); ?>
+
+            <?php echo $this->formLabel($form->get('save')); ?>
+            <?php echo $this->formInput($form->get('save')); ?>
+
+            <?php
+            echo $this->form()->closeTag($form);
+            ?>
+        <?php endif ?>
+    </div>
+</div>

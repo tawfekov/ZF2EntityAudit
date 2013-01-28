@@ -1,7 +1,0 @@
-<?php
-return array(
-    "audited_entities" => array(
-    ),
-    "zfcuser.integration" => true,
-);
-
