@@ -5,7 +5,7 @@
     "require": {
         "php": ">=5.3",
         "zendframework/zendframework": "2.*",
-	    "doctrine/doctrine-orm-module": "0.*",
+	    "doctrine/doctrine-orm-module": "dev-master",
         "zendframework/zend-developer-tools":"dev-master",
         "simplethings/entity-audit-bundle": "dev-master",
         "tawfekov/zf2entityaudit": "dev-master",
