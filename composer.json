@@ -6,10 +6,10 @@
     "keywords": [
         "audit",
         "entity",
-        "Doctrine 2"
-	    "zf2",
-	    "database",
-	    "persistence",
+        "Doctrine 2",
+	"zf2",
+	"database",
+	"persistence",
     ],
     "homepage": "http://bit.ly/ZF2EntityAudit",
     "authors": [
