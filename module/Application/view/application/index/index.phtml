@@ -5,10 +5,10 @@
             <thead>
                 <tr>
                     <th><p>id</p></th>
-            <th><p>name</p></th>
-            <th><p>tag</p></th>
-            <th><p>edit</p></th>
-            </tr>
+                    <th><p>name</p></th>
+                    <th><p>tag</p></th>
+                    <th><p>edit</p></th>
+                </tr>
             </thead>
             <tbody>
                 <?php foreach ($records as $r): ?>
@@ -26,14 +26,13 @@
         <?php if (!$this->zfcUserIdentity()): ?>
             <!-- display the login form -->
             <?php echo $this->zfcUserLoginWidget(array('redirect' => 'application')); ?>
-            
+
             <div class="alert alert-error">
                 <button type="button" class="close" data-dismiss="alert">×</button>
-                <h3>Information!</h3>
-                <p>you need to login in order add some testing data , you may use some test accounts below</p>
+                <p>You need to sign in to add testing data</p>
             </div>
             <?php else: ?>
-            <h1>Add new Sample Data</h1>
+            <h1>Add Sample Data</h1>
             <!-- display the 'display name' of the user -->
             <?php echo $this->zfcUserIdentity()->getDisplayname(); ?>
              <?php echo $this->form()->openTag($form); ?>

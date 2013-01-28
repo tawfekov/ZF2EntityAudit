@@ -8,3 +8,5 @@ Install
 =======
 # install composer via ``` curl -s http://getcomposer.org/installer | php ```(on windows, download http://getcomposer.org/installer and execute it with PHP)
 # run ``` php composer.phar install ```
+# run ``` ./vendor/bin/doctrine-module orm:schema-tool:update --force ```
+# for php 5.4 cd to ``` public ``` and run ``` php -S localhost:8088 ```

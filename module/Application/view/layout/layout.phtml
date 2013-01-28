@@ -31,20 +31,35 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="<?php echo $this->url('application') ?>"> EntityAudit</a>
+                    <a class="brand" href="<?php echo $this->url('application') ?>"> <i class="icon-list"></i> ZF2EntityAudit</a>
                     <div class="nav-collapse">
-                        <ul class="nav">
-                            <li><a href="<?php echo $this->url('application') ?>"><i class="icon-home"></i>Home</a></li>
-                            <li><a href="<?php echo $this->url('audit_index') ?>"><i class="icon-edit">   </i>Audit Panel</a></li>
-                        </ul>
                         <ul class="nav pull-right">
-                            <?php if(!$this->zfcUserIdentity()):?>
-                            <li><a href="<?=$this->url("zfcuser/register");?>">Signup!</a></li>    
-                            <li><a href="<?=$this->url("zfcuser/login");?>">Signin!</a></li>
-                            <?php else :?>
-                                <li><a href="<?=$this->url("zfcuser");?>">Hello, <?=$this->zfcUserIdentity()->getEmail()?></a></li>
-                                <li><a href="<?=$this->url("zfcuser/logout");?>">Signout!</a></li>
-                            <?php endif; ?>
+                            <?php
+                            if ($this->zfcUserIdentity()) {
+                            ?>
+                            <li id="user-menu" class="dropdown">
+                                <a id="user-drop" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                                    <?php echo $this->gravatar($this->zfcUserIdentity()->getEmail(), array('img_size' => 24)); ?>
+                                    <?php echo $this->zfcUserDisplayName() ?>
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="user-drop" role="menu">
+                                    <li role="menuitem"><a href="/user/logout">Logout</a></li>
+                                </ul>
+                            </li>
+                        <?php
+                        } else {
+                        ?>
+                            <li><a href="/user/login">Login</a></li>
+                        <?php
+                        }
+                        ?>
+                        </ul>
+
+                        <ul class="nav">
+                            <li><a href="<?php echo $this->url('application') ?>"><i class="icon-home"></i> Home</a></li>
+                            <li><a href="<?php echo $this->url('audit_index') ?>"><i class="icon-edit"></i> Audit Revisions</a></li>
+                            <li><a href="https://github.com/tawfekov/ZF2EntityAudit"><i class="icon-book"></i> Source Code</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
@@ -54,56 +69,10 @@
             <?php echo $this->content; ?>
         </div>
         <div class="container">
-            <?php if(!$this->zfcUserIdentity()):?>
-            <div class="row">
-                <div class="span12">
-                    <hr/>
-                    <div class="alert alert-success">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        <h1>Tip!</h1>
-                        <p>you can login using this pre defined accounts for testing</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span6">
-                    <table class="table table-bordered  table-hover table-condensed ">
-                        <thead>
-                        <tr>
-                            <th><p>Username</p></th>
-                            <th><p>Password</p></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td><p>user1@gmail.com</p></td>
-                            <td><p>123user1</p></td>
-                        </tr>    
-                        </tbody>
-                    </table>
-                </div>
-                <div class="span6">
-                    <table class="table table-bordered  table-hover table-condensed ">
-                        <thead>
-                        <tr>
-                            <th><p>Username</p></th>
-                            <th><p>Password</p></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td><p>user2@gmail.com</p></td>
-                            <td><p>123user2</p></td>
-                        </tr>    
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <?php endif ?>
             <div>
                 <hr/>
                 <footer>
-                    <p>&copy; 2005 - 2012 by Zend Technologies Ltd. All rights reserved.</p>
+                    <p>&copy; 2013 ZF2 Entity Audit</p>
                 </footer>
             </div>
 

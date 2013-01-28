@@ -47,5 +47,3 @@ class Type extends Form {
     }
 
 }
-
-?>

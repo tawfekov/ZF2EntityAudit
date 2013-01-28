@@ -11,33 +11,12 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * Type
  *
- * @ORM\Table(name="type")
- * @ORM\Entity(repositoryClass = "Application\Repository\Type")
  * @ORM\HasLifecycleCallbacks
  */
 class Type {
 
-    /**
-     * @var integer $id
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
     private $id;
-
-    /**
-     * @var string $name
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     */
     private $name;
-
-    /**
-     * @var string $tag
-     *
-     * @ORM\Column(name="tag", type="string", length=255, nullable=false)
-     */
     private $tag;
 
     /**
@@ -94,7 +73,8 @@ class Type {
     protected $inputFilter;
 
     public function setInputFilter(InputFilterInterface $inputFilter) {
-        throw new \Exception("Not used");
+        $this->inputFilter = $inputFilter;
+        return $this;
     }
 
     public function getArrayCopy() {
@@ -112,42 +92,44 @@ class Type {
 
             $factory = new InputFactory();
             $inputFilter->add($factory->createInput(array(
-                        'name' => 'name',
-                        'required' => true,
-                        'filters' => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
+                'name' => 'name',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min' => 3,
+                            'max' => 100,
                         ),
-                        'validators' => array(
-                            array(
-                                'name' => 'StringLength',
-                                'options' => array(
-                                    'encoding' => 'UTF-8',
-                                    'min' => 3,
-                                    'max' => 100,
-                                ),
-                            ),
-                        ),
-                    )));
+                    ),
+                ),
+            )));
+
             $inputFilter->add($factory->createInput(array(
-                        'name' => 'tag',
-                        'required' => true,
-                        'filters' => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
+                'name' => 'tag',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min' => 3,
+                            'max' => 100,
                         ),
-                        'validators' => array(
-                            array(
-                                'name' => 'StringLength',
-                                'options' => array(
-                                    'encoding' => 'UTF-8',
-                                    'min' => 3,
-                                    'max' => 100,
-                                ),
-                            ),
-                        ),
-                    )));
-            $this->inputFilter = $inputFilter;
+                    ),
+                ),
+            )));
+
+            $this->setInputFilter($inputFilter);
         }
         return $this->inputFilter;
     }
