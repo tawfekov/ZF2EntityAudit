@@ -9,7 +9,7 @@
         "Doctrine 2",
 	"zf2",
 	"database",
-	"persistence",
+	"persistence"
     ],
     "homepage": "http://bit.ly/ZF2EntityAudit",
     "authors": [
