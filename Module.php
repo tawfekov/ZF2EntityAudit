@@ -36,7 +36,7 @@ class Module {
                 'auditConfig'  => function($sm){
                     $config = $sm->get('Config');
                     $auditconfig = new AuditConfiguration();
-                    $auditconfig->setAuditedEntityClasses((array)$config['zf2-entity-audit']['entities']);
+                    $auditconfig->setAuditedEntityClasses($config['zf2-entity-audit']['entities']);
                     return $auditconfig;
                 },
 
@@ -46,8 +46,7 @@ class Module {
 
                     $auditconfig = $sm->get('auditConfig');
 
-                    if (isset($config['zf2-entity-audit']['zfcuser.integration'])
-                        and $config['zf2-entity-audit']['zfcuser.integration']) {
+                    if ($config['zf2-entity-audit']['zfcuser.integration']) {
                         $auth = $sm->get('zfcuser_auth_service');
                         if ($auth->hasIdentity()) {
                             $identity = $auth->getIdentity();
