@@ -16,7 +16,7 @@ use Zend\View\Model\ViewModel;
 class IndexController extends AbstractActionController {
 
     public function indexAction() {
-        
+
         $sm = $this->getServiceLocator();
         $em = $sm->get("doctrine.entitymanager.orm_default");
         $type_form = new \Application\Form\Type();
@@ -48,7 +48,7 @@ class IndexController extends AbstractActionController {
         $sm = $this->getServiceLocator();
         $em = $sm->get("doctrine.entitymanager.orm_default");
         $type = $em->getRepository("Application\Entity\Type")->find($id);
-        
+
         $type_form = new \Application\Form\Type();
         $type_form->bind($type);
         $request = $this->getRequest();
@@ -63,7 +63,22 @@ class IndexController extends AbstractActionController {
             }
         }
 
-        return new ViewModel(array("form" => $type_form));
+        return new ViewModel(array(
+            'form' => $type_form,
+            'type' => $type,
+        ));
     }
 
+    public function deleteAction() {
+        $id = (int) $this->getEvent()->getRouteMatch()->getParam('id');
+
+        $em = $this->getServiceLocator()->get("doctrine.entitymanager.orm_default");
+
+        $type = $em->getRepository("Application\Entity\Type")->find($id);
+        if ($type) $em->remove($type);
+
+        $em->flush();
+
+        return $this->redirect()->toUrl("/");
+    }
 }

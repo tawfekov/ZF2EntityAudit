@@ -2,23 +2,30 @@
     <div class="span12">
         <h1>Edit Sample Data</h1>
         <?php echo $this->form()->openTag($form); ?>
-        <?php echo $this->formLabel($form->get('name')); ?>
-        <?php echo $this->formInput($form->get('name')); ?>
-        <?php echo $this->formElementErrors($form->get('name')); ?>
-        
+        <?= $this->formRow($form->get('name')); ?>
 
-        <?php echo $this->formLabel($form->get('tag')); ?>
-        <?php echo $this->formInput($form->get('tag')); ?>
-        <?php echo $this->formElementErrors($form->get('tag')); ?>
-        
-        
-        
-        
-        <?php echo $this->formLabel($form->get('save')); ?>
-        <?php echo $this->formInput($form->get('save')); ?>
-        
+
+        <?= $this->formRow($form->get('tag')); ?>
+
+        <?= $this->formRow($form->get('save')); ?>
+
+        <a class="confirm" href="/delete/<?= $type->getId(); ?>">
+            delete
+        </a>
+
         <?php
         echo $this->form()->closeTag($form);
         ?>
     </div>
 </div>
+
+<script>
+
+$(function() {
+    $('.confirm').on('click', function(event) {
+        return confirm('Are you sure?');
+    });
+});
+
+</script>
+
