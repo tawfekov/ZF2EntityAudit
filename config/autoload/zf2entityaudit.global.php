@@ -1,9 +1,12 @@
 <?php
 
 return array(
-    "audited_entities" => array(
-        "Application\Entity\Type"
+    'zf2-entity-audit' => array(
+        'entities' => array(
+            'Application\Entity\Type'
+        ),
+
+        'zfcuser.integration' => true,
     ),
-    "zfcuser.integration" => true,
 );
 
