@@ -44,9 +44,9 @@ class Module {
                 "auditManager" => function ($sm) {
                     $config = $sm->get("Config");
                     $evm = $sm->get("doctrine.eventmanager.orm_default");
-                    
+
                     $auditconfig = $sm->get("auditConfig");
-                    
+
                     if ($config["zfcuser.integration"] === true) {
                         $auth = $sm->get('zfcuser_auth_service');
                         if ($auth->hasIdentity()) {
@@ -65,7 +65,7 @@ class Module {
                 },
                 "auditReader" => function($sm) {
                     $auditManager = $sm->get("auditManager");
-                    $entityManager = $sm->get("default");
+                    $entityManager = $sm->get('doctrine.entitymanager.orm_default');
                     return $auditManager->createAuditReader($entityManager);
                 }
             ),

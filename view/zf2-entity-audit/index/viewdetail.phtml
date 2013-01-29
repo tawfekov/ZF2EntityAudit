@@ -1,9 +1,8 @@
+<h1>Audit entry <?= $className; ?> identifier <?= $id; ?> at revision <?= $rev; ?></h1>
+
 <div class="row">
     <div class="span12">
-        <h3>Detail of <?= $className; ?>  with identifiers of <?= $id; ?> at revisions <?= $rev; ?></h3>
-
-        <p><a href="<?php echo $this->url("audit_viewentity",array("id" => $id , "className" => $className));?>">Compare revisions</a></p>
-        <table class="table table-striped table-condensed table-hover table-bordered ">
+        <table class="table table-striped table-hover table-bordered ">
             <thead><tr>
                     <th>Field</th>
                     <th>Value</th>
@@ -25,3 +24,13 @@
         </table>
     </div>
 </div>
+
+<a class="btn btn-primary" href="<?=
+    $this->url('audit_viewentity',
+        array(
+            'id' => $id,
+            'className' => $className
+        )
+    );?>">
+   View revisions
+</a>
