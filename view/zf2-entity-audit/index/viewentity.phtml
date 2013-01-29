@@ -1,46 +1,85 @@
+<h1>Audit log for <?= $className; ?> identifier <?= $id; ?></h1>
+
+<form action="<?=
+    $this->url('audit_compare',
+        array(
+            'id' => $id ,
+            'className' => $className
+        )
+    );
+    ?>" method="post">
+
 <div class="row">
     <div class="span12">
-        <h3 class="">Change history for <?= $className ?> with identifiers of <?= $id ?></h3>
-        <form action="<?php echo $this->url("audit_compare",array("id" => $id , "className" => $className));?>" method="POST">
-            <table class="table table-striped table-condensed table-hover table-bordered ">
-                <thead>
-                    <tr>
-                        <th colspan="3">&nbsp;</th>
-                        <th colspan="2">Compare</th>
-                    </tr>
-                    <tr>
-                        <th>Revision</th>
-                        <th>Date</th>
-                        <th>User</th>
-                        <th>Old</th>
-                        <th>New</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php  $i = 0;?>
-                    <?php $first = true; ?>
-                    <?php foreach ($revisions  as $revision) :?>
-                    <tr>
-                        <td><a href="<?=$this->url("audit_viewdetails",array("id" =>$id , "className" => $className, "rev" =>$revision->getRev() ));?>"><?=$revision->getRev();?></a></td>
-                        <td><?=$revision->getTimestamp()->format("r");?></td>
-                        <td>
-                            <?php if($revision->getUsername() == ""):?>
-                                <span class="label label-warning">Anonymous</span>
-                            <?php else : ?>
-                                <span class="label label-warning"><?=$revision->getUsername()?></span>
-                            <?php endif;?>
-                        </td>
+        <table class="table table-striped table-condensed
+            table-hover table-bordered">
 
-                        <td><input type="radio" name="oldRev" value="<?=$revision->getRev();?>"<?php if(sizeof($revisions) == 1 or $i == 1):?> checked="checked"<? endif; ?> /></td>
-                        <td><input type="radio" name="newRev" value="<?=$revision->getRev();?>"<?php if($first):?> checked="checked"<? endif; ?> /></td>
-                    </tr>
-                    <?php $i++;?>
-                    <?php $first = false; ?>
-                    <? endforeach;?>
-                </tbody>
-            </table>
+            <thead>
+                <tr>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="2">Compare</th>
+                </tr>
+                <tr>
+                    <th>Revision</th>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Old</th>
+                    <th>New</th>
+                </tr>
+            </thead>
 
-            <input type="submit" class="btn btn-large btn-success" value="Compare Revisions" />
-        </form>
+            <tbody>
+                <?php
+                $i = 0;
+                foreach ($revisions  as $revision) {
+                ?>
+
+                <tr>
+                    <td>
+                        <a href="<?=
+                            $this->url('audit_viewdetails',
+                            array(
+                                'id' => $id ,
+                                'className' => $className,
+                                'rev' =>$revision->getRev()
+                            )
+                        ); ?>">
+                            <?= $revision->getRev(); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?= $revision->getTimestamp()->format("r"); ?>
+                    </td>
+                    <td>
+                        <span class="label">
+                            <?= ($revision->getUsername()) ?: 'Anonymous'; ?>
+                        </span>
+                    </td>
+
+                    <td>
+                        <input type="radio" name="oldRev" value="<?= $revision->getRev(); ?>"
+                            <?= (sizeof($revisions) == 1 or $i == 1) ? 'checked="checked"': ''; ?> />
+                    </td>
+                    <td>
+                        <input type="radio" name="newRev" value="<?= $revision->getRev(); ?>"
+                            <?= (!$i) ? 'checked="checked"': ''; ?> />
+                    </td>
+                </tr>
+                <?php
+                    $i++;
+                }
+                ?>
+
+            </tbody>
+
+        </table>
     </div>
 </div>
+
+<div class="row">
+    <div class="span12">
+        <input type="submit" class="btn btn-large btn-success" value="Compare Revisions" />
+    </div>
+</div>
+
+</form>
