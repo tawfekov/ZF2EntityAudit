@@ -48,10 +48,19 @@
                         </a>
                     </td>
                     <td>
-                        <?= $revision->getTimestamp()->format("r"); ?>
+                        <a href="<?=
+                            $this->url('audit_viewdetails',
+                            array(
+                                'id' => $id ,
+                                'className' => $className,
+                                'rev' =>$revision->getRev()
+                            )
+                        ); ?>">
+                            <?= $revision->getTimestamp()->format("r"); ?>
+                        </a>
                     </td>
                     <td>
-                        <span class="label">
+                        <span class="label label-info">
                             <?= ($revision->getUsername()) ?: 'Anonymous'; ?>
                         </span>
                     </td>
@@ -78,7 +87,7 @@
 
 <div class="row">
     <div class="span12">
-        <input type="submit" class="btn btn-large btn-success" value="Compare Revisions" />
+        <input type="submit" class="btn btn-large btn-primary" value="Compare Revisions" />
     </div>
 </div>
 
