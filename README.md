@@ -39,7 +39,8 @@ return array(
             "Application\Entity\Entity2",
             "Application\Entity\Entity3",
         ),
-    'zfcuser.integration' => true,
+        'zfcuser.integration' => true,
+    )
 );
 ```
 ZFCUser integration will assign the current user to the revision log else 'Anonymous' is used.
@@ -58,6 +59,11 @@ from this route.
 on Github : [tawfekov]
 on Twitter: [@tawfekov] 
 
+Thanks also flys to [TomHAnderson] for his Contributions.
+
 
 [tawfekov]:https://github.com/tawfekov
 [@tawfekov]:http://twitter.com/tawfekov
+
+[TomHAnderson]:https://github.com/TomHAnderson
+
