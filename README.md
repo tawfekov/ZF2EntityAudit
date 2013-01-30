@@ -1,59 +1,62 @@
-#ZF2 Module enable Doctrine to Audit selected entities. 
+ZF2EntityAudit
+==============
 
-#Demo : 
+An module to audit Doctrine 2 entities in ZF2 and browse the audit log
 
-you can get a fully working demo application on this git repository : https://github.com/tawfekov/ZF2EntityAudit-demo.
 
-if you would like to checkout online demo , click in the link : http://bit.ly/ZF2EntityAudit
+Demo
+----
+A demo application is part of this repository on the ``` demo ``` branch
+See the README on that branch for installation instructions.
 
-#Documenation :  
+A working demo is online at http://bit.ly/ZF2EntityAudit
 
-1- you can download ZF2EntityAudit form composer 
+Documenation
+------------
+
+1. download ZF2EntityAudit from composer 
 ```php
 php composer.phar require "tawfekov/zf2entityaudit": "dev-master"
 ```
 or by adding it to `composer.json` then using `php composer.phar update` to install it 
 
-2- enable ZF2EntityAudit in `config/application.config.php` to be like this : 
+2. enable ZF2EntityAudit in `config/application.config.php` to be like this : 
 ```php
-<?php
 return array(
     'modules' => array(
-        'Application',
-        'DoctrineModule',
-        'DoctrineORMModule',
-        'ZF2EntityAudit' // add this line.
-        .............
+        'ZF2EntityAudit'
+        ...
     ),
-    ..............
 ```
-3- copy `config/zf2entityaudit.global.php.dist` to `config\autoload\zf2entityaudit.global.php` and insert the wanted entities to be audited like example below : 
+
+3. copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit
 ```php
 <?php
 return array(
-    "audited_entities" => array(
-        "Application\Entity\Entity1",
-        "Application\Entity\Entity2",
-        "Application\Entity\Entity3",
-    ),
+    'zf2-entity-audit' => array(    
+        'entities' => array(
+            "Application\Entity\Entity1",
+            "Application\Entity\Entity2",
+            "Application\Entity\Entity3",
+        ),
+    'zfcuser.integration' => true,
 );
 ```
+ZFCUser integration will assign the current user to the revision log else 'Anonymous' is used.
 
-4- use doctrine command line tool to update the database and created the auditing tables :
+4. use doctrine command line tool to update the database and created the auditing tables :
 ```shell
-./doctrine orm:schema-tool:update 
+vendor/bin/doctrine-module orm:schema-tool:update
 ```
 
-5- viewing the auditing records :
-to be updated soon ....
+5. viewing the auditing records :
+Routes are added from /audit  This module provides the view layer for browsing the audit log
+from this route.
 
-
-
-6-if you found any problem or you have any idea about improving this module please let  me know 
+6. if you find any problems or have ideas to improve this module please let me know
 
 on Github : [tawfekov]
 on Twitter: [@tawfekov] 
-
 
 
 [tawfekov]:https://github.com/tawfekov
