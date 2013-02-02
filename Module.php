@@ -6,6 +6,7 @@ use Zend\Mvc\MvcEvent
     , SimpleThings\EntityAudit\AuditManager
     , SimpleThings\EntityAudit\EventListener\CreateSchemaListener
     , SimpleThings\EntityAudit\EventListener\LogRevisionsListener
+    , ZF2EntityAudit\View\Helper\DateTimeFormatter
     ;
 
 class Module
@@ -77,5 +78,19 @@ class Module
                 },
             ),
         );
+    }
+    public function getViewHelperConfig()
+    {
+         return array(
+            'factories' => array(
+                'DateTimeFormatter' => function($sm) {
+                    $Servicelocator = $sm->getServiceLocator(); 
+                    $config = $Servicelocator->get("Config");
+                    $format = $config['zf2-entity-audit']['ui']['datetime.format']; 
+                    $formatter = new DateTimeFormatter();
+                    return $formatter->setDateTimeFormat($format);
+                }
+            )
+        );  
     }
 }

@@ -3,7 +3,11 @@ return array(
     'zf2-entity-audit'=> array(
         'entities' => array(
         ),
+        'ui' => array(
+            'datetime.format' => "r"
+        ),
         'zfcuser.integration' => true,
+        
     ),
 );
 

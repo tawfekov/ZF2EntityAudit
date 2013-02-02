@@ -49,7 +49,9 @@
                                     )
                                 );
                             ?>">
-                                <?= $revision->getTimestamp()->format("r"); ?>
+                            
+                                <?= $this->DateTimeFormatter($revision->getTimestamp()); ?>
+                            
                             </a>
                         </td>
 

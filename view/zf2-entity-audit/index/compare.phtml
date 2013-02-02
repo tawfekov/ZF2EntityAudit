@@ -17,20 +17,20 @@
                         <td><?= $field ?></td>
                         <td>
                             <?php if ($value["old"] instanceof \DateTime): ?>
-                                <?php echo $value["old"]->format("r"); ?>
+                                <?= $this->DateTimeFormatter($value["old"]); ?>
                             <?php else: ?>
                                 <?php echo $value["old"]; ?>
                             <?php endif; ?></td>
                         <td>
                             <?php if ($value["same"] instanceof \DateTime): ?>
-                                <?php echo $value["same"]->format("r"); ?>
+                                <?= $this->DateTimeFormatter($value["same"]); ?>
                             <?php else: ?>
                                 <?php echo $value["same"]; ?>
                             <?php endif; ?>
                         </td>
                         <td>
                             <?php if ($value["new"] instanceof \DateTime): ?>
-                                <?php echo $value["new"]->format("r"); ?>
+                                <?= $this->DateTimeFormatter($value["new"]); ?>
                             <?php else: ?>
                                 <?php echo $value["new"]; ?>
                             <?php endif; ?></td>

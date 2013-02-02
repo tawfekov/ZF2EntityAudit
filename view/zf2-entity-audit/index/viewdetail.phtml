@@ -13,7 +13,7 @@
                         <td><?= $field; ?></td>
                         <td>
                             <?php if ($value instanceof \DateTime): ?>
-                                <?= $value->format("r"); ?>
+                                <?= $this->DateTimeFormatter($value); ?>
                             <?php else : ?>
                                 <?= $value; ?>
                             <?php endif; ?>
