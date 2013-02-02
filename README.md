@@ -37,7 +37,8 @@ return array(
             "Application\Entity\Entity3",
         ),
         'ui' => array(
-            'datetime.format' => "r" //you can use any dattime format like Y-m-d , c , r , 
+            //you can use any dattime format like Y-m-d , c , r , list of avaliable format : http://www.php.net/manual/en/function.date.php
+            'datetime.format' => "r" 
         ),
         'zfcuser.integration' => true,
     )
