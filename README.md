@@ -26,7 +26,7 @@ return array(
     ),
 ```
 
-3. copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit
+3. copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit setting as
 ```php
 <?php
 return array(
@@ -35,6 +35,9 @@ return array(
             "Application\Entity\Entity1",
             "Application\Entity\Entity2",
             "Application\Entity\Entity3",
+        ),
+        'ui' => array(
+            'datetime.format' => "r" //you can use any dattime format like Y-m-d , c , r , 
         ),
         'zfcuser.integration' => true,
     )
