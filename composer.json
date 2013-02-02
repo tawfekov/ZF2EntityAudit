@@ -1,6 +1,6 @@
 {
     "name": "tawfekov/zf2entityaudit",
-    "description": "EntityAudit Module for Zend Framework2 + Doctrine2, online demo http://bit.ly/ZF2EntityAudit",
+    "description": "EntityAudit Module for Zend Framework2 , Doctrine2 plus web interface ",
     "type": "zf-module",
     "license": "MIT",
     "keywords": [
@@ -11,7 +11,6 @@
 	"database",
 	"persistence"
     ],
-    "homepage": "http://bit.ly/ZF2EntityAudit",
     "authors": [
         {
             "name": "Tawfek Daghistani",

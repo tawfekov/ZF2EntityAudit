@@ -8,8 +8,6 @@ Demo
 ----
 A demo application is saved in this [repository] , See the README on that repository  for installation instructions.
 
-A working demo is online at http://bit.ly/ZF2EntityAudit
-
 Documenation
 ------------
 
