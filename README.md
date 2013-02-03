@@ -38,7 +38,8 @@ return array(
         ),
         'ui' => array(
             //you can use any dattime format like Y-m-d , c , r , list of avaliable format : http://www.php.net/manual/en/function.date.php
-            'datetime.format' => "r" 
+            'datetime.format' => "r",
+            'page.limit'    => '50'
         ),
         'zfcuser.integration' => true,
     )
