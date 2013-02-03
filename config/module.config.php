@@ -16,22 +16,21 @@ return array(
                         'page' => "1"
                     ),
                 ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'page' => "[0-9]"
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
+            ),
+            'audit_log' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/audit/log[/:page]',
+                    'constraints' => array(
+                        'page' => '[0-9]*',
                     ),
-                ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'zf2entityaudit\Controller',
+                        'controller' => 'Index',
+                        'action' => 'index',
+                        'page' => '1'
+                    )
+                )
             ),
             'audit_viewrevision' => array(
                 'type' => 'Segment',

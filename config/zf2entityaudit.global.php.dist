@@ -4,7 +4,8 @@ return array(
         'entities' => array(
         ),
         'ui' => array(
-            'datetime.format' => "r"
+            'datetime.format' => 'r',
+            'page.limit'    => '20'
         ),
         'zfcuser.integration' => true,
         

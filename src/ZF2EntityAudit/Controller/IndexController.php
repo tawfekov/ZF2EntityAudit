@@ -25,10 +25,12 @@ class IndexController extends AbstractActionController {
      */
     public function indexAction()
     {
-        $auditReader = $this->getServiceLocator()->get('auditReader');
+        $sm = $this->getServiceLocator() ;
+        $auditReader = $sm->get('auditReader');
+        $config = $sm->get("Config");
+        $ZF2AuditConfig = $config["zf2-entity-audit"];
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
-        $revisions = $auditReader->findRevisionHistory(20, 20 * ($page - 1));
-
+        $revisions = $auditReader->findRevisionHistory($ZF2AuditConfig['ui']['page.limit'], 20 * ($page - 1));
         return new ViewModel(array(
             'revisions' => $revisions,
             'auditReader' => $auditReader,
