@@ -1,5 +1,5 @@
-<h1>Comparing <?= $className; ?> with identifiers of
-    <?= $id ?> between revisions <?= $oldRev ?> and <?= $newRev ?> </h1>
+<h1>Comparing <?php echo $this->escapeHtml($className); ?> with identifiers of
+    <?= $id ?> between revisions <?php echo $this->escapeHtml($oldRev); ?> and <?php echo $this->escapeHtml($newRev); ?> </h1>
 <div class="row">
     <div class="span12">
         <table  class="table table-striped table-hover table-bordered ">
@@ -17,22 +17,22 @@
                         <td><?= $field ?></td>
                         <td>
                             <?php if ($value["old"] instanceof \DateTime): ?>
-                                <?= $this->DateTimeFormatter($value["old"]); ?>
+                                <?php echo $this->DateTimeFormatter($value["old"]); ?>
                             <?php else: ?>
-                                <?php echo $value["old"]; ?>
+                                <?php echo  $this->escapeHtml($value["old"]); ?>
                             <?php endif; ?></td>
                         <td>
                             <?php if ($value["same"] instanceof \DateTime): ?>
-                                <?= $this->DateTimeFormatter($value["same"]); ?>
+                                <?php echo  $this->DateTimeFormatter($value["same"]); ?>
                             <?php else: ?>
-                                <?php echo $value["same"]; ?>
+                                <?php echo  $this->escapeHtml($value["same"]); ?>
                             <?php endif; ?>
                         </td>
                         <td>
                             <?php if ($value["new"] instanceof \DateTime): ?>
-                                <?= $this->DateTimeFormatter($value["new"]); ?>
+                                <?php echo $this->DateTimeFormatter($value["new"]); ?>
                             <?php else: ?>
-                                <?php echo $value["new"]; ?>
+                                <?php echo  $this->escapeHtml($value["new"]); ?>
                             <?php endif; ?></td>
                     </tr>
                 <? endforeach; ?>

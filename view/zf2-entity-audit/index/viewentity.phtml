@@ -1,4 +1,4 @@
-<h1>Audit log for <?= $className; ?> identifier <?= $id; ?></h1>
+<h1>Audit log for <?php  echo $this->escapeHtml($className); ?> identifier <?php  echo $this->escapeHtml($id); ?></h1>
 
 <form action="<?=
     $this->url('audit_compare',
@@ -43,7 +43,7 @@
                                 'rev' =>$revision->getRev()
                             )
                         ); ?>">
-                            <?= $revision->getRev(); ?>
+                            <?php  echo $this->escapeHtml($revision->getRev()); ?>
                         </a>
                     </td>
                     <td>
@@ -55,22 +55,22 @@
                                 'rev' =>$revision->getRev()
                             )
                         ); ?>">
-                            <?= $this->DateTimeFormatter($revision->getTimestamp()); ?>
+                            <?php echo  $this->DateTimeFormatter($revision->getTimestamp()); ?>
                         </a>
                     </td>
                     <td>
                         <span class="label label-info">
-                            <?= ($revision->getUsername()) ?: 'Anonymous'; ?>
+                            <?php echo  ($revision->getUsername()) ?: 'Anonymous'; ?>
                         </span>
                     </td>
 
                     <td>
-                        <input type="radio" name="oldRev" value="<?= $revision->getRev(); ?>"
-                            <?= (sizeof($revisions) == 1 or $i == 1) ? 'checked="checked"': ''; ?> />
+                        <input type="radio" name="oldRev" value="<?php  echo $this->escapeHtml($revision->getRev()); ?>"
+                            <?php echo  (sizeof($revisions) == 1 or $i == 1) ? 'checked="checked"': ''; ?> />
                     </td>
                     <td>
-                        <input type="radio" name="newRev" value="<?= $revision->getRev(); ?>"
-                            <?= (!$i) ? 'checked="checked"': ''; ?> />
+                        <input type="radio" name="newRev" value="<?php  echo $this->escapeHtml($revision->getRev()); ?>"
+                            <?php echo  (!$this->escapeHtml($i)) ? 'checked="checked"': ''; ?> />
                     </td>
                 </tr>
                 <?php

@@ -28,7 +28,7 @@
                 foreach ($revisions as $revision) {
                 ?>
                     <tr>
-                        <td><?=$i?></td>
+                        <td><?php  echo $this->escapeHtml($i);?></td>
                         <td>
                             <a href="<?=
                                 $this->url('audit_viewrevision',
@@ -37,7 +37,7 @@
                                     )
                                 );
                             ?>">
-                                <?= $revision->getRev(); ?>
+                                <?php  echo $this->escapeHtml($revision->getRev()); ?>
                             </a>
                         </td>
 
@@ -50,7 +50,7 @@
                                 );
                             ?>">
                             
-                                <?= $this->DateTimeFormatter($revision->getTimestamp()); ?>
+                                <?php echo $this->DateTimeFormatter($revision->getTimestamp()); ?>
                             
                             </a>
                         </td>
@@ -86,7 +86,7 @@
                             ?>">
 
 
-                                    <?= $ce->getClassName(); ?>
+                                    <?php  echo $this->escapeHtml($ce->getClassName()); ?>
                             </span>
                                 </a>
                         <br>
@@ -98,7 +98,7 @@
 
                         <td>
                             <span class="label label-info">
-                                <?= ($revision->getUsername()) ?: 'Anonymous'; ?>
+                                <?php echo  ($this->escapeHtml($revision->getUsername())) ?: 'Anonymous'; ?>
                             </span>
                         </td>
                     </tr>
