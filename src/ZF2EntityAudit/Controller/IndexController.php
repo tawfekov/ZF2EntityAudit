@@ -44,7 +44,7 @@ class IndexController extends AbstractActionController {
      * @return \Zend\View\Model\ViewModel
      *
      */
-    public function viewRevisionAction() {
+    public function revisionAction() {
         $rev = (int) $this->getEvent()->getRouteMatch()->getParam('rev');
         $revision = $this->getServiceLocator()->get('auditReader')->findRevision($rev);
         if (!$revision) {
@@ -65,7 +65,7 @@ class IndexController extends AbstractActionController {
      * @param string $id
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewEntityAction() {
+    public function entityAction() {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
 
@@ -86,7 +86,7 @@ class IndexController extends AbstractActionController {
      * @param int $rev
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewdetailAction() {
+    public function detailAction() {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
         $rev = $this->getEvent()->getRouteMatch()->getParam('rev');
