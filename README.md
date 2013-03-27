@@ -13,7 +13,7 @@ Documenation
 
 1. download ZF2EntityAudit from composer 
 ```php
-php composer.phar require "tawfekov/zf2entityaudit": "dev-master"
+php composer.phar require "tawfekov/zf2entityaudit": "0.1-stable"
 ```
 or by adding it to `composer.json` then using `php composer.phar update` to install it 
 
