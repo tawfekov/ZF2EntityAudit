@@ -1,7 +1,7 @@
 ZF2EntityAudit
 ==============
 
-An module to audit Doctrine 2 entities in ZF2 and browse the audit log
+An module to audit Doctrine 2 entities in ZF2 and browse the audit log , inspired by https://github.com/simplethings/EntityAudit
 
 
 Demo
@@ -58,6 +58,12 @@ from this route.
 in production server you can protect this interface by using any ACL module out there , I'd suggest using [BjyAuthorize].
 
 6. if you find any problems or have ideas to improve this module please let me know
+
+7. if you are willing to help me testing this module , feel free to use 
+```php
+php composer.phar require "tawfekov/zf2entityaudit": "dev-master"
+```
+but please note  this might/will have bugs .
 
 on Github : [tawfekov]
 on Twitter: [@tawfekov]

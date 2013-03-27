@@ -4,7 +4,7 @@ namespace ZF2EntityAudit\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use SimpleThings\EntityAudit\Utils\ArrayDiff;
+use ZF2EntityAudit\Utils\ArrayDiff;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 class IndexController extends AbstractActionController {

@@ -4,7 +4,7 @@ namespace ZF2EntityAudit;
 
 class Version {
 
-    const VERSION = '0.1-ALPHA';
+    const VERSION = '0.2-ALPHA';
 
 }
 

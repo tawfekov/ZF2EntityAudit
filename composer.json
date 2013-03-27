@@ -1,6 +1,6 @@
 {
     "name": "tawfekov/zf2entityaudit",
-    "description": "EntityAudit Module for Zend Framework2 , Doctrine2 plus web interface ",
+    "description": "EntityAudit Module for Zend Framework2 , Doctrine2 and web interface ",
     "type": "zf-module",
     "license": "MIT",
     "keywords": [
@@ -20,9 +20,8 @@
     ],
     "require": {
         "php": ">=5.3.0",
-	    "zendframework/zendframework" : ">=2.0.5",
+	    "zendframework/zendframework" : ">=2.1",
 	    "doctrine/doctrine-orm-module": "dev-master",
-	    "simplethings/entity-audit-bundle": "dev-master"
     },
     "autoload": {
         "psr-0": {

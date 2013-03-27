@@ -1,13 +1,13 @@
 <?php
 
 namespace ZF2EntityAudit;
-use Zend\Mvc\MvcEvent
-    , SimpleThings\EntityAudit\AuditConfiguration
-    , SimpleThings\EntityAudit\AuditManager
-    , SimpleThings\EntityAudit\EventListener\CreateSchemaListener
-    , SimpleThings\EntityAudit\EventListener\LogRevisionsListener
-    , ZF2EntityAudit\View\Helper\DateTimeFormatter
-    ;
+use Zend\Mvc\MvcEvent;
+
+use ZF2EntityAudit\Audit\Configuration;
+use ZF2EntityAudit\Audit\Manager ;
+use ZF2EntityAudit\EventListener\CreateSchemaListener;
+use ZF2EntityAudit\EventListener\LogRevisionsListener;
+use ZF2EntityAudit\View\Helper\DateTimeFormatter;
 
 class Module
 {
@@ -43,7 +43,7 @@ class Module
             'factories' => array(
                 'auditConfig' => function($sm){
                     $config = $sm->get('Config');
-                    $auditconfig = new AuditConfiguration();
+                    $auditconfig = new Configuration();
                     $auditconfig->setAuditedEntityClasses($config['zf2-entity-audit']['entities']);
                     return $auditconfig;
                 },
@@ -65,7 +65,7 @@ class Module
                     } else {
                         $auditconfig->setCurrentUsername('Anonymous');
                     }
-                    $auditManager = new AuditManager($auditconfig);
+                    $auditManager = new Manager($auditconfig);
                     $evm->addEventSubscriber(new CreateSchemaListener($auditManager));
                     $evm->addEventSubscriber(new LogRevisionsListener($auditManager));
                     return $auditManager;
