@@ -21,7 +21,7 @@
     "require": {
         "php": ">=5.3.0",
 	    "zendframework/zendframework" : ">=2.1",
-	    "doctrine/doctrine-orm-module": "dev-master",
+	    "doctrine/doctrine-orm-module": "dev-master"
     },
     "autoload": {
         "psr-0": {
