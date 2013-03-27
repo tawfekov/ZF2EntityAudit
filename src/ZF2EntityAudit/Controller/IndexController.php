@@ -96,15 +96,11 @@ class IndexController extends AbstractActionController {
         $ids = explode(',', $id);
         $entity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $rev);
 
-        $data = $this->getEntityValues($metadata, $entity);
-        krsort($data);
-
         return new ViewModel(array(
                     'id' => $id,
                     'rev' => $rev,
                     'className' => $className,
                     'entity' => $entity,
-                    'data' => $data,
                 ));
     }
 
