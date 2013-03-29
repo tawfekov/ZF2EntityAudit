@@ -36,12 +36,12 @@ class AuditConfiguration
 
     public function getRevisionFieldName()
     {
-        return 'rev';
+        return 'revision';
     }
 
     public function getRevisionTypeFieldName()
     {
-        return 'revtype';
+        return 'revisionType';
     }
 
     public function getRevisionTableName()

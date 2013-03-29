@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Zend\Code\Reflection\ClassReflection;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\MethodGenerator;
+use Zend\Code\Generator\PropertyGenerator;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
@@ -88,7 +89,7 @@ final class AuditDriver implements MappingDriver
                 " return '" .  addslashes($name) . "';");
 
             // Add revision reference column
-            $auditClassGenerator->addProperty($config->getRevisionFieldName());
+            $auditClassGenerator->addProperty($config->getRevisionFieldName(), null, $flags = PropertyGenerator::FLAG_PROTECTED);
             $auditClassGenerator->addMethod(
                 'get' . $config->getRevisionFieldName(),
                 array(),
