@@ -100,11 +100,11 @@ class Module
     {
          return array(
             'factories' => array(
-                'DateTimeFormatter' => function($sm) {
+                'AuditDateTimeFormatter' => function($sm) {
                     $Servicelocator = $sm->getServiceLocator();
                     $config = $Servicelocator->get("Config");
-                    $format = $config['zf2-entity-audit']['ui']['datetime.format'];
-                    $formatter = new DateTimeFormatter();
+                    $format = $config['audit']['datetime.format'];
+                    $formatter = new AuditDateTimeFormatter();
                     return $formatter->setDateTimeFormat($format);
                 }
             )

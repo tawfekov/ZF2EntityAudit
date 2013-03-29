@@ -1,6 +1,8 @@
 <?php
 return array(
     'audit' => array(
+        'datetime.format' => 'r',
+        
         'entities' => array(
             '',
         ),
