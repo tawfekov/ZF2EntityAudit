@@ -3,11 +3,11 @@
 namespace ZF2EntityAudit;
 
 use Zend\Mvc\MvcEvent
-    , SimpleThings\EntityAudit\AuditConfiguration
-    , SimpleThings\EntityAudit\AuditManager
-    , SimpleThings\EntityAudit\EventListener\CreateSchemaListener
-    , SimpleThings\EntityAudit\EventListener\LogRevisionsListener
-    , ZF2EntityAudit\View\Helper\DateTimeFormatter
+    , ZF2EntityAudit\AuditConfiguration
+    , ZF2EntityAudit\AuditManager
+    , ZF2EntityAudit\EventListener\CreateSchemaListener
+    , ZF2EntityAudit\EventListener\LogRevisionsListener
+    , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
     , Zend\ServiceManager\ServiceManager
     ;
 
@@ -26,7 +26,6 @@ class Module
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                    'SimpleThings' => __DIR__ . '/src/SimpleThings',
                 ),
             ),
         );

@@ -21,10 +21,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace SimpleThings\EntityAudit\EventListener;
+namespace ZF2EntityAudit\EventListener;
 
 use Doctrine\ORM\Tools\ToolEvents;
-use SimpleThings\EntityAudit\AuditManager;
+use ZF2EntityAudit\AuditManager;
 use Doctrine\ORM\Tools\Event\GenerateSchemaTableEventArgs;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
 use Doctrine\Common\EventSubscriber;
@@ -51,15 +51,38 @@ class CreateSchemaListener implements EventSubscriber
     {
         return array(
             ToolEvents::postGenerateSchemaTable,
-#            ToolEvents::postGenerateSchema,
+            ToolEvents::postGenerateSchema,
         );
+    }
+
+    public function postGenerateSchema(GenerateSchemaEventArgs $eventArgs) {
+        #$cm = $eventArgs->getEntityManager()->getClassMetadata();
+#        print_r(get_class_methods($eventArgs));die();
+
+
     }
 
     public function postGenerateSchemaTable(GenerateSchemaTableEventArgs $eventArgs)
     {
+
+
+        return;
+        /*
+        $cm = $eventArgs->getClassMetadata();
+
+        if ($this->metadataFactory->isAudited($cm->name)) {
+            $class = $this->metadataFactory->getMetadataFor($cm->name);
+
+            print_r($class);die();
+        }
+*/
+
+
         $cm = $eventArgs->getClassMetadata();
         if ($this->metadataFactory->isAudited($cm->name)) {
             $schema = $eventArgs->getSchema();
+
+
             $entityTable = $eventArgs->getClassTable();
             $revisionTable = $schema->createTable(
                 $this->config->getTablePrefix().$entityTable->getName().$this->config->getTableSuffix()
@@ -79,8 +102,8 @@ class CreateSchemaListener implements EventSubscriber
         }
     }
 
-    public function postGenerateSchema(GenerateSchemaEventArgs $eventArgs)
-    {
+#    public function postGenerateSchema(GenerateSchemaEventArgs $eventArgs)
+#    {
 
         /*
         $revisionsTable = $schema->createTable($this->config->getRevisionTableName());
@@ -91,5 +114,5 @@ class CreateSchemaListener implements EventSubscriber
         $revisionsTable->addColumn('username', 'string');
         $revisionsTable->setPrimaryKey(array('id'));
         */
-    }
+#    }
 }

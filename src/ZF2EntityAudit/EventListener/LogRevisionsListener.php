@@ -21,9 +21,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace SimpleThings\EntityAudit\EventListener;
+namespace ZF2EntityAudit\EventListener;
 
-use SimpleThings\EntityAudit\AuditManager
+use ZF2EntityAudit\AuditManager
     , Doctrine\Common\EventSubscriber
     , Doctrine\ORM\Events
     , Doctrine\ORM\Event\OnFlushEventArgs
@@ -36,7 +36,7 @@ use SimpleThings\EntityAudit\AuditManager
 class LogRevisionsListener implements EventSubscriber
 {
     /**
-     * @var \SimpleThings\EntityAudit\AuditConfiguration
+     * @var ZF2EntityAudit\AuditConfiguration
      */
     private $config;
 

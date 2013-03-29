@@ -1,10 +1,10 @@
 <?php
 
-namespace SimpleThings\EntityAudit;
+namespace ZF2EntityAudit;
 use Doctrine\Common\EventManager
     , Doctrine\ORM\EntityManager
-    , SimpleThings\EntityAudit\EventListener\CreateSchemaListener
-    , SimpleThings\EntityAudit\EventListener\LogRevisionsListener
+    , ZF2EntityAudit\EventListener\CreateSchemaListener
+    , ZF2EntityAudit\EventListener\LogRevisionsListener
     ;
 
 /**
