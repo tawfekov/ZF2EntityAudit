@@ -89,7 +89,7 @@ final class AuditDriver implements MappingDriver
                 " return '" .  addslashes($name) . "';");
 
             // Add revision reference column
-            $auditClassGenerator->addProperty($config->getRevisionFieldName(), null, $flags = PropertyGenerator::FLAG_PROTECTED);
+            $auditClassGenerator->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
             $auditClassGenerator->addMethod(
                 'get' . $config->getRevisionFieldName(),
                 array(),
