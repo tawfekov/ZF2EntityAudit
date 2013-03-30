@@ -117,7 +117,7 @@ final class AuditDriver implements MappingDriver
         }
 
         // Add revision (manage here rather than separate namespace)
-        $auditEntities[] = 'ZF2EntityAudit\Entity\Revision';
+        $auditEntities[] = 'ZF2EntityAudit\\Entity\\Revision';
 
         return $auditEntities;
     }

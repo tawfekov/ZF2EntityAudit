@@ -7,7 +7,6 @@ return array(
         'driver' => array(
             __NAMESPACE__ . '_driver' => array(
                 'class' => 'ZF2EntityAudit\Mapping\Driver\AuditDriver',
-#                'paths' => array(__DIR__ . '/../src/ZF2EntityAudit/Entity/'),
             ),
 
             'orm_default' => array(
