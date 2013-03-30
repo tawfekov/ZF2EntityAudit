@@ -6,25 +6,33 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Common\Collections\ArrayCollection;
-use ZF2EntityAudit\Metadata\MetadataFactory;
+use ZF2EntityAudit\Exception as AuditException;
 
-class AuditReader
+class Reader
 {
     private $em;
     private $config;
-    private $metadataFactory;
 
     /**
      * @param EntityManager $em
-     * @param AuditConfiguration $config
-     * @param MetadataFactory $factory
+     * @param Config $config
      */
-    public function __construct(EntityManager $em, AuditConfiguration $config, MetadataFactory $factory)
+    public function __construct(EntityManager $em, Config $config)
     {
         $this->em = $em;
-        $this->config = $config;
-        $this->metadataFactory = $factory;
+        $this->setConfig($config);
         $this->platform = $this->em->getConnection()->getDatabasePlatform();
+    }
+
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -40,7 +48,7 @@ class AuditReader
      */
     public function find($className, $id, $revision)
     {
-        if (!$this->metadataFactory->isAudited($className)) {
+        if (!in_array($className, $this->getConfig()->getAuditedEntities()) {
             throw AuditException::notAudited($className);
         }
 
@@ -198,7 +206,7 @@ class AuditReader
      */
     public function findEntitesChangedAtRevision($revision)
     {
-        $auditedEntities = $this->metadataFactory->getAllClassNames();
+        $auditedEntities = $this->getConfig()->getAuditedEntities();
 
         $changedEntities = array();
         foreach ($auditedEntities AS $className) {
@@ -268,7 +276,7 @@ class AuditReader
      */
     public function findRevisions($className, $id)
     {
-        if (!$this->metadataFactory->isAudited($className)) {
+        if (!in_array($className, $this->getConfig()->getAuditedEntities()) {
             throw AuditException::notAudited($className);
         }
 

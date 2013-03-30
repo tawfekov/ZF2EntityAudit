@@ -9,7 +9,7 @@ use ZF2EntityAudit\AuditManager
     , Doctrine\ORM\Event\LifecycleEventArgs
     , Doctrine\ORM\Mapping\ClassMetadata
     , Doctrine\DBAL\Types\Type
-    , Audit\Entity\Revision as RevisionEntity
+    , ZF2EntityAudit\Entity\Revision as RevisionEntity
     ;
 
 class LogRevisionsListener implements EventSubscriber
@@ -18,11 +18,6 @@ class LogRevisionsListener implements EventSubscriber
      * @var ZF2EntityAudit\AuditManager
      */
     private $auditManager;
-
-    /**
-     * @var \SimpleThings\EntityAudit\Metadata\MetadataFactory
-     */
-    private $metadataFactory;
 
     /**
      * @var Doctrine\DBAL\Connection
@@ -54,14 +49,12 @@ class LogRevisionsListener implements EventSubscriber
      */
     private $revision;
 
-    public function __construct(AuditManager $auditManager)
+    public function __construct(Manager $auditManager)
     {
         $this->setAuditManager($auditManager);
-#        $this->config = $auditManager->getConfiguration();
-#        $this->metadataFactory = $auditManager->getMetadataFactory();
     }
 
-    public function setAuditManager(AuditManager $auditManager)
+    public function setAuditManager(Manager $auditManager)
     {
         $this->auditManager = $auditManager;
         return $this;
@@ -74,7 +67,11 @@ class LogRevisionsListener implements EventSubscriber
 
     public function getSubscribedEvents()
     {
-        return array(Events::onFlush, Events::postPersist, Events::postUpdate);
+        return array(
+            Events::onFlush
+            , Events::postPersist
+            , Events::postUpdate
+        );
     }
 
     public function postPersist(LifecycleEventArgs $eventArgs)
@@ -83,8 +80,9 @@ class LogRevisionsListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         $class = $this->em->getClassMetadata(get_class($entity));
-        if (!$this->metadataFactory->isAudited($class->name)) {
-            return;
+
+        if (!in_array($class->getName(), $this->getAuditManager()->getConfig()->getAuditedEntities()) {
+            return
         }
 
         $this->saveRevisionEntityData($class, $this->getOriginalEntityData($entity), 'INS');
@@ -96,8 +94,8 @@ class LogRevisionsListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         $class = $this->em->getClassMetadata(get_class($entity));
-        if (!$this->metadataFactory->isAudited($class->name)) {
-            return;
+        if (!in_array($class->getName(), $this->getAuditManager()->getConfig()->getAuditedEntities()) {
+            return
         }
 
         $entityData = array_merge($this->getOriginalEntityData($entity), $this->uow->getEntityIdentifier($entity));
@@ -114,11 +112,12 @@ class LogRevisionsListener implements EventSubscriber
 
         foreach ($this->uow->getScheduledEntityDeletions() AS $entity) {
             $class = $this->em->getClassMetadata(get_class($entity));
-            if (!$this->metadataFactory->isAudited($class->name)) {
+
+            if (!in_array($class->getName(), $this->getAuditManager()->getConfig()->getAuditedEntities()) {
                 continue;
             }
 
-            if (!$this->config->getUser())
+            if (!$this->getAuditManager()->getConfig()->getUser())
                 throw new \Exception('User is not authentictated.  Cannot audit entities.');
 
             $entityData = array_merge($this->getOriginalEntityData($entity), $this->uow->getEntityIdentifier($entity));
@@ -154,7 +153,7 @@ class LogRevisionsListener implements EventSubscriber
     {
         if (!$this->revision) {
             $revision = new RevisionEntity();
-            $revision->setUser($this->config->getUser());
+            $revision->setUser($this->getAuditManager()->getConfig()->getUser());
 
             $this->em->persist($revision);
             $this->em->flush();
@@ -169,10 +168,14 @@ class LogRevisionsListener implements EventSubscriber
     {
         if (!isset($this->insertRevisionSQL[$class->name])) {
             $placeholders = array('?', '?');
-            $tableName    = $this->config->getTablePrefix() . $class->table['name'] . $this->config->getTableSuffix();
+            $tableName    = $this->getAuditManager()->getConfig()->getTablePrefix()
+                . $class->table['name']
+                . $this->getAuditManager()->getConfig()->getTableSuffix();
 
-            $sql = "INSERT INTO " . $tableName . " (" .
-                    $this->config->getRevisionFieldName() . ", " . $this->config->getRevisionTypeFieldName();
+            $sql = "INSERT INTO " . $tableName . " ("
+                    . $this->getAuditManager()->getConfig()->getRevisionFieldName()
+                    . ", "
+                    . $this->getAuditManager()->getConfig()->getRevisionTypeFieldName();
 
             foreach ($class->fieldNames AS $field) {
                 $type = Type::getType($class->fieldMappings[$field]['type']);

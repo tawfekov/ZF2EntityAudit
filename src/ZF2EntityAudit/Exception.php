@@ -2,7 +2,7 @@
 
 namespace ZF2EntityAudit;
 
-class AuditException extends \Exception
+class Exception extends \Exception
 {
     static public function notAudited($className)
     {

@@ -57,7 +57,7 @@ final class AuditDriver implements MappingDriver
         if (!$metadataFactory->hasMetadataFor($metadataClass->getAuditedEntityClass()))
             throw new \Exception('Metadata is not loaded for '
                 . $metadataClass->getAuditedEntityClass()
-                . '  Is the auditing module last to load?  It should be...');
+                . '  Is the auditing module last to load?');
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 

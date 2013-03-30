@@ -74,11 +74,6 @@ class Config
         return $this;
     }
 
-    public function createMetadataFactory()
-    {
-        return new Metadata\MetadataFactory($this->auditedEntityClasses);
-    }
-
     public function setUser(ZfcUserInterface $user)
     {
         $this->user = $user;
