@@ -65,15 +65,14 @@ class Module
             'factories' => array(
                 'auditConfig' => function($serviceManager){
                     $config = $serviceManager->get('Application')->getConfig();
-                    $auditconfig = new AuditConfiguration();
-                    $auditconfig->setAuditedEntityClasses($config['audit']['entities']);
-                    return $auditconfig;
+                    $auditConfig = new \ZF2EntityAudit\Config();
+                    $auditConfig->setDefaults($config['audit']);
+                    return $auditConfig;
                 },
 
                 'auditManager' => function ($serviceManager) {
                     $eventManager = $serviceManager->get("doctrine.eventmanager.orm_default");
-                    $config = $serviceManager->get('Application')->getConfig();
-                    $auditconfig = $serviceManager->get("auditConfig");
+                    $auditConfig = $serviceManager->get("auditConfig");
 
                     $auth = $serviceManager->get('zfcuser_auth_service');
                     if ($auth->hasIdentity()) {

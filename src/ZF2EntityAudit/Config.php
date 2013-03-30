@@ -4,31 +4,39 @@ namespace ZF2EntityAudit;
 use ZfcUser\Entity\UserInterface as ZfcUserInterface
     ;
 
-class AuditConfiguration
+class Config
 {
-    private $prefix = '';
-    private $suffix = '_audit';
-    private $revisionTableName = 'Revision';
+    private $prefix;
+    private $suffix;
+    private $revisionTableName;
     private $auditedEntityClasses = array();
     private $user;
 
-    public function getTablePrefix()
+    public function setDefaults(\Array $config)
+    {
+        $this->setTablePrefix(isset($config['tableNamePrefix']) ? $config['tableNamePrefix']: null);
+        $this->setTableSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
+        $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: null);
+        $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
+    }
+
+    public function getTableNamePrefix()
     {
         return $this->prefix;
     }
 
-    public function setTablePrefix($prefix)
+    public function setTableNamePrefix($prefix)
     {
         $this->prefix = $prefix;
         return $this;
     }
 
-    public function getTableSuffix()
+    public function getTableNameSuffix()
     {
         return $this->suffix;
     }
 
-    public function setTableSuffix($suffix)
+    public function setTableNameSuffix($suffix)
     {
         $this->suffix = $suffix;
         return $this;
