@@ -9,14 +9,14 @@ class Config
     private $prefix;
     private $suffix;
     private $revisionTableName;
-    private $auditedEntityClasses = array();
+    private $auditedEntityClasses;
     private $user;
 
-    public function setDefaults(\Array $config)
+    public function setDefaults(array $config)
     {
-        $this->setTablePrefix(isset($config['tableNamePrefix']) ? $config['tableNamePrefix']: null);
-        $this->setTableSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
-        $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: null);
+        $this->setTableNamePrefix(isset($config['tableNamePrefix']) ? $config['tableNamePrefix']: null);
+        $this->setTableNameSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
+        $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
     }
 
@@ -88,10 +88,5 @@ class Config
     public function getUser()
     {
         return $this->user;
-    }
-
-    public function getRevisionIdFieldType()
-    {
-        return 'integer';
     }
 }

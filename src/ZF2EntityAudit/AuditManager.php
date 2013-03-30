@@ -19,7 +19,7 @@ class AuditManager
     /**
      * @param AuditConfiguration $config
      */
-    public function __construct(AuditConfiguration $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
         $this->metadataFactory = $config->createMetadataFactory();

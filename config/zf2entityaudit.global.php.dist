@@ -3,6 +3,10 @@ return array(
     'audit' => array(
         'datetime.format' => 'r',
         
+        'tableNamePrefix' => '',
+        'tableNameSuffix' => '_audit',
+        'revisionTableName' => 'Revision',
+        
         'entities' => array(
             '',
         ),

@@ -30,6 +30,19 @@ final class AuditDriver implements MappingDriver
         $config = $auditManager->getConfiguration();
         $cmf = $entityManager->getMetadataFactory();
 
+        // Revision is managed here rather than a separate namespace and driver
+        if ($className == 'ZF2EntityAudit\\Entity\\Revision') {
+            $builder = new ClassMetadataBuilder($metadata);
+            $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
+            $builder->addField('comment', 'text');
+            $builder->addField('timestamp', 'datetime');
+
+            $builder->addManyToOne('user', \ZF2EntityAudit\Module::getZfcUserEntity());
+
+            $metadata->setTableName($config->getRevisionTableName());
+            return;
+        }
+
         // Get the entity this entity audits
         $metadataClassName = $metadata->getName();
         $metadataClass = new $metadataClassName();
@@ -50,7 +63,7 @@ final class AuditDriver implements MappingDriver
             if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
         }
 
-        $metadata->setTableName($config->getTablePrefix() . $auditedClassMetadata->getTableName() . $config->getTableSuffix());
+        $metadata->setTableName($config->getTableNamePrefix() . $auditedClassMetadata->getTableName() . $config->getTableNameSuffix());
         $metadata->setIdentifier($identifiers);
 
         return;
@@ -70,7 +83,7 @@ final class AuditDriver implements MappingDriver
         // Generate audit entities
         $auditEntities = array();
         foreach ($config->getAuditedEntityClasses() as $name) {
-            $auditEntities[] = "ZF2EntityAudit\\GeneratedEntity\\" . str_replace('\\', '_', $name);
+            $auditEntities[] = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $name);
 
             $auditClassGenerator = ClassGenerator::fromReflection(new ClassReflection($name));
 
@@ -94,14 +107,17 @@ final class AuditDriver implements MappingDriver
                 'get' . $config->getRevisionFieldName(),
                 array(),
                 MethodGenerator::FLAG_PUBLIC,
-                " return $" .  $config->getRevisionFieldName() . ";");
+                " return \$this->" .  $config->getRevisionFieldName() . ";");
 
-            $auditClassGenerator->setNamespaceName("ZF2EntityAudit\\GeneratedEntity");
+            $auditClassGenerator->setNamespaceName("ZF2EntityAudit\\Entity");
             $auditClassGenerator->setName(str_replace('\\', '_', $name));
 
-#            echo($auditClassGenerator->generate());
+            #echo($auditClassGenerator->generate());
             eval($auditClassGenerator->generate());
         }
+
+        // Add revision (manage here rather than separate namespace)
+        $auditEntities[] = 'ZF2EntityAudit\Entity\Revision';
 
         return $auditEntities;
     }

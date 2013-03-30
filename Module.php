@@ -79,8 +79,7 @@ class Module
                         $auditconfig->setUser($auth->getIdentity());
                     }
 
-                    $auditManager = new AuditManager($auditconfig);
-                    $eventManager->addEventSubscriber(new CreateSchemaListener($auditManager));
+                    $auditManager = new AuditManager($auditConfig);
                     $eventManager->addEventSubscriber(new LogRevisionsListener($auditManager));
                     return $auditManager;
                 },

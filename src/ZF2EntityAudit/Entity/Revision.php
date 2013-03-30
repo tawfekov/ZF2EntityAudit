@@ -8,16 +8,6 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 class Revision
 {
-    public static function loadMetadata(ClassMetadata $metadata)
-    {
-        $builder = new ClassMetadataBuilder($metadata);
-        $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-        $builder->addField('comment', 'text');
-        $builder->addField('timestamp', 'datetime');
-
-        $builder->addManyToOne('user', \ZF2EntityAudit\Module::getZfcUserEntity());
-    }
-
     protected $id;
 
     public function getId()

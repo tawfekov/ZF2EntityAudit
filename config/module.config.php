@@ -6,19 +6,13 @@ return array(
     'doctrine' => array(
         'driver' => array(
             __NAMESPACE__ . '_driver' => array(
-                'class' => 'Doctrine\ORM\Mapping\Driver\StaticPhpDriver',
-                'paths' => array(__DIR__ . '/../src/ZF2EntityAudit/Entity/'),
-            ),
-
-            __NAMESPACE__ . '_auditdriver' => array(
                 'class' => 'ZF2EntityAudit\Mapping\Driver\AuditDriver',
-                'paths' => array(__DIR__ . '/../src/ZF2EntityAudit/Entity/'),
+#                'paths' => array(__DIR__ . '/../src/ZF2EntityAudit/Entity/'),
             ),
 
             'orm_default' => array(
                 'drivers' => array(
                     __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver',
-                    __NAMESPACE__ . '\GeneratedEntity' => __NAMESPACE__ . '_auditdriver',
                 ),
             ),
         ),

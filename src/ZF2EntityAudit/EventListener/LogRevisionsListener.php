@@ -1,25 +1,4 @@
 <?php
-/*
- * (c) 2011 SimpleThings GmbH
- *
- * @package SimpleThings\EntityAudit
- * @author Benjamin Eberlei <eberlei@simplethings.de>
- * @link http://www.simplethings.de
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 
 namespace ZF2EntityAudit\EventListener;
 
@@ -36,9 +15,9 @@ use ZF2EntityAudit\AuditManager
 class LogRevisionsListener implements EventSubscriber
 {
     /**
-     * @var ZF2EntityAudit\AuditConfiguration
+     * @var ZF2EntityAudit\AuditManager
      */
-    private $config;
+    private $auditManager;
 
     /**
      * @var \SimpleThings\EntityAudit\Metadata\MetadataFactory
@@ -71,14 +50,26 @@ class LogRevisionsListener implements EventSubscriber
     private $uow;
 
     /**
-     * @var int
+     * @var ZF2EntityAudit\Entity\Revision
      */
-    private $revisionId;
+    private $revision;
 
     public function __construct(AuditManager $auditManager)
     {
-        $this->config = $auditManager->getConfiguration();
-        $this->metadataFactory = $auditManager->getMetadataFactory();
+        $this->setAuditManager($auditManager);
+#        $this->config = $auditManager->getConfiguration();
+#        $this->metadataFactory = $auditManager->getMetadataFactory();
+    }
+
+    public function setAuditManager(AuditManager $auditManager)
+    {
+        $this->auditManager = $auditManager;
+        return $this;
+    }
+
+    public function getAuditManager()
+    {
+        return $this->auditManager;
     }
 
     public function getSubscribedEvents()
@@ -119,7 +110,7 @@ class LogRevisionsListener implements EventSubscriber
         $this->conn = $this->em->getConnection();
         $this->uow = $this->em->getUnitOfWork();
         $this->platform = $this->conn->getDatabasePlatform();
-        $this->revisionId = null; // reset revision
+        $this->resetRevision();
 
         foreach ($this->uow->getScheduledEntityDeletions() AS $entity) {
             $class = $this->em->getClassMetadata(get_class($entity));
@@ -152,19 +143,26 @@ class LogRevisionsListener implements EventSubscriber
         return $data;
     }
 
-    private function getRevisionId()
+    private function resetRevision()
     {
-        if ($this->revisionId === null) {
+        $this->revision = null;
+        return $this;
+    }
+
+    // A revision can be used across multiple entities involved in a transaction
+    private function getRevision()
+    {
+        if (!$this->revision) {
             $revision = new RevisionEntity();
-            $revision->setUser->$this->config->getUser();
+            $revision->setUser($this->config->getUser());
 
             $this->em->persist($revision);
             $this->em->flush();
 
-            $this->revisionId = $revision->getId();
+            $this->revision = $revision;
         }
 
-        return $this->revisionId;
+        return $this->revision;
     }
 
     private function getInsertRevisionSQL($class)
@@ -207,7 +205,7 @@ class LogRevisionsListener implements EventSubscriber
      */
     private function saveRevisionEntityData($class, $entityData, $revType)
     {
-        $params = array($this->getRevisionId(), $revType);
+        $params = array($this->getRevision(), $revType);
         $types = array(\PDO::PARAM_INT, \PDO::PARAM_STR);
 
         foreach ($class->fieldNames AS $field) {
