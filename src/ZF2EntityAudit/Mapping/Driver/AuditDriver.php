@@ -11,6 +11,7 @@ use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\Builder\AssociationBuilder;
 
 final class AuditDriver implements MappingDriver
 {
@@ -28,7 +29,7 @@ final class AuditDriver implements MappingDriver
         $auditManager = $serviceManager->get('auditManager');
 
         $config = $auditManager->getConfiguration();
-        $cmf = $entityManager->getMetadataFactory();
+        $metadataFactory = $entityManager->getMetadataFactory();
 
         // Revision is managed here rather than a separate namespace and driver
         if ($className == 'ZF2EntityAudit\\Entity\\Revision') {
@@ -37,7 +38,12 @@ final class AuditDriver implements MappingDriver
             $builder->addField('comment', 'text');
             $builder->addField('timestamp', 'datetime');
 
-            $builder->addManyToOne('user', \ZF2EntityAudit\Module::getZfcUserEntity());
+            // Add assoication between ZfcUser and Revision
+            $zfcUserMetadata = $metadataFactory->getMetadataFor(\ZF2EntityAudit\Module::getZfcUserEntity());
+            $builder
+                ->createManyToOne('user', $zfcUserMetadata->getName())
+                ->addJoinColumn('user_id', $zfcUserMetadata->getSingleIdentifierColumnName())
+                ->build();
 
             $metadata->setTableName($config->getRevisionTableName());
             return;
@@ -47,17 +53,19 @@ final class AuditDriver implements MappingDriver
         $metadataClassName = $metadata->getName();
         $metadataClass = new $metadataClassName();
 
-        if (!$cmf->hasMetadataFor($metadataClass->getAuditedEntityClass()))
+        // Verify the metadata for the target class has been loaded
+        if (!$metadataFactory->hasMetadataFor($metadataClass->getAuditedEntityClass()))
             throw new \Exception('Metadata is not loaded for '
                 . $metadataClass->getAuditedEntityClass()
                 . '  Is the auditing module last to load?  It should be...');
 
-        $auditedClassMetadata = $cmf->getMetadataFor($metadataClass->getAuditedEntityClass());
+        $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
         $builder = new ClassMetadataBuilder($metadata);
         $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\Entity\Revision');
         $identifiers = array($config->getRevisionFieldName());
 
+        // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {
             $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName));
             if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
