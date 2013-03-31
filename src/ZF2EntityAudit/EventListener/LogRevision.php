@@ -57,7 +57,7 @@ class LogRevision implements EventSubscriber
     }
 
     // Reflect audited entity properties
-    private function getEntityProperties($entity)
+    private function getClassProperties($entity)
     {
         $properties = array();
 
@@ -78,7 +78,7 @@ class LogRevision implements EventSubscriber
 
         $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
         $auditEntity = new $auditEntityClass();
-        $auditEntity->setAuditProperties($this->getEntityProperties($entity));
+        $auditEntity->setAuditProperties($this->getClassProperties($entity));
 
         $revisionSetter = 'set' . $this->getConfig()->getRevisionFieldName();
         $auditEntity->$revisionSetter($this->getRevision($revisionType));

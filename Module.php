@@ -3,12 +3,13 @@
 namespace ZF2EntityAudit;
 
 use Zend\Mvc\MvcEvent
-    , ZF2EntityAudit\AuditConfiguration
-    , ZF2EntityAudit\AuditManager
-    , ZF2EntityAudit\EventListener\CreateSchemaListener
-    , ZF2EntityAudit\EventListener\LogRevisionsListener
+    , ZF2EntityAudit\EventListener\LogRevision
     , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
     , Zend\ServiceManager\ServiceManager
+    , Zend\Code\Reflection\ClassReflection
+    , Zend\Code\Generator\ClassGenerator
+    , Zend\Code\Generator\MethodGenerator
+    , Zend\Code\Generator\PropertyGenerator
     ;
 
 class Module
@@ -31,17 +32,73 @@ class Module
         );
     }
 
-    public function init($moduleManager) {
-#        print_r(get_class_methods($moduleManager));die();
-    }
-
     public function onBootstrap(MvcEvent $e)
     {
-        // Initialize the audit manager by creating an instance of it
-        $sm = $e->getApplication()->getServiceManager();
-        $this->setServiceManager($sm);
+        $config = $e->getApplication()->getServiceManager()->get("auditConfig");
 
-        $auditManager = $this->getServiceManager()->get('auditManager');
+        // Generate audit entities
+        $auditEntities = array();
+        foreach ($config->getAuditedEntityClasses() as $name) {
+            $auditClassGenerator = ClassGenerator::fromReflection(new ClassReflection($name));
+
+            // Namespace corrections by useing all sub-namespaces of the original namespace
+            $auditClassGenerator->addUse($auditClassGenerator->getNamespaceName());
+            $subNamespace = $auditClassGenerator->getNamespaceName();
+            while ($subNamespace = strstr($subNamespace, '\\', true)) {
+                $auditClassGenerator->addUse($subNamespace);
+            }
+
+            // Add function to return the entity this entity audits
+            $auditClassGenerator->addMethod(
+                'getAuditedEntityClass',
+                array(),
+                MethodGenerator::FLAG_PUBLIC,
+                " return '" .  addslashes($name) . "';");
+
+            // Add function to populate all properties
+            $setters = array();
+            foreach ($auditClassGenerator->getProperties() as $x) {
+                $setters[] = '$this->' . $x->getName() . ' = (isset($properties["' . $x->getName() . '"])) ? $properties["' . $x->getName() . '"]: null;';
+            }
+
+            $auditClassGenerator->addMethod(
+                'setAuditProperties',
+                array('properties'),
+                MethodGenerator::FLAG_PUBLIC,
+                implode("\n", $setters));
+
+            // Add revision reference getter and setter
+            $auditClassGenerator->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
+            $auditClassGenerator->addMethod(
+                'get' . $config->getRevisionFieldName(),
+                array(),
+                MethodGenerator::FLAG_PUBLIC,
+                " return \$this->" .  $config->getRevisionFieldName() . ";");
+
+            $auditClassGenerator->addMethod(
+                'set' . $config->getRevisionFieldName(),
+                array('value'),
+                MethodGenerator::FLAG_PUBLIC,
+                " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
+                ");
+
+            $auditClassGenerator->setNamespaceName("ZF2EntityAudit\\Entity");
+            $auditClassGenerator->setName(str_replace('\\', '_', $name));
+
+#            echo '<pre>';
+#            echo($auditClassGenerator->generate());
+#            die();
+            eval($auditClassGenerator->generate());
+        }
+
+        // Subscribe log revision event listener
+        $e->getApplication()->getServiceManager()->get('doctrine.eventmanager.orm_default')
+            ->addEventSubscriber(
+                new LogRevision(
+                    $e->getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default"),
+                    $config
+                )
+            );
     }
 
     public static function setServiceManager(ServiceManager $serviceManager)
@@ -65,27 +122,18 @@ class Module
             'factories' => array(
                 'auditConfig' => function($serviceManager){
                     $config = $serviceManager->get('Application')->getConfig();
-                    $auditConfig = new \ZF2EntityAudit\Config();
+                    $auditConfig = new Config();
                     $auditConfig->setDefaults($config['audit']);
-                    return $auditConfig;
-                },
-
-                'auditManager' => function ($serviceManager) {
-                    $eventManager = $serviceManager->get("doctrine.eventmanager.orm_default");
-                    $auditConfig = $serviceManager->get("auditConfig");
 
                     $auth = $serviceManager->get('zfcuser_auth_service');
                     if ($auth->hasIdentity()) {
-                        $auditconfig->setUser($auth->getIdentity());
+                        $auditConfig->setUser($auth->getIdentity());
                     }
 
-                    $auditManager = new AuditManager($auditConfig);
-                    $eventManager->addEventSubscriber(new LogRevisionsListener($auditManager));
-                    return $auditManager;
+                    return $auditConfig;
                 },
 
                 'auditReader' => function($sm) {
-                    $auditManager = $sm->get('auditManager');
                     $entityManager = $sm->get('doctrine.entitymanager.orm_default');
                     return $auditManager->createAuditReader($entityManager);
                 },

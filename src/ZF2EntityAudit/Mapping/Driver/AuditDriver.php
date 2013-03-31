@@ -1,17 +1,10 @@
 <?php
 namespace ZF2EntityAudit\Mapping\Driver;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
-
-use Zend\Code\Reflection\ClassReflection;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\MethodGenerator;
-use Zend\Code\Generator\PropertyGenerator;
-
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\Builder\AssociationBuilder;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata
+    , Doctrine\Common\Persistence\Mapping\Driver\MappingDriver
+    , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
+    ;
 
 final class AuditDriver implements MappingDriver
 {
@@ -19,7 +12,7 @@ final class AuditDriver implements MappingDriver
      * Loads the metadata for the specified class into the provided container.
      *
      * @param string $className
-     * @param ClassMetadataInfo $metadata
+     * @param ClassMetadata $metadata
      */
     function loadMetadataForClass($className, ClassMetadata $metadata)
     {
@@ -84,14 +77,12 @@ final class AuditDriver implements MappingDriver
      */
     function getAllClassNames()
     {
-        $auditEntities = array();
-
         $serviceManager = \ZF2EntityAudit\Module::getServiceManager();
         $config = $serviceManager->get('auditConfig');
 
+        $auditEntities = array();
         foreach ($config->getAuditedEntityClasses() as $name)
             $auditEntities[] = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $name);
-
 
         // Add revision (manage here rather than separate namespace)
         $auditEntities[] = 'ZF2EntityAudit\\Entity\\Revision';
