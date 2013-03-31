@@ -3,6 +3,7 @@
 namespace ZF2EntityAudit;
 
 use Zend\Mvc\MvcEvent
+    , Zf2EntityAudit\Options\ModuleOptions
     , ZF2EntityAudit\EventListener\LogRevision
     , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
     , Zend\ServiceManager\ServiceManager
@@ -34,7 +35,9 @@ class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        $config = $e->getApplication()->getServiceManager()->get("auditConfig");
+        self::setServiceManager($e->getApplication()->getServiceManager());
+
+        $config = $e->getApplication()->getServiceManager()->get("auditModuleOptions");
 
         // Generate audit entities
         $auditEntities = array();
@@ -59,6 +62,23 @@ class Module
             $setters = array();
             foreach ($auditClassGenerator->getProperties() as $x) {
                 $setters[] = '$this->' . $x->getName() . ' = (isset($properties["' . $x->getName() . '"])) ? $properties["' . $x->getName() . '"]: null;';
+            }
+
+            // Get parent class properties
+            if ($extendedClass = $auditClassGenerator->getExtendedClass()) {
+                while ($extendedClass) {
+                    $extendedClassReflection = ClassGenerator::fromReflection(new ClassReflection($extendedClass));
+                    foreach ($extendedClassReflection->getProperties() as $x) {
+                        $setters[] = '$this->' . $x->getName() . ' = (isset($properties["' . $x->getName() . '"])) ? $properties["' . $x->getName() . '"]: null;';
+                    }
+
+                    $extendedClass = $extendedClassReflection->getExtendedClass();
+                }
+            }
+
+            if ($auditClassGenerator->getExtendedClass()) {
+                $auditClassGenerator->addUse($auditClassGenerator->getExtendedClass(), 'auditExtendsClass');
+                $auditClassGenerator->setExtendedClass('auditExtendsClass');
             }
 
             $auditClassGenerator->addMethod(
@@ -120,9 +140,9 @@ class Module
     {
         return array(
             'factories' => array(
-                'auditConfig' => function($serviceManager){
+                'auditModuleOptions' => function($serviceManager){
                     $config = $serviceManager->get('Application')->getConfig();
-                    $auditConfig = new Config();
+                    $auditConfig = new ModuleOptions();
                     $auditConfig->setDefaults($config['audit']);
 
                     $auth = $serviceManager->get('zfcuser_auth_service');

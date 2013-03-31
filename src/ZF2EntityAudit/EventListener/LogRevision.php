@@ -8,7 +8,7 @@ use Doctrine\Common\EventSubscriber
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\LifecycleEventArgs
     , ZF2EntityAudit\Entity\Revision as RevisionEntity
-    , ZF2EntityAudit\Config
+    , ZF2EntityAudit\Options\ModuleOptions
     , Zend\Code\Reflection\ClassReflection;
     ;
 
@@ -18,7 +18,7 @@ class LogRevision implements EventSubscriber
     private $config;
     private $revision;
 
-    public function __construct(EntityManager $entityManager, Config $config)
+    public function __construct(EntityManager $entityManager, ModuleOptions $config)
     {
         $this->setEntityManager($entityManager);
         $this->setConfig($config);
@@ -115,7 +115,7 @@ class LogRevision implements EventSubscriber
     {
         if (!$this->revision) {
             $revision = new RevisionEntity();
-            $revision->setUser($this->getConfig()->getUser());
+            if ($this->getConfig()->getUser()) $revision->setUser($this->getConfig()->getUser());
             $revision->setRevisionType($revisionType);
 
             $this->getEntityManager()->persist($revision);

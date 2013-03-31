@@ -19,7 +19,7 @@ final class AuditDriver implements MappingDriver
         $serviceManager = \ZF2EntityAudit\Module::getServiceManager();
 
         $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
-        $config = $serviceManager->get('auditConfig');
+        $config = $serviceManager->get('auditModuleOptions');
 
         $metadataFactory = $entityManager->getMetadataFactory();
 
@@ -78,7 +78,7 @@ final class AuditDriver implements MappingDriver
     function getAllClassNames()
     {
         $serviceManager = \ZF2EntityAudit\Module::getServiceManager();
-        $config = $serviceManager->get('auditConfig');
+        $config = $serviceManager->get('auditModuleOptions');
 
         $auditEntities = array();
         foreach ($config->getAuditedEntityClasses() as $name)

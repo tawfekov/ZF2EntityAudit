@@ -1,10 +1,10 @@
 <?php
 
-namespace ZF2EntityAudit;
+namespace ZF2EntityAudit\Options;
 use ZfcUser\Entity\UserInterface as ZfcUserInterface
     ;
 
-class Config
+class ModuleOptions
 {
     private $prefix;
     private $suffix;
