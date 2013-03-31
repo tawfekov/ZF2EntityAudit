@@ -47,11 +47,6 @@ class Config
         return 'revision';
     }
 
-    public function getRevisionTypeFieldName()
-    {
-        return 'revisionType';
-    }
-
     public function getRevisionTableName()
     {
         return $this->revisionTableName;
