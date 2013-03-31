@@ -20,7 +20,6 @@ final class AuditDriver implements MappingDriver
 
         $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
         $config = $serviceManager->get('auditModuleOptions');
-
         $metadataFactory = $entityManager->getMetadataFactory();
 
         // Revision is managed here rather than a separate namespace and driver
@@ -46,12 +45,6 @@ final class AuditDriver implements MappingDriver
         $metadataClassName = $metadata->getName();
         $metadataClass = new $metadataClassName();
 
-        // Verify the metadata for the target class has been loaded
-        if (!$metadataFactory->hasMetadataFor($metadataClass->getAuditedEntityClass()))
-            throw new \Exception('Metadata is not loaded for '
-                . $metadataClass->getAuditedEntityClass()
-                . '  Is the auditing module last to load?');
-
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
         $builder = new ClassMetadataBuilder($metadata);
@@ -60,7 +53,7 @@ final class AuditDriver implements MappingDriver
 
         // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {
-            $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName));
+            $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName), array('nullable' => true));
             if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
         }
 

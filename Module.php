@@ -3,7 +3,7 @@
 namespace ZF2EntityAudit;
 
 use Zend\Mvc\MvcEvent
-    , Zf2EntityAudit\Options\ModuleOptions
+    , ZF2EntityAudit\Options\ModuleOptions
     , ZF2EntityAudit\EventListener\LogRevision
     , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
     , Zend\ServiceManager\ServiceManager
@@ -38,77 +38,64 @@ class Module
         self::setServiceManager($e->getApplication()->getServiceManager());
 
         $config = $e->getApplication()->getServiceManager()->get("auditModuleOptions");
+        $entityManager = $e->getApplication()->getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         // Generate audit entities
         $auditEntities = array();
         foreach ($config->getAuditedEntityClasses() as $name) {
-            $auditClassGenerator = ClassGenerator::fromReflection(new ClassReflection($name));
 
-            // Namespace corrections by useing all sub-namespaces of the original namespace
-            $auditClassGenerator->addUse($auditClassGenerator->getNamespaceName());
-            $subNamespace = $auditClassGenerator->getNamespaceName();
-            while ($subNamespace = strstr($subNamespace, '\\', true)) {
-                $auditClassGenerator->addUse($subNamespace);
+            // Get fields from target entity
+            $metadataFactory = $entityManager->getMetadataFactory();
+            $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
+            $fields = $auditedClassMetadata->getFieldNames();
+
+            // Generate audit entity
+            $auditClass = new ClassGenerator();
+            foreach ($fields as $field) {
+                $auditClass->addProperty($field, null, PropertyGenerator::FLAG_PROTECTED);
             }
 
+            // Add exchange array method
+            $setters = array();
+            foreach ($fields as $fieldName) {
+                $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
+            }
+            $auditClass->addMethod(
+                'exchangeArray',
+                array('data'),
+                MethodGenerator::FLAG_PUBLIC,
+                implode("\n", $setters)
+            );
+
             // Add function to return the entity this entity audits
-            $auditClassGenerator->addMethod(
+            $auditClass->addMethod(
                 'getAuditedEntityClass',
                 array(),
                 MethodGenerator::FLAG_PUBLIC,
-                " return '" .  addslashes($name) . "';");
-
-            // Add function to populate all properties
-            $setters = array();
-            foreach ($auditClassGenerator->getProperties() as $x) {
-                $setters[] = '$this->' . $x->getName() . ' = (isset($properties["' . $x->getName() . '"])) ? $properties["' . $x->getName() . '"]: null;';
-            }
-
-            // Get parent class properties
-            if ($extendedClass = $auditClassGenerator->getExtendedClass()) {
-                while ($extendedClass) {
-                    $extendedClassReflection = ClassGenerator::fromReflection(new ClassReflection($extendedClass));
-                    foreach ($extendedClassReflection->getProperties() as $x) {
-                        $setters[] = '$this->' . $x->getName() . ' = (isset($properties["' . $x->getName() . '"])) ? $properties["' . $x->getName() . '"]: null;';
-                    }
-
-                    $extendedClass = $extendedClassReflection->getExtendedClass();
-                }
-            }
-
-            if ($auditClassGenerator->getExtendedClass()) {
-                $auditClassGenerator->addUse($auditClassGenerator->getExtendedClass(), 'auditExtendsClass');
-                $auditClassGenerator->setExtendedClass('auditExtendsClass');
-            }
-
-            $auditClassGenerator->addMethod(
-                'setAuditProperties',
-                array('properties'),
-                MethodGenerator::FLAG_PUBLIC,
-                implode("\n", $setters));
+                " return '" .  addslashes($name) . "';"
+            );
 
             // Add revision reference getter and setter
-            $auditClassGenerator->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
-            $auditClassGenerator->addMethod(
+            $auditClass->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
+            $auditClass->addMethod(
                 'get' . $config->getRevisionFieldName(),
                 array(),
                 MethodGenerator::FLAG_PUBLIC,
                 " return \$this->" .  $config->getRevisionFieldName() . ";");
 
-            $auditClassGenerator->addMethod(
+            $auditClass->addMethod(
                 'set' . $config->getRevisionFieldName(),
                 array('value'),
                 MethodGenerator::FLAG_PUBLIC,
                 " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
                 ");
 
-            $auditClassGenerator->setNamespaceName("ZF2EntityAudit\\Entity");
-            $auditClassGenerator->setName(str_replace('\\', '_', $name));
+            $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
+            $auditClass->setName(str_replace('\\', '_', $name));
 
 #            echo '<pre>';
-#            echo($auditClassGenerator->generate());
-#            die();
-            eval($auditClassGenerator->generate());
+#            echo($auditClass->generate());
+            eval($auditClass->generate());
         }
 
         // Subscribe log revision event listener

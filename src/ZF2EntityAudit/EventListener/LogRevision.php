@@ -35,7 +35,7 @@ class LogRevision implements EventSubscriber
         return $this->entityManager;
     }
 
-    public function setConfig(Config $config)
+    public function setConfig(ModuleOptions $config)
     {
         $this->config = $config;
         return $this;
@@ -73,12 +73,16 @@ class LogRevision implements EventSubscriber
     // Copy all properties from entity to it's audited version and persist
     private function auditEntity($entity, $revisionType)
     {
+#        print_r($entity);die();
+
+#die(get_class($entity));
+
         if (!in_array(get_class($entity), $this->getConfig()->getAuditedEntityClasses()))
             return;
 
         $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
         $auditEntity = new $auditEntityClass();
-        $auditEntity->setAuditProperties($this->getClassProperties($entity));
+        $auditEntity->exchangeArray($this->getClassProperties($entity));
 
         $revisionSetter = 'set' . $this->getConfig()->getRevisionFieldName();
         $auditEntity->$revisionSetter($this->getRevision($revisionType));
