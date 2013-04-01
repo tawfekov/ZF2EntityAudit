@@ -4,14 +4,11 @@ namespace ZF2EntityAudit;
 
 use Zend\Mvc\MvcEvent
     , ZF2EntityAudit\Options\ModuleOptions
+    , ZF2EntityAudit\Loader\AuditAutoloader
     , ZF2EntityAudit\EventListener\LogRevision
     , ZF2EntityAudit\Utils\RevisionComment
     , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
     , Zend\ServiceManager\ServiceManager
-    , Zend\Code\Reflection\ClassReflection
-    , Zend\Code\Generator\ClassGenerator
-    , Zend\Code\Generator\MethodGenerator
-    , Zend\Code\Generator\PropertyGenerator
     ;
 
 class Module
@@ -38,66 +35,10 @@ class Module
     {
         self::setServiceManager($e->getApplication()->getServiceManager());
 
-        $config = $e->getApplication()->getServiceManager()->get("auditModuleOptions");
-        $entityManager = $e->getApplication()->getServiceManager()->get('doctrine.entitymanager.orm_default');
-
-        // Generate audit entities
-        $auditEntities = array();
-        foreach ($config->getAuditedEntityClasses() as $name) {
-
-            // Get fields from target entity
-            $metadataFactory = $entityManager->getMetadataFactory();
-            $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
-            $fields = $auditedClassMetadata->getFieldNames();
-
-            // Generate audit entity
-            $auditClass = new ClassGenerator();
-            foreach ($fields as $field) {
-                $auditClass->addProperty($field, null, PropertyGenerator::FLAG_PROTECTED);
-            }
-
-            // Add exchange array method
-            $setters = array();
-            foreach ($fields as $fieldName) {
-                $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
-            }
-            $auditClass->addMethod(
-                'exchangeArray',
-                array('data'),
-                MethodGenerator::FLAG_PUBLIC,
-                implode("\n", $setters)
-            );
-
-            // Add function to return the entity this entity audits
-            $auditClass->addMethod(
-                'getAuditedEntityClass',
-                array(),
-                MethodGenerator::FLAG_PUBLIC,
-                " return '" .  addslashes($name) . "';"
-            );
-
-            // Add revision reference getter and setter
-            $auditClass->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
-            $auditClass->addMethod(
-                'get' . $config->getRevisionFieldName(),
-                array(),
-                MethodGenerator::FLAG_PUBLIC,
-                " return \$this->" .  $config->getRevisionFieldName() . ";");
-
-            $auditClass->addMethod(
-                'set' . $config->getRevisionFieldName(),
-                array('value'),
-                MethodGenerator::FLAG_PUBLIC,
-                " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
-                ");
-
-            $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
-            $auditClass->setName(str_replace('\\', '_', $name));
-
-#            echo '<pre>';
-#            echo($auditClass->generate());
-            eval($auditClass->generate());
-        }
+        $auditAutoloader = new AuditAutoloader();
+        $auditAutoloader->setServiceManager($e->getApplication()->getServiceManager());
+        $auditAutoloader->registerNamespace('ZF2EntityAudit\\Entity', __DIR__);
+        $auditAutoloader->register();
 
         // Subscribe log revision event listener
         $e->getApplication()->getServiceManager()->get('doctrine.eventmanager.orm_default')
