@@ -3,6 +3,7 @@
 namespace ZF2EntityAudit\Audit;
 
 use ZF2EntityAudit\Metadata\MetadataFactory;
+use ZfcUser\Entity\UserInterface;
 
 class Configuration
 {
@@ -12,9 +13,10 @@ class Configuration
     private $revisionTypeFieldName = 'revtype';
     private $revisionTableName = 'revisions';
     private $auditedEntityClasses = array();
-    private $currentUsername = '';
+    private $currentUser = '';
     private $revisionIdFieldType = 'integer';
-
+    private $note = "";
+    
     public function getTablePrefix()
     {
         return $this->prefix;
@@ -75,14 +77,14 @@ class Configuration
         return new MetadataFactory($this->auditedEntityClasses);
     }
     
-    public function setCurrentUsername($username)
+    public function setCurrentUser(UserInterface $user)
     {
-        $this->currentUsername = $username;
+        $this->currentUser = $user;
     }
     
-    public function getCurrentUsername()
+    public function getCurrentUser()
     {
-        return $this->currentUsername;
+        return $this->currentUser;
     }
 
     public function setRevisionIdFieldType($revisionIdFieldType)
@@ -93,5 +95,15 @@ class Configuration
     public function getRevisionIdFieldType()
     {
         return $this->revisionIdFieldType;
+    }
+
+    public function setNote($note = "")
+    {
+        $this->note = $note ;
+    }
+
+    public function getNote()
+    {
+        return $this->note;
     }
 }

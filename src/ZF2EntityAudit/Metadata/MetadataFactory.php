@@ -2,7 +2,8 @@
 
 namespace ZF2EntityAudit\Metadata;
 
-class MetadataFactory {
+class MetadataFactory 
+{
 
     private $auditedEntities = array();
 

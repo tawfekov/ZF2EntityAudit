@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ZF2EntityAudit\Metadata\MetadataFactory ;
 use ZF2EntityAudit\Entity\Revision;
 use ZF2EntityAudit\Entity\ChangedEntity;
+
 class Reader
 {
     private $em;
@@ -194,7 +195,7 @@ class Reader
             $revisions[] = new Revision(
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
-                $row['username']
+                $row['user']
             );
         }
         return $revisions;
@@ -273,7 +274,7 @@ class Reader
             return new Revision(
                 $revisionsData[0]['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $revisionsData[0]['timestamp']),
-                $revisionsData[0]['username']
+                $revisionsData[0]['user']
             );
         } else {
             throw AuditException::invalidRevision($rev);
@@ -322,11 +323,12 @@ class Reader
         $revisions = array();
         $this->platform = $this->em->getConnection()->getDatabasePlatform();
         foreach ($revisionsData AS $row) {
-            $revisions[] = new Revision(
+            /*$revisions[] = new Revision(
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
                 $row['username']
-            );
+            );*/
+            var_dump($row['user']);
         }
 
         return $revisions;

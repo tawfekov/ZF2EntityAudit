@@ -58,12 +58,9 @@ class Module
                         $auth = $sm->get('zfcuser_auth_service');
                         if ($auth->hasIdentity()) {
                             $identity = $auth->getIdentity();
-                            $auditconfig->setCurrentUsername($identity->getEmail());
-                        } else {
-                            $auditconfig->setCurrentUsername('Anonymous');
-                        }
-                    } else {
-                        $auditconfig->setCurrentUsername('Anonymous');
+                            $auditconfig->setCurrentUser($identity);
+                        } 
+                        // TODO : need to handle the unauthenticated user action case , 99% i will drop support for unauthenticated user
                     }
                     $auditManager = new Manager($auditconfig);
                     $evm->addEventSubscriber(new CreateSchemaListener($auditManager));

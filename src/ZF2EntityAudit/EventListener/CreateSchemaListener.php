@@ -11,12 +11,12 @@ use Doctrine\Common\EventSubscriber;
 class CreateSchemaListener implements EventSubscriber
 {
     /**
-     * @var \SimpleThings\EntityAudit\AuditConfiguration
+     * @var \ZF2EntityAudit\Audit\Configuration
      */
     private $config;
 
     /**
-     * @var \SimpleThings\EntityAudit\Metadata\MetadataFactory
+     * @var \ZF2EntityAudit\Metadata\MetadataFactory
      */
     private $metadataFactory;
 
@@ -36,6 +36,7 @@ class CreateSchemaListener implements EventSubscriber
 
     public function postGenerateSchemaTable(GenerateSchemaTableEventArgs $eventArgs)
     {
+        $schema = $eventArgs->getSchema();
         $cm = $eventArgs->getClassMetadata();
         if ($this->metadataFactory->isAudited($cm->name)) {
             $schema = $eventArgs->getSchema();
@@ -52,6 +53,9 @@ class CreateSchemaListener implements EventSubscriber
             }
             $revisionTable->addColumn($this->config->getRevisionFieldName(), $this->config->getRevisionIdFieldType());
             $revisionTable->addColumn($this->config->getRevisionTypeFieldName(), 'string', array('length' => 4));
+            /// TODO :now the table name is static but  it need some way to be able to automatically find it , maybe through configuration class
+            $revisionTable->addColumn('user_id', 'integer', array('nullable' => true));
+            $revisionTable->addForeignKeyConstraint("user", array("user_id"), array("user_id"));
             $pkColumns = $entityTable->getPrimaryKey()->getColumns();
             $pkColumns[] = $this->config->getRevisionFieldName();
             $revisionTable->setPrimaryKey($pkColumns);
@@ -66,7 +70,10 @@ class CreateSchemaListener implements EventSubscriber
             'autoincrement' => true,
         ));
         $revisionsTable->addColumn('timestamp', 'datetime');
-        $revisionsTable->addColumn('username', 'string');
+        $revisionsTable->addColumn('note', 'text', array('nullable' => true));
+        $revisionsTable->addColumn('user_id', 'integer', array('nullable' => true));
+        /// TODO :now the table name is static but  it need some way to be able to automatically find it , maybe through configuration class
+        $revisionsTable->addForeignKeyConstraint("user", array("user_id"), array("user_id"));
         $revisionsTable->setPrimaryKey(array('id'));
     }
 }

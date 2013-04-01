@@ -7,7 +7,8 @@ use Zend\View\Model\ViewModel;
 use ZF2EntityAudit\Utils\ArrayDiff;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class IndexController extends AbstractActionController {
+class IndexController extends AbstractActionController 
+{
 
     /**
      * @return EntityManager
@@ -44,7 +45,8 @@ class IndexController extends AbstractActionController {
      * @return \Zend\View\Model\ViewModel
      *
      */
-    public function viewRevisionAction() {
+    public function viewRevisionAction() 
+    {
         $rev = (int) $this->getEvent()->getRouteMatch()->getParam('rev');
         $revision = $this->getServiceLocator()->get('auditReader')->findRevision($rev);
         if (!$revision) {
@@ -65,7 +67,8 @@ class IndexController extends AbstractActionController {
      * @param string $id
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewEntityAction() {
+    public function viewEntityAction() 
+    {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
 
@@ -86,7 +89,8 @@ class IndexController extends AbstractActionController {
      * @param int $rev
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewdetailAction() {
+    public function viewdetailAction() 
+    {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
         $rev = $this->getEvent()->getRouteMatch()->getParam('rev');
@@ -118,7 +122,8 @@ class IndexController extends AbstractActionController {
      * @param null|int $newRev if null, pulled from the posted data
      * @return Response
      */
-    public function compareAction() {
+    public function compareAction() 
+    {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
         $oldRev = $this->getEvent()->getRouteMatch()->getParam('oldRev');
@@ -153,7 +158,8 @@ class IndexController extends AbstractActionController {
                 ));
     }
 
-    protected function getEntityValues(ClassMetadata $metadata, $entity) {
+    protected function getEntityValues(ClassMetadata $metadata, $entity) 
+    {
         $fields = $metadata->getFieldNames();
 
         $return = array();

@@ -13,12 +13,12 @@ use Doctrine\DBAL\Types\Type;
 class LogRevisionsListener implements EventSubscriber
 {
     /**
-     * @var \SimpleThings\EntityAudit\AuditConfiguration
+     * @var \ZF2EntityAudit\Audit\Configuration
      */
     private $config;
 
     /**
-     * @var \SimpleThings\EntityAudit\Metadata\MetadataFactory
+     * @var \ZF2EntityAudit\Metadata\MetadataFactory
      */
     private $metadataFactory;
 
@@ -131,7 +131,8 @@ class LogRevisionsListener implements EventSubscriber
             $date = date_create("now")->format($this->platform->getDateTimeFormatString());
             $this->conn->insert($this->config->getRevisionTableName(), array(
                 'timestamp'     => $date,
-                'username'      => $this->config->getCurrentUsername(),
+                'user'          => $this->config->getCurrentUser(),
+                'note'          => $this->config->getNote(),
             ));
 
             $sequenceName = $this->platform->supportsSequences()
