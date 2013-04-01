@@ -136,9 +136,8 @@ class Module
                     return $auditConfig;
                 },
 
-                'auditReader' => function($sm) {
-                    $entityManager = $sm->get('doctrine.entitymanager.orm_default');
-                    return $auditManager->createAuditReader($entityManager);
+                'auditReader' => function($serviceManager) {
+                    return new \ZF2EntityAudit\Reader($serviceManager);
                 },
 
                 'auditComment' => function($sm) {

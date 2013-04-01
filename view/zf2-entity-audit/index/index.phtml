@@ -31,21 +31,21 @@
                         <td><?php  echo $this->escapeHtml($i);?></td>
                         <td>
                             <a href="<?=
-                                $this->url('audit_viewrevision',
+                                $this->url('audit/revisions',
                                     array(
-                                        'rev' => $revision->getRev()
+                                        'rev' => $revision->getRevisionType()
                                     )
                                 );
                             ?>">
-                                <?php  echo $this->escapeHtml($revision->getRev()); ?>
+                                <?php  echo $this->escapeHtml($revision->getRevisionType()); ?>
                             </a>
                         </td>
 
                         <td>
                             <a href="<?=
-                                $this->url('audit_viewrevision',
+                                $this->url('audit/revisions',
                                     array(
-                                        'rev' => $revision->getRev()
+                                        'rev' => $revision->getRevisionType()
                                     )
                                 );
                             ?>">
@@ -57,7 +57,7 @@
 
                         <td>
                         <?php
-                        $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision->getRev());
+                        $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision->getRevisionType());
                         foreach ($changedEntities as $ce) {
                         ?>
                                 <?php $id = $ce->getId(); ?>

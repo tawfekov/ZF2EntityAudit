@@ -2,29 +2,31 @@
 
 namespace ZF2EntityAudit;
 
-use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Common\Collections\ArrayCollection;
-use ZF2EntityAudit\Exception as AuditException;
+use Doctrine\DBAL\Types\Type
+    , Doctrine\ORM\EntityManager
+    , Doctrine\ORM\Mapping\ClassMetadata
+    , Doctrine\Common\Collections\ArrayCollection
+    , Zend\ServiceManager\ServiceManager
+    , ZF2EntityAudit\Options\ModuleOptions
+    , ZF2EntityAudit\Exception as AuditException
+    ;
 
 class Reader
 {
-    private $em;
+    private $entityManager;
     private $config;
 
     /**
      * @param EntityManager $em
      * @param Config $config
      */
-    public function __construct(EntityManager $em, Config $config)
+    public function __construct(ServiceManager $serviceManager)
     {
-        $this->em = $em;
-        $this->setConfig($config);
-        $this->platform = $this->em->getConnection()->getDatabasePlatform();
+        $this->setEntityManager($serviceManager->get('doctrine.entitymanager.orm_default'));
+        $this->setConfig($serviceManager->get('auditModuleOptions'));
     }
 
-    public function setConfig(Config $config)
+    public function setConfig(ModuleOptions $config)
     {
         $this->config = $config;
         return $this;
@@ -33,6 +35,17 @@ class Reader
     public function getConfig()
     {
         return $this->config;
+    }
+
+    public function setEntityManager(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        return $this;
+    }
+
+    public function getEntityManager()
+    {
+        return $this->entityManager;
     }
 
     /**
@@ -48,12 +61,12 @@ class Reader
      */
     public function find($className, $id, $revision)
     {
-        if (!in_array($className, $this->getConfig()->getAuditedEntities()) {
+        if (!in_array($className, $this->getConfig()->getAuditedEntityClasses())) {
             throw AuditException::notAudited($className);
         }
 
         $class = $this->em->getClassMetadata($className);
-        $tableName = $this->config->getTablePrefix() . $class->table['name'] . $this->config->getTableSuffix();
+        $tableName = $this->config->getTableNamePrefix() . $class->table['name'] . $this->config->getTableNameSuffix();
 
         if (!is_array($id)) {
             $id = array($class->identifier[0] => $id);
@@ -188,14 +201,7 @@ class Reader
      */
     public function findRevisionHistory($limit = 20, $offset = 0)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('r');
-        $qb->from('Audit\Entity\Revision', 'r');
-        $qb->orderBy('r.id', 'DESC');
-        $qb->setFirstResult($offset);
-        $qb->setMaxResults($limit);
-
-        return $qb->getQuery()->getResult();
+        return $this->getEntityManager()->getRepository('ZF2EntityAudit\\Entity\\Revision')->findBy(array(), array(), $limit, $offset);
     }
 
     /**
@@ -206,15 +212,15 @@ class Reader
      */
     public function findEntitesChangedAtRevision($revision)
     {
-        $auditedEntities = $this->getConfig()->getAuditedEntities();
+        $auditedEntities = $this->getConfig()->getAuditedEntityClasses();
 
         $changedEntities = array();
         foreach ($auditedEntities AS $className) {
-            $class = $this->em->getClassMetadata($className);
-            $tableName = $this->config->getTablePrefix() . $class->table['name'] . $this->config->getTableSuffix();
+            $class = $this->getEntityManager()->getClassMetadata($className);
+            $tableName = $this->config->getTableNamePrefix() . $class->table['name'] . $this->config->getTableNameSuffix();
 
             $whereSQL   = "e." . $this->config->getRevisionFieldName() ." = ?";
-            $columnList = "e." . $this->config->getRevisionTypeFieldName();
+            $columnList = "e." . 'revisionType';
             $columnMap  = array();
 
             foreach ($class->fieldNames as $columnName => $field) {
@@ -233,9 +239,9 @@ class Reader
                 }
             }
 
-            $this->platform = $this->em->getConnection()->getDatabasePlatform();
+            $this->platform = $this->getEntityManager()->getConnection()->getDatabasePlatform();
             $query = "SELECT " . $columnList . " FROM " . $tableName . " e WHERE " . $whereSQL;
-            $revisionsData = $this->em->getConnection()->executeQuery($query, array($revision));
+            $revisionsData = $this->getEntityManager()->getConnection()->executeQuery($query, array($revision));
 
             foreach ($revisionsData AS $row) {
                 $id   = array();
@@ -250,7 +256,7 @@ class Reader
                 }
 
                 $entity = $this->createEntity($className, $row);
-                $changedEntities[] = new ChangedEntity($className, $id, $row[$this->config->getRevisionTypeFieldName()], $entity);
+                $changedEntities[] = new ChangedEntity($className, $id, $row['revisionType'], $entity);
             }
         }
         return $changedEntities;
@@ -264,7 +270,7 @@ class Reader
      */
     public function findRevision($rev)
     {
-        return $this->em->getRepository('Audit\Entity\Revision')->find($rev);
+        return $this->getEntityManager()->getRepository('Audit\Entity\Revision')->find($rev);
     }
 
     /**
@@ -276,12 +282,12 @@ class Reader
      */
     public function findRevisions($className, $id)
     {
-        if (!in_array($className, $this->getConfig()->getAuditedEntities()) {
+        if (!in_array($className, $this->getConfig()->getAuditedEntityClasses())) {
             throw AuditException::notAudited($className);
         }
 
-        $class = $this->em->getClassMetadata($className);
-        $tableName = $this->config->getTablePrefix() . $class->table['name'] . $this->config->getTableSuffix();
+        $class = $this->getEntityManager()->getClassMetadata($className);
+        $tableName = $this->config->getTableNamePrefix() . $class->table['name'] . $this->config->getTableNameSuffix();
 
         if (!is_array($id)) {
             $id = array($class->identifier[0] => $id);
@@ -304,10 +310,10 @@ class Reader
 
         $query = "SELECT r.id FROM " . $this->config->getRevisionTableName() . " r " .
                  "INNER JOIN " . $tableName . " e ON r.id = e." . $this->config->getRevisionFieldName() . " WHERE " . $whereSQL . " ORDER BY r.id DESC";
-        $revisionsData = $this->em->getConnection()->fetchAll($query, array_values($id));
+        $revisionsData = $this->getEntityManager()->getConnection()->fetchAll($query, array_values($id));
 
         $revisions = array();
-        $this->platform = $this->em->getConnection()->getDatabasePlatform();
+        $this->platform = $this->getEntityManager()->getConnection()->getDatabasePlatform();
 
         foreach ($revisionsData AS $row) {
             $revisions[] = $this->findRevision($row['id']);
@@ -318,7 +324,7 @@ class Reader
 
     protected function getEntityPersister($entity)
     {
-        $uow = $this->em->getUnitOfWork();
+        $uow = $this->getEntityManager()->getUnitOfWork();
         return $uow->getEntityPersister($entity);
     }
 }
