@@ -94,6 +94,7 @@ class AuditAutoloader extends StandardAutoloader
 
         $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
         $auditClass->setName(str_replace('\\', '_', $currentClass));
+        $auditClass->setExtendedClass('Audit');
 
 #            echo '<pre>';
 #            echo($auditClass->generate());

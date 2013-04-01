@@ -22,14 +22,27 @@ final class AuditDriver implements MappingDriver
         $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
         $config = $serviceManager->get('auditModuleOptions');
         $metadataFactory = $entityManager->getMetadataFactory();
+        $builder = new ClassMetadataBuilder($metadata);
+
+        if ($className == 'ZF2EntityAudit\\Entity\RevisionEntity') {
+            $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
+            $builder->addManyToOne('revision', 'ZF2EntityAudit\\Entity\\Revision');
+            $builder->addField('entityKeys', 'string');
+            $builder->addField('entityClass', 'string');
+
+            # $metadata->setTableName($config->getRevisionTableName());
+            return;
+        }
 
         // Revision is managed here rather than a separate namespace and driver
         if ($className == 'ZF2EntityAudit\\Entity\\Revision') {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
             $builder->addField('comment', 'text', array('nullable' => true));
             $builder->addField('timestamp', 'datetime');
             $builder->addField('revisionType', 'string');
+
+            // Add association between RevisionEntity and Revision
+            $builder->addOneToMany('revisionEntities', 'ZF2EntityAudit\\Entity\\RevisionEntity', 'revision');
 
             // Add assoication between ZfcUser and Revision
             $zfcUserMetadata = $metadataFactory->getMetadataFor(\ZF2EntityAudit\Module::getZfcUserEntity());
@@ -48,7 +61,6 @@ final class AuditDriver implements MappingDriver
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
-        $builder = new ClassMetadataBuilder($metadata);
         $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\\Entity\\Revision');
         $identifiers = array($config->getRevisionFieldName());
 
@@ -80,6 +92,7 @@ final class AuditDriver implements MappingDriver
 
         // Add revision (manage here rather than separate namespace)
         $auditEntities[] = 'ZF2EntityAudit\\Entity\\Revision';
+        $auditEntities[] = 'ZF2EntityAudit\\Entity\\RevisionEntity';
 
         return $auditEntities;
     }

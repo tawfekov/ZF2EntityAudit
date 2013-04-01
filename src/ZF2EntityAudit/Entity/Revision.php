@@ -3,8 +3,7 @@
 namespace ZF2EntityAudit\Entity;
 
 use ZfcUser\Entity\UserInterface
-    , Doctrine\ORM\Mapping\ClassMetadata
-    , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
+    , Doctrine\Common\Collections\ArrayCollection;
     ;
 
 class Revision
@@ -66,6 +65,15 @@ class Revision
     {
         $this->user = $value;
         return $this;
+    }
+
+    private $revisionEntities;
+
+    public function getRevisionEntities() {
+        if (!$this->revisionEntities)
+            $this->revisionEntities = new ArrayCollection();
+
+        return $this->revisionEntities;
     }
 
     public function __construct()

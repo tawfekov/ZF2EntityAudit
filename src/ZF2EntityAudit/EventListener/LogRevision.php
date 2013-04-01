@@ -10,6 +10,7 @@ use Doctrine\Common\EventSubscriber
     , Zend\ServiceManager\ServiceManager
     , ZF2EntityAudit\Entity\Revision as RevisionEntity
     , ZF2EntityAudit\Options\ModuleOptions
+    , ZF2EntityAudit\Entity\RevisionEntity as RevisionEntityMap
     , Zend\Code\Reflection\ClassReflection;
     ;
 
@@ -94,9 +95,17 @@ class LogRevision implements EventSubscriber
         $auditEntity->exchangeArray($this->getClassProperties($entity));
 
         $revisionSetter = 'set' . $this->getConfig()->getRevisionFieldName();
-        $auditEntity->$revisionSetter($this->getRevision($revisionType));
+        $revision = $this->getRevision($revisionType);
+        $auditEntity->$revisionSetter($revision);
 
         $this->getEntityManager()->persist($auditEntity);
+        $this->getEntityManager()->flush();
+
+        // Map the audit entity to the revision for revision > entity (entity < revision is mapped in entity)
+        $revisionEntity = new RevisionEntityMap();
+        $revisionEntity->setRevision($revision);
+        $revisionEntity->setEntity($auditEntity);
+        $this->getEntityManager()->persist($revisionEntity);
         $this->getEntityManager()->flush();
     }
 
