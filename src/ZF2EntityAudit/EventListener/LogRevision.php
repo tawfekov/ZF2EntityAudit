@@ -7,6 +7,7 @@ use Doctrine\Common\EventSubscriber
     , Doctrine\ORM\Events
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\LifecycleEventArgs
+    , Zend\ServiceManager\ServiceManager
     , ZF2EntityAudit\Entity\Revision as RevisionEntity
     , ZF2EntityAudit\Options\ModuleOptions
     , Zend\Code\Reflection\ClassReflection;
@@ -18,10 +19,22 @@ class LogRevision implements EventSubscriber
     private $config;
     private $revision;
 
-    public function __construct(EntityManager $entityManager, ModuleOptions $config)
+    public function __construct(ServiceManager $serviceManager)
     {
-        $this->setEntityManager($entityManager);
-        $this->setConfig($config);
+        $this->setServiceManager($serviceManager);
+        $this->setEntityManager($this->getServiceManager()->get("doctrine.entitymanager.orm_default"));
+        $this->setConfig($this->getServiceManager()->get("auditModuleOptions"));
+    }
+
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
+        return $this;
+    }
+
+    public function getServiceManager()
+    {
+        return $this->serviceManager;
     }
 
     public function setEntityManager(EntityManager $entityManager)
@@ -73,10 +86,6 @@ class LogRevision implements EventSubscriber
     // Copy all properties from entity to it's audited version and persist
     private function auditEntity($entity, $revisionType)
     {
-#        print_r($entity);die();
-
-#die(get_class($entity));
-
         if (!in_array(get_class($entity), $this->getConfig()->getAuditedEntityClasses()))
             return;
 
@@ -89,29 +98,27 @@ class LogRevision implements EventSubscriber
 
         $this->getEntityManager()->persist($auditEntity);
         $this->getEntityManager()->flush();
-
-        return $auditEntity;
     }
 
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
-        return $this->auditEntity($eventArgs->getEntity(), 'INS');
+        $this->auditEntity($eventArgs->getEntity(), 'INS');
     }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        return $this->auditEntity($eventArgs->getEntity(), 'UPD');
+        $this->auditEntity($eventArgs->getEntity(), 'UPD');
     }
 
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        return $this->auditEntity($eventArgs->getEntity(), 'DEL');
+        $this->auditEntity($eventArgs->getEntity(), 'DEL');
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        $this->resetRevision();
-        return;
+        $this->revision = null;
+        return $this;
     }
 
     // A revision can be used across multiple entities involved in a transaction
@@ -120,6 +127,7 @@ class LogRevision implements EventSubscriber
         if (!$this->revision) {
             $revision = new RevisionEntity();
             if ($this->getConfig()->getUser()) $revision->setUser($this->getConfig()->getUser());
+            $revision->setComment($this->getServiceManager()->get('auditComment')->getComment());
             $revision->setRevisionType($revisionType);
 
             $this->getEntityManager()->persist($revision);
@@ -130,11 +138,5 @@ class LogRevision implements EventSubscriber
         }
 
         return $this->revision;
-    }
-
-    private function resetRevision()
-    {
-        $this->revision = null;
-        return $this;
     }
 }

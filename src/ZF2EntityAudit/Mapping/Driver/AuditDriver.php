@@ -1,4 +1,5 @@
 <?php
+
 namespace ZF2EntityAudit\Mapping\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata
@@ -48,7 +49,7 @@ final class AuditDriver implements MappingDriver
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
         $builder = new ClassMetadataBuilder($metadata);
-        $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\Entity\Revision');
+        $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\\Entity\\Revision');
         $identifiers = array($config->getRevisionFieldName());
 
         // Add fields from target to audit entity

@@ -5,6 +5,7 @@ namespace ZF2EntityAudit;
 use Zend\Mvc\MvcEvent
     , ZF2EntityAudit\Options\ModuleOptions
     , ZF2EntityAudit\EventListener\LogRevision
+    , ZF2EntityAudit\Utils\RevisionComment
     , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
     , Zend\ServiceManager\ServiceManager
     , Zend\Code\Reflection\ClassReflection
@@ -100,12 +101,7 @@ class Module
 
         // Subscribe log revision event listener
         $e->getApplication()->getServiceManager()->get('doctrine.eventmanager.orm_default')
-            ->addEventSubscriber(
-                new LogRevision(
-                    $e->getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default"),
-                    $config
-                )
-            );
+            ->addEventSubscriber(new LogRevision($e->getApplication()->getServiceManager()));
     }
 
     public static function setServiceManager(ServiceManager $serviceManager)
@@ -144,6 +140,10 @@ class Module
                     $entityManager = $sm->get('doctrine.entitymanager.orm_default');
                     return $auditManager->createAuditReader($entityManager);
                 },
+
+                'auditComment' => function($sm) {
+                    return new RevisionComment();
+                }
             ),
         );
     }

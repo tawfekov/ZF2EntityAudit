@@ -2,9 +2,10 @@
 
 namespace ZF2EntityAudit\Entity;
 
-use ZfcUser\Entity\UserInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use ZfcUser\Entity\UserInterface
+    , Doctrine\ORM\Mapping\ClassMetadata
+    , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
+    ;
 
 class Revision
 {
