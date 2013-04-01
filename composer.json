@@ -1,5 +1,5 @@
 {
-    "name": "tawfekov/zf2entityaudit-tha",
+    "name": "tawfekov/zf2entityaudit",
     "description": "Doctrine entity audit module with ZfcUser support",
     "type": "zf-module",
     "license": "MIT",
@@ -24,9 +24,9 @@
     "require": {
         "php": ">=5.3.0",
         "zendframework/zendframework" : ">=2.1",
-        "zf-commons/zfc-user": ">=0.1.1",
-        "zf-commons/zfc-user-doctrine-orm": "dev-master",
         "doctrine/doctrine-orm-module": "dev-master",
+        "zf-commons/zfc-user": ">=0.1.1",
+        "zf-commons/zfc-user-doctrine-orm": "dev-master"
     },
     "autoload": {
         "psr-0": {
