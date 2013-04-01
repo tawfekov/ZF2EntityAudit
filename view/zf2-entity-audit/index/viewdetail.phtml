@@ -8,12 +8,12 @@
                     <th>Value</th>
                 </tr></thead>
             <tbody>
-                <?php foreach ($data as $field => $value): ?>
+                <?php foreach ($this->getEntityValues($entity) as $field => $value): ?>
                     <tr>
                         <td><?php  echo $this->escapeHtml($field); ?></td>
                         <td>
                             <?php if ($value instanceof \DateTime): ?>
-                                <?php echo  $this->DateTimeFormatter($value); ?>
+                                <?php echo  $this->AuditDateTimeFormatter($value); ?>
                             <?php else : ?>
                                 <?php  echo $this->escapeHtml($value); ?>
                             <?php endif; ?>

@@ -1,22 +1,28 @@
 <?php
 
 namespace ZF2EntityAudit;
-use Zend\Mvc\MvcEvent;
 
-use ZF2EntityAudit\Audit\Configuration;
-use ZF2EntityAudit\Audit\Manager ;
-use ZF2EntityAudit\EventListener\CreateSchemaListener;
-use ZF2EntityAudit\EventListener\LogRevisionsListener;
-use ZF2EntityAudit\View\Helper\DateTimeFormatter;
+use Zend\Mvc\MvcEvent
+    , ZF2EntityAudit\Options\ModuleOptions
+    , ZF2EntityAudit\Loader\AuditAutoloader
+    , ZF2EntityAudit\EventListener\LogRevision
+    , ZF2EntityAudit\Utils\RevisionComment
+    , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
+    , Zend\ServiceManager\ServiceManager
+    ;
 
 class Module
 {
+    private static $serviceManager;
+
+    public static function getZfcUserEntity()
+    {
+        return self::getServiceManager()->get('zfcuser_module_options')->getUserEntityClass();
+    }
+
     public function getAutoloaderConfig()
     {
         return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
@@ -27,9 +33,26 @@ class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        // Initialize the audit manager by creating an instance of it
-        $sm = $e->getApplication()->getServiceManager();
-        $auditManager = $sm->get('auditManager');
+        self::setServiceManager($e->getApplication()->getServiceManager());
+
+        $auditAutoloader = new AuditAutoloader();
+        $auditAutoloader->setServiceManager($e->getApplication()->getServiceManager());
+        $auditAutoloader->registerNamespace('ZF2EntityAudit\\Entity', __DIR__);
+        $auditAutoloader->register();
+
+        // Subscribe log revision event listener
+        $e->getApplication()->getServiceManager()->get('doctrine.eventmanager.orm_default')
+            ->addEventSubscriber(new LogRevision($e->getApplication()->getServiceManager()));
+    }
+
+    public static function setServiceManager(ServiceManager $serviceManager)
+    {
+        self::$serviceManager = $serviceManager;
+    }
+
+    public static function getServiceManager()
+    {
+        return self::$serviceManager;
     }
 
     public function getConfig()
@@ -41,53 +64,42 @@ class Module
     {
         return array(
             'factories' => array(
-                'auditConfig' => function($sm){
-                    $config = $sm->get('Config');
-                    $auditconfig = new Configuration();
-                    $auditconfig->setAuditedEntityClasses($config['zf2-entity-audit']['entities']);
-                    return $auditconfig;
-                },
+                'auditModuleOptions' => function($serviceManager){
+                    $config = $serviceManager->get('Application')->getConfig();
+                    $auditConfig = new ModuleOptions();
+                    $auditConfig->setDefaults($config['audit']);
 
-                'auditManager' => function ($sm) {
-                    $config = $sm->get('Config');
-                    $evm = $sm->get('doctrine.eventmanager.orm_default');
-
-                    $auditconfig = $sm->get('auditConfig');
-
-                    if ($config['zf2-entity-audit']['zfcuser.integration'] === true) {
-                        $auth = $sm->get('zfcuser_auth_service');
-                        if ($auth->hasIdentity()) {
-                            $identity = $auth->getIdentity();
-                            $auditconfig->setCurrentUser($identity);
-                        } 
-                        // TODO : need to handle the unauthenticated user action case , 99% i will drop support for unauthenticated user
+                    $auth = $serviceManager->get('zfcuser_auth_service');
+                    if ($auth->hasIdentity()) {
+                        $auditConfig->setUser($auth->getIdentity());
                     }
-                    $auditManager = new Manager($auditconfig);
-                    $evm->addEventSubscriber(new CreateSchemaListener($auditManager));
-                    $evm->addEventSubscriber(new LogRevisionsListener($auditManager));
-                    return $auditManager;
+
+                    return $auditConfig;
                 },
 
-                'auditReader' => function($sm) {
-                    $auditManager = $sm->get('auditManager');
-                    $entityManager = $sm->get('doctrine.entitymanager.orm_default');
-                    return $auditManager->createAuditReader($entityManager);
+                'auditReader' => function($serviceManager) {
+                    return new \ZF2EntityAudit\Reader($serviceManager);
                 },
+
+                'auditComment' => function($sm) {
+                    return new RevisionComment();
+                }
             ),
         );
     }
+
     public function getViewHelperConfig()
     {
          return array(
             'factories' => array(
-                'DateTimeFormatter' => function($sm) {
-                    $Servicelocator = $sm->getServiceLocator(); 
+                'AuditDateTimeFormatter' => function($sm) {
+                    $Servicelocator = $sm->getServiceLocator();
                     $config = $Servicelocator->get("Config");
-                    $format = $config['zf2-entity-audit']['ui']['datetime.format']; 
-                    $formatter = new DateTimeFormatter();
+                    $format = $config['audit']['datetime.format'];
+                    $formatter = new AuditDateTimeFormatter();
                     return $formatter->setDateTimeFormat($format);
                 }
             )
-        );  
+        );
     }
 }

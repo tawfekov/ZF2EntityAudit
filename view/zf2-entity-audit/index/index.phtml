@@ -31,46 +31,45 @@
                         <td><?php  echo $this->escapeHtml($i);?></td>
                         <td>
                             <a href="<?=
-                                $this->url('audit_viewrevision',
+                                $this->url('audit/revisions',
                                     array(
-                                        'rev' => $revision->getRev()
+                                        'rev' => $revision->getRevisionType()
                                     )
                                 );
                             ?>">
-                                <?php  echo $this->escapeHtml($revision->getRev()); ?>
+                                <?php  echo $this->escapeHtml($revision->getRevisionType()); ?>
                             </a>
                         </td>
 
                         <td>
                             <a href="<?=
-                                $this->url('audit_viewrevision',
+                                $this->url('audit/revisions',
                                     array(
-                                        'rev' => $revision->getRev()
+                                        'rev' => $revision->getRevisionType()
                                     )
                                 );
                             ?>">
-                            
-                                <?php echo $this->DateTimeFormatter($revision->getTimestamp()); ?>
-                            
+
+                                <?php echo $this->AuditDateTimeFormatter($revision->getTimestamp()); ?>
+
                             </a>
                         </td>
 
                         <td>
                         <?php
-                        $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision->getRev());
-                        foreach ($changedEntities as $ce) {
+                        foreach ($revision->getRevisionEntities() as $revisionEntity) {
                         ?>
-                                <?php $id = $ce->getId(); ?>
+                                <?php $id = $revisionEntity->getId(); ?>
                                 <a href="<?=
                                     $this->url(
-                                        'audit_viewentity',
+                                        'audit/entity',
                                         array(
                                             'id' => $id['id'],
-                                            'className' => $ce->getClassName(),
+                                            'className' => $revisionEntity->getEntityClass(),
                                         )
                                     );?>">
                             <span class="label label-<?php
-                                switch ($ce->getRevisionType()) {
+                                switch ($revision->getRevisionType()) {
                                     case 'INS':
                                         echo 'success';
                                         break;
@@ -85,8 +84,7 @@
                                 }
                             ?>">
 
-
-                                    <?php  echo $this->escapeHtml($ce->getClassName()); ?>
+                                    <?php echo $this->escapeHtml($revisionEntity->getEntity()->getAuditedEntityClass()); ?>
                             </span>
                                 </a>
                         <br>
@@ -97,8 +95,17 @@
                         </td>
 
                         <td>
-                            <span class="label label-info">
-                                <?php echo  ($this->escapeHtml($revision->getUsername())) ?: 'Anonymous'; ?>
+                            <span class="btn btn-default">
+                                <?php
+                                    if ($revision->getUser()) {
+                                        echo $this->gravatar($revision->getUser()->getEmail(), array('img_size' => 24));
+                                        echo ' ';
+                                        echo $this->escapeHtml($revision->getUser()->getEmail());
+                                    } else {
+                                        echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
+                                        echo ' Anonymous';
+                                    }
+                                ?>
                             </span>
                         </td>
                     </tr>

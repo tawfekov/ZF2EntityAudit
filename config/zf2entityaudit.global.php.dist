@@ -1,14 +1,15 @@
 <?php
 return array(
-    'zf2-entity-audit'=> array(
-        'entities' => array(
-        ),
-        'ui' => array(
-            'datetime.format' => 'r',
-            'page.limit'    => '20'
-        ),
-        'zfcuser.integration' => true,
+    'audit' => array(
+        'datetime.format' => 'r',
         
+        'tableNamePrefix' => '',
+        'tableNameSuffix' => '_audit',
+        'revisionTableName' => 'Revision',
+        
+        'entities' => array(
+            '',
+        ),
     ),
 );
 
