@@ -77,8 +77,11 @@ class Configuration
         return new MetadataFactory($this->auditedEntityClasses);
     }
     
-    public function setCurrentUser(UserInterface $user)
+    public function setCurrentUser( $user)
     {
+        if( $user instanceof UserInterface === false ){
+            throw new \Exception("ZF2EntityAudit Verion 0.2 doesn't support anonymous editing , please use `0.1-stable` anonymous editing   ", 500 );
+        }
         $this->currentUser = $user;
     }
     

@@ -16,6 +16,8 @@ class Reader
     private $config;
 
     private $metadataFactory;
+    
+    private $ZfcUserRepository;
 
     /**
      * @param EntityManager $em
@@ -28,6 +30,7 @@ class Reader
         $this->config = $config;
         $this->metadataFactory = $factory;
         $this->platform = $this->em->getConnection()->getDatabasePlatform();
+        $this->ZfcUserRepository = $this->em->getRepository("ZfcUserDoctrineORM\Entity\User");
     }
 
     /**
@@ -195,7 +198,7 @@ class Reader
             $revisions[] = new Revision(
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
-                $row['user']
+                $this->ZfcUserRepository->find($row['user_id'])
             );
         }
         return $revisions;
@@ -274,7 +277,7 @@ class Reader
             return new Revision(
                 $revisionsData[0]['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $revisionsData[0]['timestamp']),
-                $revisionsData[0]['user']
+                $this->ZfcUserRepository->find($revisionsData[0]['user_id'])
             );
         } else {
             throw AuditException::invalidRevision($rev);
@@ -323,12 +326,11 @@ class Reader
         $revisions = array();
         $this->platform = $this->em->getConnection()->getDatabasePlatform();
         foreach ($revisionsData AS $row) {
-            /*$revisions[] = new Revision(
+            $revisions[] = new Revision(
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
-                $row['username']
-            );*/
-            var_dump($row['user']);
+                $this->ZfcUserRepository->find($row['user_id'])
+            );
         }
 
         return $revisions;

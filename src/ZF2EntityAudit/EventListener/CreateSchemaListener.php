@@ -53,9 +53,6 @@ class CreateSchemaListener implements EventSubscriber
             }
             $revisionTable->addColumn($this->config->getRevisionFieldName(), $this->config->getRevisionIdFieldType());
             $revisionTable->addColumn($this->config->getRevisionTypeFieldName(), 'string', array('length' => 4));
-            /// TODO :now the table name is static but  it need some way to be able to automatically find it , maybe through configuration class
-            $revisionTable->addColumn('user_id', 'integer', array('nullable' => true));
-            $revisionTable->addForeignKeyConstraint("user", array("user_id"), array("user_id"));
             $pkColumns = $entityTable->getPrimaryKey()->getColumns();
             $pkColumns[] = $this->config->getRevisionFieldName();
             $revisionTable->setPrimaryKey($pkColumns);

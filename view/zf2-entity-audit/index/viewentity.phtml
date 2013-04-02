@@ -60,7 +60,7 @@
                     </td>
                     <td>
                         <span class="label label-info">
-                            <?php echo  ($revision->getUsername()) ?: 'Anonymous'; ?>
+                            <?php echo  ($revision->getUser()->getEmail()) ?: 'Anonymous'; ?>
                         </span>
                     </td>
 

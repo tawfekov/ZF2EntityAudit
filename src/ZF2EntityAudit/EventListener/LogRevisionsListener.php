@@ -130,9 +130,9 @@ class LogRevisionsListener implements EventSubscriber
         if ($this->revisionId === null) {
             $date = date_create("now")->format($this->platform->getDateTimeFormatString());
             $this->conn->insert($this->config->getRevisionTableName(), array(
-                'timestamp'     => $date,
-                'user'          => $this->config->getCurrentUser(),
-                'note'          => $this->config->getNote(),
+                'timestamp'        => $date,
+                'user_id'          => $this->config->getCurrentUser()->getId(),
+                'note'             => $this->config->getNote(),
             ));
 
             $sequenceName = $this->platform->supportsSequences()
@@ -213,7 +213,6 @@ class LogRevisionsListener implements EventSubscriber
                 }
             }
         }
-
         $this->conn->executeUpdate($this->getInsertRevisionSQL($class), $params, $types);
     }
 }
