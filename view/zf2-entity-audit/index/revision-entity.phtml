@@ -26,8 +26,19 @@
 
                 </a>
             </td>
-            <td><?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?></td>
             <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $this->revisionEntity->getRevision()->getId()
+                        )
+                    );
+                ?>">
+                <?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?>
+                </a>
+            </td>
+            <td>
+
                 <a class="btn btn-<?php
                     switch ($revisionEntity->getRevision()->getRevisionType()) {
                         case 'INS':
@@ -76,7 +87,7 @@
                         if ($this->revisionEntity->getRevision()->getUser()) {
                             echo $this->gravatar($this->revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
                             echo ' ';
-                            echo $this->escapeHtml($this->revisionEntity->getRevision()->getUser()->getEmail());
+                            echo $this->zfcUserDisplayName($this->revisionEntity->getRevision()->getUser());
                         } else {
                             echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                             echo ' Anonymous';
@@ -124,6 +135,7 @@
 
 <?php
     $first = true;
+    $oldSet = false;
     $allRevisions = $this->auditService->getRevisionEntities($this->revisionEntity->getTargetEntity());
 
     if (sizeof($allRevisions) > 1) {
@@ -164,9 +176,9 @@
 
                 <td>
                     <a href="<?=
-                        $this->url('audit/revision-entity',
+                        $this->url('audit/revisions',
                             array(
-                                'revisionEntityId' => $rev->getId()
+                                'revisionId' => $rev->getRevision()->getId()
                             )
                         );
                     ?>">
@@ -222,7 +234,7 @@
                             if ($rev->getRevision()->getUser()) {
                                 echo $this->gravatar($rev->getRevision()->getUser()->getEmail(), array('img_size' => 24));
                                 echo ' ';
-                                echo $this->escapeHtml($rev->getRevision()->getUser()->getEmail());
+                                echo $this->zfcUserDisplayName($rev->getRevision()->getUser());
                             } else {
                                 echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                                 echo ' Anonymous';
@@ -233,12 +245,17 @@
 
                 <td>
                     <input type="radio" name="revisionEntityId_old" value="<?php  echo $this->escapeHtml($rev->getId()); ?>"
-                        <?php echo  (sizeof($allRevisions) == 1 or $rev == $this->revisionEntity) ? 'checked="checked"': ''; ?> />
+                        <?php
+                        if (sizeof($allRevisions) == 1 or ($rev == $this->revisionEntity and !$first) or (!$oldSet and !$first)) {
+                            echo 'checked="checked"';
+                            $oldSet = true;
+                        }
+                        ?> />
                 </td>
                 <td>
                     <input type="radio" name="revisionEntityId_new" value="<?php  echo $this->escapeHtml($rev->getId()); ?>"
                         <?php
-                        if ($first and $rev != $this->revisionEntity) {
+                        if ($first) {
                             echo 'checked="checked"';
                             $first = false;
                         }
@@ -250,8 +267,16 @@
             ?>
     </tbody>
 </table>
+    <input type="submit" class="btn btn-primary" value="Compare revisions" />
 
-<input type="submit" class="btn btn-primary" value="Compare revisions" />
+    <a href="<?=
+            $this->url(
+                'audit/entity',
+                array(
+                    'entityClass' => $this->revisionEntity->getAuditEntity()->getAuditedEntityClass(),
+                )
+            );?>
+    " class="btn btn-primary">All Revisons for <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?></a>
 </form>
 
 <?php

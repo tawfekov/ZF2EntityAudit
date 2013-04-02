@@ -43,19 +43,6 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'log' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/log[/:page]',
-                            'constraints' => array(
-                                'page' => '[0-9]*',
-                            ),
-                            'defaults' => array(
-                                'controller' => 'audit',
-                                'action'     => 'index',
-                            ),
-                        ),
-                    ),
                     'revisions' => array(
                         'type' => 'Segment',
                         'options' => array(
@@ -92,23 +79,6 @@ return array(
                                 'controller' => 'audit',
                                 'action'     => 'entity',
                                 'entityClass' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                        ),
-                    ),
-                    'details' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/audit/details[/:id[/:className[/:rev]]]',
-                            'constraints' =>array(
-                                'id' => '[0-9]*',
-                                'rev' => '[0-9]*',
-                            ),
-                            'defaults' => array(
-                                'controller' => 'audit',
-                                'action' => 'detail',
-                                'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'className' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'rev' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                         ),
                     ),

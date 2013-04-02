@@ -2,22 +2,11 @@
 
 namespace ZF2EntityAudit\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use ZF2EntityAudit\Utils\ArrayDiff;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Zend\Mvc\Controller\AbstractActionController
+    ;
 
 class IndexController extends AbstractActionController
 {
-
-    /**
-     * @return EntityManager
-     */
-    public function getEntityManager()
-    {
-        return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-    }
-
     /**
      * Renders a paginated list of revisions.
      *
@@ -26,37 +15,41 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
-        $revisions = $this->getEntityManager()->getRepository('ZF2EntityAudit\\Entity\\Revision')->findBy(
-            array(), array('id' => 'DESC'), 20, 20 * $page
+        $revisions = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\Revision')->findBy(
+                array(), array('id' => 'DESC'), 20, 20 * $page
         );
 
-        return new ViewModel(array(
+        return array(
             'revisions' => $revisions,
-        ));
+        );
     }
 
     /**
      * Shows entities changed in the specified revision.
      *
      * @param integer $rev
-     * @return \Zend\View\Model\ViewModel
      *
      */
     public function revisionAction()
     {
-        $rev = (int) $this->getEvent()->getRouteMatch()->getParam('rev');
-        $revision = $this->getServiceLocator()->get('auditReader')->findRevision($rev);
-        if (!$revision) {
-            echo(sprintf('Revision %i not found', $rev));
-        }
-        $changedEntities = $this->getServiceLocator()->get('auditReader')->findEntitesChangedAtRevision($rev);
+        $revisionId = (int)$this->getEvent()->getRouteMatch()->getParam('revisionId');
 
-        return new ViewModel(array(
+        $revision = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\Revision')
+            ->find($revisionId);
+
+        if (!$revision)
+            return $this->plugin('redirect')->toRoute('audit');
+
+        return array(
             'revision' => $revision,
-            'changedEntities' => $changedEntities,
-        ));
+        );
     }
 
+    /**
+     * Show the detail for a specific revision entity
+     */
     public function revisionEntityAction()
     {
         $revisionEntityId = (int) $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
@@ -77,7 +70,6 @@ class IndexController extends AbstractActionController
      *
      * @param string $className
      * @param string $id
-     * @return \Zend\View\Model\ViewModel
      */
     public function entityAction()
     {
@@ -103,33 +95,6 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * Shows the data for an entity at the specified revision.
-     *
-     * @param string $className
-     * @param string $id Comma separated list of identifiers
-     * @param int $rev
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function detailAction()
-    {
-        $className = $this->getEvent()->getRouteMatch()->getParam('className');
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
-        $rev = $this->getEvent()->getRouteMatch()->getParam('rev');
-        $em = $this->getEntityManager();
-        $metadata = $em->getClassMetadata($className);
-
-        $ids = explode(',', $id);
-        $entity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $rev);
-
-        return new ViewModel(array(
-                    'id' => $id,
-                    'rev' => $rev,
-                    'className' => $className,
-                    'entity' => $entity,
-                ));
-    }
-
-    /**
      * Compares an entity at 2 different revisions.
      *
      *
@@ -143,7 +108,6 @@ class IndexController extends AbstractActionController
     {
         $revisionEntityId_old = $this->getRequest()->getPost()->get('revisionEntityId_old');
         $revisionEntityId_new = $this->getRequest()->getPost()->get('revisionEntityId_new');
-
 
         $revisionEntity_old = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
             ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_old);

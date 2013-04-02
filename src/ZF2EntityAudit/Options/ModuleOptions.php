@@ -9,6 +9,7 @@ class ModuleOptions
     private $prefix;
     private $suffix;
     private $revisionTableName;
+    private $revisionEntityTableName;
     private $auditedEntityClasses;
     private $user;
 
@@ -18,6 +19,8 @@ class ModuleOptions
         $this->setTableNameSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
         $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
+        $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
+
     }
 
     public function getTableNamePrefix()
@@ -55,6 +58,17 @@ class ModuleOptions
     public function setRevisionTableName($revisionTableName)
     {
         $this->revisionTableName = $revisionTableName;
+        return $this;
+    }
+
+    public function getRevisionEntityTableName()
+    {
+        return $this->revisionEntityTableName;
+    }
+
+    public function setRevisionEntityTableName($value)
+    {
+        $this->revisionEntityTableName = $value;
         return $this;
     }
 

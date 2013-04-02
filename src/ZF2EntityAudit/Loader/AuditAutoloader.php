@@ -37,6 +37,7 @@ class AuditAutoloader extends StandardAutoloader
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         // Verify this autoloader is used for target class
+        #FIXME:  why is this sent work outside the set namespace?
         foreach($config->getAuditedEntityClasses() as $targetClass) {
              $auditClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
              if ($auditClass == $class) {
@@ -69,7 +70,7 @@ class AuditAutoloader extends StandardAutoloader
             implode("\n", $setters)
         );
 
-        // Add function to return the entity this entity audits
+        // Add function to return the entity class this entity audits
         $auditClass->addMethod(
             'getAuditedEntityClass',
             array(),
@@ -94,7 +95,7 @@ class AuditAutoloader extends StandardAutoloader
 
         $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
         $auditClass->setName(str_replace('\\', '_', $currentClass));
-        $auditClass->setExtendedClass('Audit');
+        $auditClass->setExtendedClass('AbstractAudit');
 
 #            echo '<pre>';
 #            echo($auditClass->generate());

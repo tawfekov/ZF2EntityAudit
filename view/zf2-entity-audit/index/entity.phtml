@@ -1,16 +1,23 @@
-<h1>Audit Entity History</h1>
+<h1>Audit</h1>
 
 <table class="table table-striped table-hover table-bordered">
     <caption>
-        <?= $this->escapeHtml($this->entityClass); ?>
+        All Revisons for
+            <a href="<?=
+
+                    $this->url(
+                        'audit/entity',
+                        array(
+                            'entityClass' => $this->entityClass,
+                        )
+                    );?>
+        " class="btn btn-primary"><?= $this->escapeHtml($this->entityClass); ?></a>
     </caption>
     <thead>
         <tr>
             <th>Revision</th>
-            <th>Audit Revision</th>
             <th>Timestamp</th>
-            <th>Entity</th>
-            <th>Key Fields</th>
+            <th>Audit Revision Entity</th>
             <th>Comment</th>
             <th>User</th>
         </tr>
@@ -35,8 +42,15 @@ foreach ($this->revisionEntities as $revisionEntity) {
 
                 </a>
             </td>
-            <td><?= $revisionEntity->getId(); ?></td>
-            <td><?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?></td>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $revisionEntity->getRevision()->getId()
+                        )
+                    );
+                ?>"><?= $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?></a>
+            </td>
             <td>
                 <a class="btn btn-<?php
                     switch ($revisionEntity->getRevision()->getRevisionType()) {
@@ -59,15 +73,23 @@ foreach ($this->revisionEntities as $revisionEntity) {
                             array(
                                 'revisionEntityId' => $revisionEntity->getId(),
                             )
-                        );?>"
-                    >
+                        );?>">
 
-                        <?= $this->escapeHtml($revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+                            (<?= $revisionEntity->getId(); ?>)
+                            <?= $this->escapeHtml($revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+                            <div class="entityKeys">
+                                <?php
+                                $rows = array();
+                                foreach($revisionEntity->getEntityKeys() as $key => $value) {
+                                    $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                                }
+                                echo implode(', ', $rows);
+                                ?>
+                            </div>
                     </a>
 
             </td>
 
-            <td><?= var_dump($revisionEntity->getEntityKeys()); ?></td>
             <td><?= $this->escapeHtml($revisionEntity->getRevision()->getComment()); ?></td>
 
             <td>
@@ -76,7 +98,7 @@ foreach ($this->revisionEntities as $revisionEntity) {
                         if ($revisionEntity->getRevision()->getUser()) {
                             echo $this->gravatar($revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
                             echo ' ';
-                            echo $this->escapeHtml($revisionEntity->getRevision()->getUser()->getEmail());
+                            echo $this->zfcUserDisplayName($revisionEntity->getRevision()->getUser());
                         } else {
                             echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                             echo ' Anonymous';

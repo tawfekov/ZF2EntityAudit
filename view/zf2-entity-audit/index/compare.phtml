@@ -4,7 +4,11 @@
 
 <table class="table table-striped table-hover table-bordered ">
     <caption>
-
+        Old
+    </caption>
+    <thead>
+        <tr>
+            <th>
                 <a class="btn btn-<?php
                     switch ($revisionEntity_old->getRevision()->getRevisionType()) {
                         case 'INS':
@@ -25,20 +29,35 @@
                 array(
                     'revisionEntityId' => $revisionEntity_old->getId(),
                 )
-            );?>">Audit Revision Entity <?= $revisionEntity_old->getId(); ?></a>
+            );?>">
+                (<?= $revisionEntity_old->getId(); ?>)
+                <?= $this->escapeHtml($this->revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?>
+                <div class="entityKeys">
+                    <?php
+                    $rows = array();
+                    foreach($revisionEntity_old->getEntityKeys() as $key => $value) {
+                        $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                    }
+                    echo implode(', ', $rows);
+                    ?>
+                </div>
+            </a>
 
-            <?php echo $this->AuditDateTimeFormatter($revisionEntity_old->getRevision()->getTimestamp()); ?>
+           </th>
 
+            <td>
+                <?php echo $this->AuditDateTimeFormatter($revisionEntity_old->getRevision()->getTimestamp()); ?>
+            </td>
 
-    </caption>
-    <thead>
+        </tr>
+
         <tr>
             <th>Field</th>
             <th>Value</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($this->EntityValues($revisionEntity_old->getAuditEntity()) as $field => $value): ?>
+        <?php foreach ($this->auditService()->getEntityValues($revisionEntity_old->getAuditEntity()) as $field => $value): ?>
             <tr>
                 <td><?php  echo $this->escapeHtml($field); ?></td>
                 <td>
@@ -55,7 +74,12 @@
 
 <table class="table table-striped table-hover table-bordered ">
     <caption>
+        New
+    </caption>
 
+    <thead>
+        <tr>
+            <th>
                 <a class="btn btn-<?php
                     switch ($revisionEntity_new->getRevision()->getRevisionType()) {
                         case 'INS':
@@ -76,19 +100,34 @@
                 array(
                     'revisionEntityId' => $revisionEntity_new->getId(),
                 )
-            );?>">Audit Revision Entity <?= $revisionEntity_new->getId(); ?></a>
+            );?>">
+                (<?= $revisionEntity_new->getId(); ?>)
+                <?= $this->escapeHtml($this->revisionEntity_new->getAuditEntity()->getAuditedEntityClass()); ?>
+                <div class="entityKeys">
+                    <?php
+                    $rows = array();
+                    foreach($revisionEntity_new->getEntityKeys() as $key => $value) {
+                        $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                    }
+                    echo implode(', ', $rows);
+                    ?>
+                </div>
+            </a>
 
+           </th>
+
+            <td>
                 <?php echo $this->AuditDateTimeFormatter($revisionEntity_new->getRevision()->getTimestamp()); ?>
+            </td>
 
-    </caption>
-    <thead>
+        </tr>
         <tr>
             <th>Field</th>
             <th>Value</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($this->EntityValues($revisionEntity_new->getAuditEntity()) as $field => $value): ?>
+        <?php foreach ($this->auditService()->getEntityValues($revisionEntity_new->getAuditEntity()) as $field => $value): ?>
             <tr>
                 <td><?php  echo $this->escapeHtml($field); ?></td>
                 <td>
@@ -139,7 +178,20 @@
                     'revisionEntityId' => $this->revisionEntity_old->getId(),
                 )
             );?>"
-        >Audit Revision Entity <?= $revisionEntity_old->getId(); ?></a>
+        >
+            (<?= $revisionEntity_old->getId(); ?>)
+            <?= $this->escapeHtml($this->revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?>
+            <div class="entityKeys">
+                <?php
+                $rows = array();
+                foreach($revisionEntity_old->getEntityKeys() as $key => $value) {
+                    $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                }
+                echo implode(', ', $rows);
+                ?>
+            </div>
+
+        </a>
 
         and
 
@@ -164,7 +216,19 @@
                     'revisionEntityId' => $this->revisionEntity_new->getId(),
                 )
             );?>"
-        >Audit Revision Entity <?= $revisionEntity_new->getId(); ?></a>
+        >
+            (<?= $revisionEntity_new->getId(); ?>)
+            <?= $this->escapeHtml($this->revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?>
+            <div class="entityKeys">
+                <?php
+                $rows = array();
+                foreach($revisionEntity_new->getEntityKeys() as $key => $value) {
+                    $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                }
+                echo implode(', ', $rows);
+                ?>
+            </div>
+        </a>
     </caption>
     <thead>
         <tr>
@@ -175,8 +239,8 @@
         </tr>
     </thead>
     <tbody>
-        <?php $oldValues = $this->EntityValues($revisionEntity_old->getAuditEntity()); ?>
-        <?php $newValues = $this->EntityValues($revisionEntity_new->getAuditEntity()); ?>
+        <?php $oldValues = $this->auditService()->getEntityValues($revisionEntity_old->getAuditEntity()); ?>
+        <?php $newValues = $this->auditService()->getEntityValues($revisionEntity_new->getAuditEntity()); ?>
 
         <?php foreach ($oldValues as $field => $value): ?>
             <tr>

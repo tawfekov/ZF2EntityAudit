@@ -106,7 +106,7 @@
                         if ($revision->getUser()) {
                             echo $this->gravatar($revision->getUser()->getEmail(), array('img_size' => 24));
                             echo ' ';
-                            echo $this->escapeHtml($revision->getUser()->getEmail());
+                            echo $this->zfcUserDisplayName($revision->getUser());
                         } else {
                             echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                             echo ' Anonymous';

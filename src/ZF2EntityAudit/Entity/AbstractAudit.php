@@ -2,6 +2,6 @@
 
 namespace ZF2EntityAudit\Entity;
 
-abstract class Audit
+abstract class AbstractAudit
 {
 }

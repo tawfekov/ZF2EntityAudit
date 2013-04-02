@@ -16,13 +16,13 @@ class RevisionEntity
     // Foreign key to the revision
     private $revision;
 
-    // An array of primary keys for the target entity
+    // An array of primary keys
     private $entityKeys;
 
-    // The entity name
+    // The name of the audit entity
     private $auditEntityClass;
 
-    // the target, audited, class
+    // The name of the entity which is audited
     private $targetEntityClass;
 
     public function getServiceManager()
@@ -82,7 +82,7 @@ class RevisionEntity
         $this->entityKeys = serialize($value);
     }
 
-    public function setAuditEntity(Audit $entity)
+    public function setAuditEntity(AbstractAudit $entity)
     {
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
         $metadataFactory = $entityManager->getMetadataFactory();

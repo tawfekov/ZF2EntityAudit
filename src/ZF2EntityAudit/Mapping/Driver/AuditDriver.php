@@ -31,7 +31,7 @@ final class AuditDriver implements MappingDriver
             $builder->addField('auditEntityClass', 'string');
             $builder->addField('targetEntityClass', 'string');
 
-            # $metadata->setTableName($config->getRevisionTableName());
+            $metadata->setTableName($config->getRevisionEntityTableName());
             return;
         }
 

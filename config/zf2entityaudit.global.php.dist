@@ -6,6 +6,7 @@ return array(
         'tableNamePrefix' => '',
         'tableNameSuffix' => '_audit',
         'revisionTableName' => 'Revision',
+        'revisionEntityTableName' => 'RevisionEntity',
         
         'entities' => array(
             '',

@@ -2,9 +2,7 @@
 
 namespace ZF2EntityAudit\Service;
 
-use Doctrine\Common\Collections\ArrayCollection
-    , ZF2EntityAudit\Entity\Audit
-    , Zend\View\Helper\AbstractHelper
+use Zend\View\Helper\AbstractHelper
     ;
 
 class AuditService extends AbstractHelper
@@ -54,22 +52,21 @@ class AuditService extends AbstractHelper
      */
     public function getRevisionEntities($entity)
     {
-        $return = new ArrayCollection();
+        $entityManager = \ZF2EntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
         if (gettype($entity) != 'string' and in_array(get_class($entity), \ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses())) {
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
             $entityClass = get_class($entity);
+            $metadataFactory = $entityManager->getMetadataFactory();
+            $metadata = $metadataFactory->getMetadataFor($entityClass);
+            $identifiers = $metadata->getIdentifierValues($entity);
+        } else {
+            $entityClass = $entity;
+            $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entity);
         }
 
-        $entityManager = \ZF2EntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
-        $metadataFactory = $entityManager->getMetadataFactory();
-
-        $metadata = $metadataFactory->getMetadataFor(get_class($entity));
-
-        $identifiers = $metadata->getIdentifierValues($entity);
-
         $search = array('auditEntityClass' => $auditEntityClass);
-        $search['entityKeys'] = serialize($identifiers);
+        if (isset($identifiers)) $search['entityKeys'] = serialize($identifiers);
 
         return $entityManager->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')
             ->findBy($search, array('id' => 'DESC'));
