@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<phpunit
+        bootstrap="./tests/Bootstrap.php"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true"
+        stopOnFailure="false"
+        processIsolation="false"
+        backupGlobals="false"
+        syntaxCheck="true"
+        >
+    <testsuites>
+        <testsuite name="ZF2EntityAuditTest">
+            <directory>./tests/ZF2EntityAuditTest/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-clover" target="./clover.xml"/>
+        <log type="coverage-html" target="./log/report" charset="UTF-8"
+                yui="true" highlight = "true" lowUpperBound="50" highLowerBound="80" />
+    </logging>
+</phpunit>
