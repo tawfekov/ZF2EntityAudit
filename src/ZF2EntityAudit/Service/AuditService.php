@@ -3,6 +3,7 @@
 namespace ZF2EntityAudit\Service;
 
 use Zend\View\Helper\AbstractHelper
+    , ZF2EntityAudit\Entity\AbstractAudit
     ;
 
 class AuditService extends AbstractHelper
@@ -28,7 +29,7 @@ class AuditService extends AbstractHelper
         return $this;
     }
 
-    public function getEntityValues($entity) {
+    public function getEntityValues($entity, $cleanRevison = false) {
         $em = \ZF2EntityAudit\Module::getServiceManager()
             ->get('doctrine.entitymanager.orm_default');
 
@@ -45,6 +46,26 @@ class AuditService extends AbstractHelper
         return $return;
     }
 
+    public function getEntityIdentifierValues($entity, $cleanRevision = false)
+    {
+        $entityManager = \ZF2EntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $metadataFactory = $entityManager->getMetadataFactory();
+
+        // Get entity metadata - Audited entities will always have composite keys
+        $metadata = $metadataFactory->getMetadataFor(get_class($entity));
+        $values = $metadata->getIdentifierValues($entity);
+
+        if ($cleanRevision and $values['revision'] instanceof \ZF2EntityAudit\Entity\Revision) {
+            unset($values['revision']);
+        }
+
+        foreach ($values as $key => $val) {
+            if (gettype($val) == 'object') $values[$key] = $val->getId();
+        }
+
+        return $values;
+    }
+
     /**
      * Pass an audited entity or the audit entity
      * and return a collection of RevisionEntity s
@@ -56,12 +77,13 @@ class AuditService extends AbstractHelper
 
         if (gettype($entity) != 'string' and in_array(get_class($entity), \ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses())) {
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
-            $entityClass = get_class($entity);
-            $metadataFactory = $entityManager->getMetadataFactory();
-            $metadata = $metadataFactory->getMetadataFor($entityClass);
-            $identifiers = $metadata->getIdentifierValues($entity);
+            $identifiers = $this->getEntityIdentifierValues($entity);
+        } elseif ($entity instanceof AbstractAudit) {
+            // In order to get a list of revison entites when a target has been deleted allow either/or
+            // target/audit entity to be passed
+            $auditEntityClass = get_class($entity);
+            $identifiers = $this->getEntityIdentifierValues($entity, true);
         } else {
-            $entityClass = $entity;
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entity);
         }
 

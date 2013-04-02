@@ -1,4 +1,4 @@
-<h1>Audit</h1>
+<h1>Audit Revision</h1>
 
 <table class="table table-striped table-hover table-bordered">
     <caption>
@@ -6,8 +6,7 @@
     </caption>
     <thead>
         <tr>
-            <th>#</th>
-            <th>Timestamp</th>
+            <th>Revision</th>
             <th>Comment</th>
             <th>User</th>
         </tr>
@@ -17,10 +16,8 @@
         <tr>
             <td>
                 <?= $this->escapeHtml($this->revision->getId());?>
-            </td>
 
-            <td>
-                <?php echo $this->AuditDateTimeFormatter($this->revision->getTimestamp()); ?>
+                @ <?php echo $this->AuditDateTimeFormatter($this->revision->getTimestamp()); ?>
             </td>
 
             <td><?= $this->escapeHtml($this->revision->getComment()); ?></td>

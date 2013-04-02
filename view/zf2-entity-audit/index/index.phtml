@@ -3,9 +3,8 @@
 <table class="table table-striped table-hover table-bordered">
     <thead>
         <tr>
-            <th>#</th>
-            <th>Timestamp</th>
-            <th>Audit Revision Entity</th>
+            <th>Revision</th>
+            <th>Entity</th>
             <th>Comment</th>
             <th>User</th>
         </tr>
@@ -34,20 +33,8 @@
                     );
                 ?>">
 
-                <?= $this->escapeHtml($revision->getId());?>
-                </a>
-            </td>
-
-            <td>
-                <a href="<?=
-                    $this->url('audit/revisions',
-                        array(
-                            'revisionId' => $revision->getId()
-                        )
-                    );
-                ?>">
-
-                    <?php echo $this->AuditDateTimeFormatter($revision->getTimestamp()); ?>
+                    <?= $this->escapeHtml($revision->getId());?>
+                    @ <?php echo $this->AuditDateTimeFormatter($revision->getTimestamp()); ?>
 
                 </a>
             </td>

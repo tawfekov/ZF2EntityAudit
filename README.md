@@ -1,7 +1,7 @@
 ZF2EntityAudit
 ==============
 
-An module to audit Doctrine 2 entities in ZF2 and browse the audit log , inspired by https://github.com/simplethings/EntityAudit
+An module to audit Doctrine 2 entities in ZF2 and browse the audit log. Inspired by SimpleThings.
 
 
 Demo

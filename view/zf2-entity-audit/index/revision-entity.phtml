@@ -4,8 +4,7 @@
     <thead>
         <tr>
             <th>Revision</th>
-            <th>Timestamp</th>
-            <th>Audit Revision Entity</th>
+            <th>Entity</th>
             <th>Comment</th>
             <th>User</th>
         </tr>
@@ -24,17 +23,7 @@
 
                     <?= $this->revisionEntity->getRevision()->getId(); ?>
 
-                </a>
-            </td>
-            <td>
-                <a href="<?=
-                    $this->url('audit/revisions',
-                        array(
-                            'revisionId' => $this->revisionEntity->getRevision()->getId()
-                        )
-                    );
-                ?>">
-                <?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?>
+                    @ <?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?>
                 </a>
             </td>
             <td>
@@ -136,7 +125,7 @@
 <?php
     $first = true;
     $oldSet = false;
-    $allRevisions = $this->auditService->getRevisionEntities($this->revisionEntity->getTargetEntity());
+    $allRevisions = $this->auditService->getRevisionEntities($this->revisionEntity->getAuditEntity());
 
     if (sizeof($allRevisions) > 1) {
 ?>
@@ -147,8 +136,7 @@
     <thead>
         <tr>
             <th>Revision</th>
-            <th>Timestamp</th>
-            <th>Audit Revision Entity</th>
+            <th>Entity</th>
             <th>Comment</th>
             <th>User</th>
             <th>Old</th>
@@ -170,20 +158,7 @@
                     ?>">
 
                         <?= $rev->getRevision()->getId(); ?>
-
-                    </a>
-                </td>
-
-                <td>
-                    <a href="<?=
-                        $this->url('audit/revisions',
-                            array(
-                                'revisionId' => $rev->getRevision()->getId()
-                            )
-                        );
-                    ?>">
-
-                        <?php echo $this->AuditDateTimeFormatter($rev->getRevision()->getTimestamp()); ?>
+                        @ <?php echo $this->AuditDateTimeFormatter($rev->getRevision()->getTimestamp()); ?>
 
                     </a>
                 </td>
@@ -269,6 +244,12 @@
 </table>
     <input type="submit" class="btn btn-primary" value="Compare revisions" />
 
+</form>
+
+<?php
+}
+?>
+
     <a href="<?=
             $this->url(
                 'audit/entity',
@@ -277,8 +258,3 @@
                 )
             );?>
     " class="btn btn-primary">All Revisons for <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?></a>
-</form>
-
-<?php
-}
-?>

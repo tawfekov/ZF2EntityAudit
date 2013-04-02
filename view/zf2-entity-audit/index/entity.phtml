@@ -1,4 +1,4 @@
-<h1>Audit</h1>
+<h1>Audit All Entity Revisions</h1>
 
 <table class="table table-striped table-hover table-bordered">
     <caption>
@@ -16,8 +16,7 @@
     <thead>
         <tr>
             <th>Revision</th>
-            <th>Timestamp</th>
-            <th>Audit Revision Entity</th>
+            <th>Entity</th>
             <th>Comment</th>
             <th>User</th>
         </tr>
@@ -39,17 +38,7 @@ foreach ($this->revisionEntities as $revisionEntity) {
                 ?>">
 
                     <?= $revisionEntity->getRevision()->getId(); ?>
-
-                </a>
-            </td>
-            <td>
-                <a href="<?=
-                    $this->url('audit/revisions',
-                        array(
-                            'revisionId' => $revisionEntity->getRevision()->getId()
-                        )
-                    );
-                ?>"><?= $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?></a>
+                    @ <?= $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?></a>
             </td>
             <td>
                 <a class="btn btn-<?php

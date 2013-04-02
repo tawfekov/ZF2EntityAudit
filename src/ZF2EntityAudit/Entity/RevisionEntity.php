@@ -84,12 +84,8 @@ class RevisionEntity
 
     public function setAuditEntity(AbstractAudit $entity)
     {
-        $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
-        $metadataFactory = $entityManager->getMetadataFactory();
-
-        // Get entity metadata - Audited entities will always have composite keys
-        $metadata = $metadataFactory->getMetadataFor(get_class($entity));
-        $identifiers = $metadata->getIdentifierValues($entity);
+        $entityService = $this->getServiceManager()->get('entityService');
+        $identifiers = $entityService->getEntityIdentifierValues($entity);
 
         $this->setAuditEntityClass(get_class($entity));
         $this->setTargetEntityClass($entity->getAuditedEntityClass());
