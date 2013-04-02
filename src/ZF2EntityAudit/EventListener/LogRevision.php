@@ -104,7 +104,7 @@ class LogRevision implements EventSubscriber
         // Map the audit entity to the revision for revision > entity (entity < revision is mapped in entity)
         $revisionEntity = new RevisionEntityMap();
         $revisionEntity->setRevision($revision);
-        $revisionEntity->setEntity($auditEntity);
+        $revisionEntity->setAuditEntity($auditEntity);
         $this->getEntityManager()->persist($revisionEntity);
         $this->getEntityManager()->flush();
     }
@@ -136,7 +136,7 @@ class LogRevision implements EventSubscriber
         if (!$this->revision) {
             $revision = new RevisionEntity();
             if ($this->getConfig()->getUser()) $revision->setUser($this->getConfig()->getUser());
-            $revision->setComment($this->getServiceManager()->get('auditComment')->getComment());
+            $revision->setComment($this->getServiceManager()->get('auditService')->getComment());
             $revision->setRevisionType($revisionType);
 
             $this->getEntityManager()->persist($revision);

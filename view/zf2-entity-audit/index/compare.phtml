@@ -1,42 +1,228 @@
-<h1>Comparing <?php echo $this->escapeHtml($className); ?> with identifiers of
-    <?= $id ?> between revisions <?php echo $this->escapeHtml($oldRev); ?> and <?php echo $this->escapeHtml($newRev); ?> </h1>
-<div class="row">
-    <div class="span12">
-        <table  class="table table-striped table-hover table-bordered ">
-            <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Deleted</th>
-                    <th>Same</th>
-                    <th>Updated</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($diff as $field => $value): ?>
-                    <tr>
-                        <td><?= $field ?></td>
-                        <td>
-                            <?php if ($value["old"] instanceof \DateTime): ?>
-                                <?php echo $this->AuditDateTimeFormatter($value["old"]); ?>
-                            <?php else: ?>
-                                <?php echo  $this->escapeHtml($value["old"]); ?>
-                            <?php endif; ?></td>
-                        <td>
-                            <?php if ($value["same"] instanceof \DateTime): ?>
-                                <?php echo  $this->AuditDateTimeFormatter($value["same"]); ?>
-                            <?php else: ?>
-                                <?php echo  $this->escapeHtml($value["same"]); ?>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if ($value["new"] instanceof \DateTime): ?>
-                                <?php echo $this->AuditDateTimeFormatter($value["new"]); ?>
-                            <?php else: ?>
-                                <?php echo  $this->escapeHtml($value["new"]); ?>
-                            <?php endif; ?></td>
-                    </tr>
-                <? endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+<h1>
+    Audit Comparission
+</h1>
+
+<table class="table table-striped table-hover table-bordered ">
+    <caption>
+
+                <a class="btn btn-<?php
+                    switch ($revisionEntity_old->getRevision()->getRevisionType()) {
+                        case 'INS':
+                            echo 'success';
+                            break;
+                        case 'UPD':
+                            echo 'warning';
+                            break;
+                        case 'DEL':
+                            echo 'danger';
+                            break;
+                        default:
+                            echo 'info';
+                    }
+                ?>" href="<?=
+            $this->url(
+                'audit/revision-entity',
+                array(
+                    'revisionEntityId' => $revisionEntity_old->getId(),
+                )
+            );?>">Audit Revision Entity <?= $revisionEntity_old->getId(); ?></a>
+
+            <?php echo $this->AuditDateTimeFormatter($revisionEntity_old->getRevision()->getTimestamp()); ?>
+
+
+    </caption>
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->EntityValues($revisionEntity_old->getAuditEntity()) as $field => $value): ?>
+            <tr>
+                <td><?php  echo $this->escapeHtml($field); ?></td>
+                <td>
+                    <?php if ($value instanceof \DateTime): ?>
+                        <?php echo  $this->AuditDateTimeFormatter($value); ?>
+                    <?php else : ?>
+                        <?php  echo $this->escapeHtml($value); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<table class="table table-striped table-hover table-bordered ">
+    <caption>
+
+                <a class="btn btn-<?php
+                    switch ($revisionEntity_new->getRevision()->getRevisionType()) {
+                        case 'INS':
+                            echo 'success';
+                            break;
+                        case 'UPD':
+                            echo 'warning';
+                            break;
+                        case 'DEL':
+                            echo 'danger';
+                            break;
+                        default:
+                            echo 'info';
+                    }
+                ?>" href="<?=
+            $this->url(
+                'audit/revision-entity',
+                array(
+                    'revisionEntityId' => $revisionEntity_new->getId(),
+                )
+            );?>">Audit Revision Entity <?= $revisionEntity_new->getId(); ?></a>
+
+                <?php echo $this->AuditDateTimeFormatter($revisionEntity_new->getRevision()->getTimestamp()); ?>
+
+    </caption>
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->EntityValues($revisionEntity_new->getAuditEntity()) as $field => $value): ?>
+            <tr>
+                <td><?php  echo $this->escapeHtml($field); ?></td>
+                <td>
+                    <?php if ($value instanceof \DateTime): ?>
+                        <?php echo  $this->AuditDateTimeFormatter($value); ?>
+                    <?php else : ?>
+                        <?php  echo $this->escapeHtml($value); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+
+<table  class="table table-striped table-hover table-bordered ">
+    <caption>
+        Comparing <a href="<?=
+
+                    $this->url(
+                        'audit/entity',
+                        array(
+                            'entityClass' => $revisionEntity_old->getAuditEntity()->getAuditedEntityClass(),
+                        )
+                    );?>
+
+        " class="btn btn-primary"><?php echo $this->escapeHtml($revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?></a>
+        between
+
+            <a class="btn btn-<?php
+                switch ($revisionEntity_old->getRevision()->getRevisionType()) {
+                    case 'INS':
+                        echo 'success';
+                        break;
+                    case 'UPD':
+                        echo 'warning';
+                        break;
+                    case 'DEL':
+                        echo 'danger';
+                        break;
+                    default:
+                        echo 'info';
+                }
+            ?>" href="<?=
+            $this->url(
+                'audit/revision-entity',
+                array(
+                    'revisionEntityId' => $this->revisionEntity_old->getId(),
+                )
+            );?>"
+        >Audit Revision Entity <?= $revisionEntity_old->getId(); ?></a>
+
+        and
+
+            <a class="btn btn-<?php
+                switch ($revisionEntity_new->getRevision()->getRevisionType()) {
+                    case 'INS':
+                        echo 'success';
+                        break;
+                    case 'UPD':
+                        echo 'warning';
+                        break;
+                    case 'DEL':
+                        echo 'danger';
+                        break;
+                    default:
+                        echo 'info';
+                }
+            ?>" href="<?=
+            $this->url(
+                'audit/revision-entity',
+                array(
+                    'revisionEntityId' => $this->revisionEntity_new->getId(),
+                )
+            );?>"
+        >Audit Revision Entity <?= $revisionEntity_new->getId(); ?></a>
+    </caption>
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Deleted</th>
+            <th>Same</th>
+            <th>Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php $oldValues = $this->EntityValues($revisionEntity_old->getAuditEntity()); ?>
+        <?php $newValues = $this->EntityValues($revisionEntity_new->getAuditEntity()); ?>
+
+        <?php foreach ($oldValues as $field => $value): ?>
+            <tr>
+                <td><?= $field ?></td>
+                <td>
+                    <?php
+                    if ($oldValues[$field] != $newValues[$field] and !$newValues[$field] and $oldValues[$field]) {
+                    ?>
+
+                        <?php if ($oldValues[$field] instanceof \DateTime): ?>
+                            <?php echo $this->AuditDateTimeFormatter($oldValues[$field]); ?>
+                        <?php else: ?>
+                            <?php echo  $this->escapeHtml($oldValues[$field]); ?>
+                        <?php endif; ?></td>
+                    <?php
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if ($oldValues[$field] == $newValues[$field]){
+                    ?>
+                        <?php if ($oldValues[$field] instanceof \DateTime): ?>
+                            <?php echo $this->AuditDateTimeFormatter($oldValues[$field]); ?>
+                        <?php else: ?>
+                            <?php echo  $this->escapeHtml($oldValues[$field]); ?>
+                        <?php endif; ?></td>
+                    <?php
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if ($oldValues[$field] != $newValues[$field] and $newValues[$field]) {
+                    ?>
+
+                        <?php if ($newValues[$field] instanceof \DateTime): ?>
+                            <?php echo $this->AuditDateTimeFormatter($newValues[$field]); ?>
+                        <?php else: ?>
+                            <?php echo  $this->escapeHtml($newValues[$field]); ?>
+                        <?php endif; ?></td>
+                    <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+        <? endforeach; ?>
+    </tbody>
+</table>

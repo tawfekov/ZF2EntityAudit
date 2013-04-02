@@ -20,7 +20,10 @@ class RevisionEntity
     private $entityKeys;
 
     // The entity name
-    private $entityClass;
+    private $auditEntityClass;
+
+    // the target, audited, class
+    private $targetEntityClass;
 
     public function getServiceManager()
     {
@@ -38,20 +41,31 @@ class RevisionEntity
         return $this;
     }
 
-    public function getEntityClass()
+    public function getAuditEntityClass()
     {
-        return $this->entityClass;
+        return $this->auditEntityClass;
     }
 
-    public function setEntityClass($value)
+    public function setAuditEntityClass($value)
     {
-        $this->entityClass = $value;
+        $this->auditEntityClass = $value;
         return $this;
     }
 
     public function getRevision()
     {
         return $this->revision;
+    }
+
+    public function setTargetEntityClass($value)
+    {
+        $this->targetEntityClass = $value;
+        return $this;
+    }
+
+    public function getTargetEntityClass()
+    {
+        return $this->targetEntityClass;
     }
 
     public function getEntityKeys()
@@ -61,30 +75,47 @@ class RevisionEntity
 
     public function setEntityKeys($value)
     {
+        if ($value['revision'] instanceof \ZF2EntityAudit\Entity\Revision) {
+            unset($value['revision']);
+        }
+
         $this->entityKeys = serialize($value);
     }
 
-    public function setEntity(Audit $entity)
+    public function setAuditEntity(Audit $entity)
     {
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
         $metadataFactory = $entityManager->getMetadataFactory();
 
-        // Get entity metadata
-        // Audited entities will always have composite keys
+        // Get entity metadata - Audited entities will always have composite keys
         $metadata = $metadataFactory->getMetadataFor(get_class($entity));
         $identifiers = $metadata->getIdentifierValues($entity);
-        if(isset($identifiers['revision'])) unset($identifiers['revision']);
 
-        $this->setEntityClass(get_class($entity));
+        $this->setAuditEntityClass(get_class($entity));
+        $this->setTargetEntityClass($entity->getAuditedEntityClass());
         $this->setEntityKeys($identifiers);
 
         return $this;
     }
 
-    public function getEntity()
+    public function getAuditEntity()
     {
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        return $entityManager->getRepository($this->getEntityClass())->findOneBy($this->getEntityKeys());
+        $keys = $this->getEntityKeys();
+        $keys['revision'] = $this->getRevision();
+
+        return $entityManager->getRepository($this->getAuditEntityClass())->findOneBy($keys);
+    }
+
+    public function getTargetEntity()
+    {
+        $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
+
+        return $entityManager->getRepository(
+            $entityManager
+                ->getRepository($this->getAuditEntityClass())
+                    ->findOneBy($this->getEntityKeys())->getAuditedEntityClass()
+            )->findOneBy($this->getEntityKeys());
     }
 }

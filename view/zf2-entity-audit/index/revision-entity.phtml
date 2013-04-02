@@ -1,0 +1,259 @@
+<h1>Audit Revision Entity</h1>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Revision</th>
+            <th>Timestamp</th>
+            <th>Audit Revision Entity</th>
+            <th>Comment</th>
+            <th>User</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $this->revisionEntity->getRevision()->getId()
+                        )
+                    );
+                ?>">
+
+                    <?= $this->revisionEntity->getRevision()->getId(); ?>
+
+                </a>
+            </td>
+            <td><?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?></td>
+            <td>
+                <a class="btn btn-<?php
+                    switch ($revisionEntity->getRevision()->getRevisionType()) {
+                        case 'INS':
+                            echo 'success';
+                            break;
+                        case 'UPD':
+                            echo 'warning';
+                            break;
+                        case 'DEL':
+                            echo 'danger';
+                            break;
+                        default:
+                            echo 'info';
+                    }
+                ?>"
+                    href="<?=
+                        $this->url(
+                            'audit/revision-entity',
+                            array(
+                                'revisionEntityId' => $this->revisionEntity->getId(),
+                            )
+                        );?>"
+                    >
+
+                        (<?= $this->revisionEntity->getId(); ?>)
+
+                        <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+                        <div class="entityKeys">
+                            <?php
+                            $rows = array();
+                            foreach($revisionEntity->getEntityKeys() as $key => $value) {
+                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                            }
+                            echo implode(', ', $rows);
+                            ?>
+                        </div>
+                    </a>
+
+            </td>
+
+            <td><?= $this->escapeHtml($this->revisionEntity->getRevision()->getComment()); ?></td>
+
+            <td>
+                <a href="#" class="btn btn-default">
+                    <?php
+                        if ($this->revisionEntity->getRevision()->getUser()) {
+                            echo $this->gravatar($this->revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
+                            echo ' ';
+                            echo $this->escapeHtml($this->revisionEntity->getRevision()->getUser()->getEmail());
+                        } else {
+                            echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
+                            echo ' Anonymous';
+                        }
+                    ?>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table table-striped table-hover table-bordered ">
+    <caption>
+        Audited Entity Values
+    </caption>
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->auditService()->getEntityValues($this->revisionEntity->getAuditEntity()) as $field => $value): ?>
+            <tr>
+                <td><?php  echo $this->escapeHtml($field); ?></td>
+                <td>
+                    <?php if ($value instanceof \DateTime): ?>
+                        <?php echo  $this->AuditDateTimeFormatter($value); ?>
+                    <?php else : ?>
+                        <?php  echo $this->escapeHtml($value); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+
+<form action="<?=
+    $this->url('audit/compare',
+        array(
+        )
+    );
+    ?>" method="post">
+
+<?php
+    $first = true;
+    $allRevisions = $this->auditService->getRevisionEntities($this->revisionEntity->getTargetEntity());
+
+    if (sizeof($allRevisions) > 1) {
+?>
+<table class="table table-striped table-hover table-bordered ">
+    <caption>
+        Compare Revision Entities
+    </caption>
+    <thead>
+        <tr>
+            <th>Revision</th>
+            <th>Timestamp</th>
+            <th>Audit Revision Entity</th>
+            <th>Comment</th>
+            <th>User</th>
+            <th>Old</th>
+            <th>New</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($allRevisions as $rev) {
+        ?>
+            <tr>
+                <td>
+                    <a href="<?=
+                        $this->url('audit/revisions',
+                            array(
+                                'revisionId' => $rev->getRevision()->getId()
+                            )
+                        );
+                    ?>">
+
+                        <?= $rev->getRevision()->getId(); ?>
+
+                    </a>
+                </td>
+
+                <td>
+                    <a href="<?=
+                        $this->url('audit/revision-entity',
+                            array(
+                                'revisionEntityId' => $rev->getId()
+                            )
+                        );
+                    ?>">
+
+                        <?php echo $this->AuditDateTimeFormatter($rev->getRevision()->getTimestamp()); ?>
+
+                    </a>
+                </td>
+
+                <td>
+                    <a href="<?=
+                        $this->url('audit/revision-entity',
+                            array(
+                                'revisionEntityId' => $rev->getId()
+                            )
+                        );
+                    ?>" class="btn btn-<?php
+                    switch ($rev->getRevision()->getRevisionType()) {
+                        case 'INS':
+                            echo 'success';
+                            break;
+                        case 'UPD':
+                            echo 'warning';
+                            break;
+                        case 'DEL':
+                            echo 'danger';
+                            break;
+                        default:
+                            echo 'info';
+                    }
+                ?>">
+                        (<?= $rev->getId(); ?>)
+
+                        <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+                        <div class="entityKeys">
+                            <?php
+                            $rows = array();
+                            foreach($revisionEntity->getEntityKeys() as $key => $value) {
+                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                            }
+                            echo implode(', ', $rows);
+                            ?>
+                        </div>
+
+                    </a>
+                </td>
+
+                <td><?= $this->escapeHtml($rev->getRevision()->getComment()); ?></td>
+
+                <td>
+                    <a href="#" class="btn btn-default">
+                        <?php
+                            if ($rev->getRevision()->getUser()) {
+                                echo $this->gravatar($rev->getRevision()->getUser()->getEmail(), array('img_size' => 24));
+                                echo ' ';
+                                echo $this->escapeHtml($rev->getRevision()->getUser()->getEmail());
+                            } else {
+                                echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
+                                echo ' Anonymous';
+                            }
+                        ?>
+                    </a>
+                </td>
+
+                <td>
+                    <input type="radio" name="revisionEntityId_old" value="<?php  echo $this->escapeHtml($rev->getId()); ?>"
+                        <?php echo  (sizeof($allRevisions) == 1 or $rev == $this->revisionEntity) ? 'checked="checked"': ''; ?> />
+                </td>
+                <td>
+                    <input type="radio" name="revisionEntityId_new" value="<?php  echo $this->escapeHtml($rev->getId()); ?>"
+                        <?php
+                        if ($first and $rev != $this->revisionEntity) {
+                            echo 'checked="checked"';
+                            $first = false;
+                        }
+                        ?> />
+                </td>
+            </tr>
+            <?php
+            }
+            ?>
+    </tbody>
+</table>
+
+<input type="submit" class="btn btn-primary" value="Compare revisions" />
+</form>
+
+<?php
+}
+?>

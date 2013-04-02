@@ -59,28 +59,39 @@ return array(
                     'revisions' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/revision[/:rev]',
+                            'route' => '/revision[/:revisionId]',
                             'constraints' => array(
-                                'rev' => '[0-9]*',
+                                'revisionId' => '[0-9]*',
                             ),
                             'defaults' => array(
                                 'controller' => 'audit',
                                 'action'     => 'revision',
-                                'rev' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'revisionId' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                        ),
+                    ),
+                    'revision-entity' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/revision-entity[/:revisionEntityId]',
+                            'constraints' => array(
+                                'revisionEntityId' => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'audit',
+                                'action'     => 'revisionEntity',
+                                'revisionEntityId' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                         ),
                     ),
                     'entity' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/audit/entity[/:id[/:className]]',
-                            'constraints' => array(
-                                'id' => '[0-9]*',
-                            ),
+                            'route' => '/entity[/:entityClass]',
                             'defaults' => array(
                                 'controller' => 'audit',
                                 'action'     => 'entity',
-                                'className' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'entityClass' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                         ),
                     ),
@@ -104,15 +115,10 @@ return array(
                     'compare' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/audit/compare[/:className[/:id]]',
-                            'constraints' =>array(
-                                'id' => '[0-9]*',
-                            ),
+                            'route' => '/audit/compare',
                             'defaults' => array(
                                 'controller' => 'audit',
                                 'action' => 'compare',
-                                'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'className' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                         ),
                     ),

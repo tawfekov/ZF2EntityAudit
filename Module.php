@@ -4,10 +4,11 @@ namespace ZF2EntityAudit;
 
 use Zend\Mvc\MvcEvent
     , ZF2EntityAudit\Options\ModuleOptions
+    , ZF2EntityAudit\Service\AuditService
     , ZF2EntityAudit\Loader\AuditAutoloader
     , ZF2EntityAudit\EventListener\LogRevision
-    , ZF2EntityAudit\Utils\RevisionComment
     , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
+    , ZF2EntityAudit\View\Helper\EntityValues
     , Zend\ServiceManager\ServiceManager
     ;
 
@@ -77,12 +78,8 @@ class Module
                     return $auditConfig;
                 },
 
-                'auditReader' => function($serviceManager) {
-                    return new \ZF2EntityAudit\Reader($serviceManager);
-                },
-
-                'auditComment' => function($sm) {
-                    return new RevisionComment();
+                'auditService' => function($sm) {
+                    return new AuditService();
                 }
             ),
         );
@@ -98,6 +95,10 @@ class Module
                     $format = $config['audit']['datetime.format'];
                     $formatter = new AuditDateTimeFormatter();
                     return $formatter->setDateTimeFormat($format);
+                },
+
+                'auditService' => function($sm) {
+                    return new AuditService();
                 }
             )
         );

@@ -22,20 +22,16 @@ class IndexController extends AbstractActionController
      * Renders a paginated list of revisions.
      *
      * @param int $page
-     * @return  \Zend\View\Model\ViewModel
      */
     public function indexAction()
     {
-        $sm = $this->getServiceLocator() ;
-        $auditReader = $sm->get('auditReader');
-        $config = $sm->get("Config");
-        $ZF2AuditConfig = $config["audit"];
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
-        $revisions = $auditReader->findRevisionHistory(20, 20 * ($page));
+        $revisions = $this->getEntityManager()->getRepository('ZF2EntityAudit\\Entity\\Revision')->findBy(
+            array(), array('id' => 'DESC'), 20, 20 * $page
+        );
 
         return new ViewModel(array(
             'revisions' => $revisions,
-            'auditReader' => $auditReader,
         ));
     }
 
@@ -61,8 +57,23 @@ class IndexController extends AbstractActionController
         ));
     }
 
+    public function revisionEntityAction()
+    {
+        $revisionEntityId = (int) $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
+        $revisionEntity = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
+
+        if (!$revisionEntity)
+            return $this->plugin('redirect')->toRoute('audit');
+
+        return array(
+            'revisionEntity' => $revisionEntity,
+            'auditService' => $this->getServiceLocator()->get('auditService'),
+        );
+    }
+
     /**
-     * Lists revisions for the supplied entity.
+     * Lists revisions for the supplied entity.  Takes an audited entity class or audit class
      *
      * @param string $className
      * @param string $id
@@ -70,16 +81,25 @@ class IndexController extends AbstractActionController
      */
     public function entityAction()
     {
-        $className = $this->getEvent()->getRouteMatch()->getParam('className');
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+        $entityClass = $this->getEvent()->getRouteMatch()->getParam('entityClass');
 
-        $ids = explode(',', $id);
-        $revisions = $this->getServiceLocator()->get('auditReader')->findRevisions($className, $ids);
-        return new ViewModel(array(
-                    'id' => $id,
-                    'className' => $className,
-                    'revisions' => $revisions,
-                ));
+        if (in_array($entityClass, \ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses())) {
+            $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entityClass);
+        } else {
+            $auditEntityClass = $entityClass;
+        }
+
+        $this->getServiceLocator()->get('auditService')->getRevisionEntities($entityClass);
+
+        $revisionEntities = \ZF2EntityAudit\Module::getServiceManager()
+            ->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')
+            ->findBy(array('auditEntityClass' => $auditEntityClass), array('id' => 'DESC'));
+
+        return array(
+            'entityClass' => $entityClass,
+            'revisionEntities' => $revisionEntities,
+        );
     }
 
     /**
@@ -121,51 +141,22 @@ class IndexController extends AbstractActionController
      */
     public function compareAction()
     {
-        $className = $this->getEvent()->getRouteMatch()->getParam('className');
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
-        $oldRev = $this->getEvent()->getRouteMatch()->getParam('oldRev');
-        $newRev = $this->getEvent()->getRouteMatch()->getParam('newRev');
+        $revisionEntityId_old = $this->getRequest()->getPost()->get('revisionEntityId_old');
+        $revisionEntityId_new = $this->getRequest()->getPost()->get('revisionEntityId_new');
 
-        $em = $this->getEntityManager();
-        $metadata = $em->getClassMetadata($className);
-        $posted_data = $this->params()->fromPost();
-        if (null === $oldRev) {
-            $oldRev = (int)$posted_data['oldRev'];
-        }
 
-        if (null === $newRev) {
-            $newRev = (int)$posted_data["newRev"];
-        }
-        $ids = explode(',', $id);
-        $oldEntity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $oldRev);
-        $oldData = $this->getEntityValues($metadata, $oldEntity);
+        $revisionEntity_old = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_old);
+        $revisionEntity_new = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_new);
 
-        $newEntity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $newRev);
-        $newData = $this->getEntityValues($metadata, $newEntity);
+        if (!$revisionEntity_old and !$revisionEntity_new)
+            return $this->plugin('redirect')->toRoute('audit');
 
-        $differ = new ArrayDiff();
-        $diff = $differ->diff($oldData, $newData);
-
-        return new ViewModel(array(
-                    'className' => $className,
-                    'id' => $id,
-                    'oldRev' => $oldRev,
-                    'newRev' => $newRev,
-                    'diff' => $diff,
-                ));
+        return array(
+            'revisionEntity_old' => $revisionEntity_old,
+            'revisionEntity_new' => $revisionEntity_new,
+        );
     }
-
-    protected function getEntityValues(ClassMetadata $metadata, $entity)
-    {
-        $fields = $metadata->getFieldNames();
-
-        $return = array();
-        foreach ($fields AS $fieldName) {
-            $return[$fieldName] = $metadata->getFieldValue($entity, $fieldName);
-        }
-
-        return $return;
-    }
-
 }
 

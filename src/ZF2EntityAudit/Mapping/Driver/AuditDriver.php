@@ -28,7 +28,8 @@ final class AuditDriver implements MappingDriver
             $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
             $builder->addManyToOne('revision', 'ZF2EntityAudit\\Entity\\Revision');
             $builder->addField('entityKeys', 'string');
-            $builder->addField('entityClass', 'string');
+            $builder->addField('auditEntityClass', 'string');
+            $builder->addField('targetEntityClass', 'string');
 
             # $metadata->setTableName($config->getRevisionTableName());
             return;

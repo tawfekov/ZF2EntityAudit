@@ -1,121 +1,122 @@
-<h1>Audit Log</h1>
+<h1>Audit</h1>
 
-<div class="row">
-    <div class="span12">
-        <table class="table table-striped table-hover table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Revision</th>
-                    <th>Timestamp</th>
-                    <th>Entities</th>
-                    <th>User</th>
-                </tr>
-            </thead>
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>Audit Revision Entity</th>
+            <th>Comment</th>
+            <th>User</th>
+        </tr>
+    </thead>
 
-            <tfoot>
-                <tr>
-                    <td colspan="6">
-                        <span class="label label-success">Insert</span>
-                        <span class="label label-warning">Update</span>
-                        <span class="label label-important">Delete</span>
-                    </td>
-                </tr>
-            </tfoot>
-            <tbody>
-                <?php
-                $i = 1 ;
-                foreach ($revisions as $revision) {
-                ?>
-                    <tr>
-                        <td><?php  echo $this->escapeHtml($i);?></td>
-                        <td>
-                            <a href="<?=
-                                $this->url('audit/revisions',
-                                    array(
-                                        'rev' => $revision->getRevisionType()
-                                    )
-                                );
-                            ?>">
-                                <?php  echo $this->escapeHtml($revision->getRevisionType()); ?>
-                            </a>
-                        </td>
+    <tfoot>
+        <tr>
+            <td colspan="6">
+                <a href="#" class="btn btn-success">Insert</a>
+                <a href="#" class="btn btn-warning">Update</a>
+                <a href="#" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    </tfoot>
+    <tbody>
+    <?php
+    foreach ($revisions as $revision) {
+    ?>
+        <tr>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $revision->getId()
+                        )
+                    );
+                ?>">
 
-                        <td>
-                            <a href="<?=
-                                $this->url('audit/revisions',
-                                    array(
-                                        'rev' => $revision->getRevisionType()
-                                    )
-                                );
-                            ?>">
+                <?= $this->escapeHtml($revision->getId());?>
+                </a>
+            </td>
 
-                                <?php echo $this->AuditDateTimeFormatter($revision->getTimestamp()); ?>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $revision->getId()
+                        )
+                    );
+                ?>">
 
-                            </a>
-                        </td>
+                    <?php echo $this->AuditDateTimeFormatter($revision->getTimestamp()); ?>
 
-                        <td>
-                        <?php
-                        foreach ($revision->getRevisionEntities() as $revisionEntity) {
-                        ?>
-                                <?php $id = $revisionEntity->getId(); ?>
-                                <a href="<?=
-                                    $this->url(
-                                        'audit/entity',
-                                        array(
-                                            'id' => $id['id'],
-                                            'className' => $revisionEntity->getEntityClass(),
-                                        )
-                                    );?>">
-                            <span class="label label-<?php
-                                switch ($revision->getRevisionType()) {
-                                    case 'INS':
-                                        echo 'success';
-                                        break;
-                                    case 'UPD':
-                                        echo 'warning';
-                                        break;
-                                    case 'DEL':
-                                        echo 'important';
-                                        break;
-                                    default:
-                                        echo 'info';
-                                }
-                            ?>">
+                </a>
+            </td>
 
-                                    <?php echo $this->escapeHtml($revisionEntity->getEntity()->getAuditedEntityClass()); ?>
-                            </span>
-                                </a>
-                        <br>
-                        <?php
-                        $i++;
+            <td>
+            <?php
+            foreach ($revision->getRevisionEntities() as $revisionEntity) {
+            ?>
+            <div>
+                <a class="btn btn-<?php
+                    switch ($revision->getRevisionType()) {
+                        case 'INS':
+                            echo 'success';
+                            break;
+                        case 'UPD':
+                            echo 'warning';
+                            break;
+                        case 'DEL':
+                            echo 'danger';
+                            break;
+                        default:
+                            echo 'info';
+                    }
+                ?>"
+                    href="<?=
+                        $this->url(
+                            'audit/revision-entity',
+                            array(
+                                'revisionEntityId' => $revisionEntity->getId(),
+                            )
+                        );?>"
+                    >
+                        (<?= $revisionEntity->getId(); ?>)
+                        <?= $this->escapeHtml($revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+                        <div class="entityKeys">
+                            <?php
+                            $rows = array();
+                            foreach($revisionEntity->getEntityKeys() as $key => $value) {
+                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                            }
+                            echo implode(', ', $rows);
+                            ?>
+                        </div>
+                    </a>
+                </div>
+            <?php
+            }
+            ?>
+            </td>
+
+            <td><?= $this->escapeHtml($revision->getComment()); ?></td>
+
+            <td>
+                <a href="#" class="btn btn-default">
+                    <?php
+                        if ($revision->getUser()) {
+                            echo $this->gravatar($revision->getUser()->getEmail(), array('img_size' => 24));
+                            echo ' ';
+                            echo $this->escapeHtml($revision->getUser()->getEmail());
+                        } else {
+                            echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
+                            echo ' Anonymous';
                         }
-                        ?>
-                        </td>
-
-                        <td>
-                            <span class="btn btn-default">
-                                <?php
-                                    if ($revision->getUser()) {
-                                        echo $this->gravatar($revision->getUser()->getEmail(), array('img_size' => 24));
-                                        echo ' ';
-                                        echo $this->escapeHtml($revision->getUser()->getEmail());
-                                    } else {
-                                        echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
-                                        echo ' Anonymous';
-                                    }
-                                ?>
-                            </span>
-                        </td>
-                    </tr>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
-    <div class="span6">
-
-    </div>
-</div>
+                    ?>
+                </a>
+            </td>
+        </tr>
+    <?php
+    }
+    ?>
+    </tbody>
+</table>
