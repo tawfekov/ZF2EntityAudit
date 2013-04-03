@@ -191,6 +191,7 @@ class LogRevision implements EventSubscriber
     public function postFlush(PostFlushEventArgs $args)
     {
         if ($this->getEntities()) {
+            $this->getEntityManager()->beginTransaction();
             $this->commitRevision();
 
             // Insert entites will trigger key generation and must be
@@ -205,6 +206,7 @@ class LogRevision implements EventSubscriber
 
             $this->resetEntities();
             $this->getEntityManager()->flush();
+            $this->getEntityManager()->commit();
         }
 
         $this->resetEntities();
@@ -214,10 +216,9 @@ class LogRevision implements EventSubscriber
 
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        $entities = array();
-
         if ($this->committingRevision) return;
 
+        $entities = array();
         $this->buildRevision();
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
