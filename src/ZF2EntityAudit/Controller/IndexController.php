@@ -3,7 +3,11 @@
 namespace ZF2EntityAudit\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController
-    ;
+ , DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter
+ , Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator
+ , Zend\Paginator\Paginator
+ , Zend\View\Model\ViewModel
+ ;
 
 class IndexController extends AbstractActionController
 {
@@ -15,13 +19,20 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
-        $revisions = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\Revision')->findBy(
-                array(), array('id' => 'DESC'), 20, 20 * $page
-        );
+        $repository = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\Revision');
+
+        $qb = $repository->createQueryBuilder('revision');
+        $qb->orderBy('revision.id', 'DESC');
+
+        $adapter = new DoctrineAdapter(new ORMPaginator($qb));
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage(20);
+
+        if($page) $paginator->setCurrentPageNumber($page);
 
         return array(
-            'revisions' => $revisions,
+            'paginator' => $paginator,
         );
     }
 

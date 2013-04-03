@@ -3,12 +3,10 @@
 namespace ZF2EntityAudit\EventListener;
 
 use Doctrine\Common\EventSubscriber
-    , Doctrine\ORM\UnitOfWork
     , Doctrine\ORM\EntityManager
     , Doctrine\ORM\Events
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\PostFlushEventArgs
-    , Doctrine\ORM\Event\LifecycleEventArgs
     , Zend\ServiceManager\ServiceManager
     , ZF2EntityAudit\Entity\Revision as RevisionEntity
     , ZF2EntityAudit\Options\ModuleOptions
@@ -171,6 +169,27 @@ class LogRevision implements EventSubscriber
         return array($auditEntity, $revisionEntity);
     }
 
+    public function onFlush(OnFlushEventArgs $eventArgs)
+    {
+        $entities = array();
+
+        $this->buildRevision();
+
+        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
+            $entities = array_merge($entities, $this->auditEntity($entity, 'INS'));
+        }
+
+        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityUpdates() AS $entity) {
+            $entities = array_merge($entities, $this->auditEntity($entity, 'UPD'));
+        }
+
+        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
+            $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
+        }
+
+        $this->setEntities($entities);
+    }
+
     public function postFlush(PostFlushEventArgs $args)
     {
         if ($this->getEntities()) {
@@ -196,26 +215,5 @@ class LogRevision implements EventSubscriber
         $this->resetEntities();
         $this->resetInsertEntities();
         $this->resetRevision();
-    }
-
-    public function onFlush(OnFlushEventArgs $eventArgs)
-    {
-        $entities = array();
-
-        $this->buildRevision();
-
-        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
-            $entities = array_merge($entities, $this->auditEntity($entity, 'INS'));
-        }
-
-        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityUpdates() AS $entity) {
-            $entities = array_merge($entities, $this->auditEntity($entity, 'UPD'));
-        }
-
-        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
-            $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
-        }
-
-        $this->setEntities($entities);
     }
 }

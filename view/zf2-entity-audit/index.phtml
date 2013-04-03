@@ -3,15 +3,13 @@
 <table class="table table-striped table-hover table-bordered">
     <thead>
         <tr>
-            <th colspan="4">
+            <th>
 <?php echo $this->paginationControl($this->paginator,
     'Sliding',
-    'zf2-entity-audit/pagination/audit-pagination', array('route' => 'audit/page')); ?>
+    'zf2-entity-audit\pagination\audit-pagination', array('route' => 'audit')); ?>
 
 
             </th>
-        </tr>
-        <tr>
             <th>Revision</th>
             <th>Entity</th>
             <th>Comment</th>

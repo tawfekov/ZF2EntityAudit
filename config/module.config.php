@@ -43,6 +43,20 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                    'page' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '[/:page]',
+                            'constraints' => array(
+                                'page' => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'audit',
+                                'action'     => 'index',
+                                'page' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                        ),
+                    ),
                     'revisions' => array(
                         'type' => 'Segment',
                         'options' => array(
