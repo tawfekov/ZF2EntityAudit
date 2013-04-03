@@ -127,7 +127,7 @@
 <?php
     $first = true;
     $oldSet = false;
-    $paginator = $this->auditRevisionEntityPaginator($this->revisionEntity->getAuditEntity(), $page);
+    $paginator = $this->auditRevisionEntityPaginator($page, $this->revisionEntity->getAuditEntity());
 ?>
 <table class="table table-striped table-hover table-bordered ">
     <caption>

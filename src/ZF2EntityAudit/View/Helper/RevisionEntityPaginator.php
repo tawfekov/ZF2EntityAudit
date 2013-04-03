@@ -28,7 +28,7 @@ final class RevisionEntityPaginator extends AbstractHelper implements ServiceLoc
         return $this;
     }
 
-    public function __invoke($entity, $page) {
+    public function __invoke($page, $entity) {
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
 
