@@ -1,11 +1,17 @@
+<span class="pull-right">
+    <a href="#" class="btn btn-success">Insert</a>
+    <a href="#" class="btn btn-warning">Update</a>
+    <a href="#" class="btn btn-danger">Delete</a>
+</span>
+
 <h1>Audit</h1>
+
+<?php $paginator = $this->auditIndexPaginator($this->page); ?>
 
 <table class="table table-striped table-hover table-bordered">
     <thead>
         <tr>
             <th colspan="4">
-            <?php $paginator = $this->auditIndexPaginator($this->page); ?>
-
             <?php echo $this->paginationControl($paginator,
                 'Sliding',
                 'zf2-entity-audit/pagination/index', array('route' => 'audit/page'));
@@ -21,13 +27,12 @@
     </thead>
 
     <tfoot>
-        <tr>
-            <td colspan="6">
-                <a href="#" class="btn btn-success">Insert</a>
-                <a href="#" class="btn btn-warning">Update</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
+        <th colspan="4">
+            <?php echo $this->paginationControl($paginator,
+                'Sliding',
+                'zf2-entity-audit/pagination/index', array('route' => 'audit/page'));
+            ?>
+        </th>
     </tfoot>
     <tbody>
     <?php

@@ -1,8 +1,10 @@
 <h1>Audit All Entity Revisions</h1>
 
+<?php $paginator = $this->auditEntityPaginator($page, $this->entityClass); ?>
+
 <table class="table table-striped table-hover table-bordered">
     <caption>
-        All Revisons for
+        All Revison Entities for
             <a href="<?=
 
                     $this->url(
@@ -16,8 +18,6 @@
     <thead>
         <tr>
             <th colspan="4">
-                <?php $paginator = $this->auditEntityPaginator($page, $this->entityClass); ?>
-
                 <?= $this->paginationControl($paginator,
                 'Sliding',
                 'zf2-entity-audit/pagination/entity',
@@ -34,6 +34,20 @@
             <th>User</th>
         </tr>
     </thead>
+
+    <tfoot>
+        <tr>
+            <th colspan="4">
+                <?= $this->paginationControl($paginator,
+                'Sliding',
+                'zf2-entity-audit/pagination/entity',
+                    array(
+                        'route' => 'audit/entity',
+                        'entityClass' => $this->entityClass,
+                    )); ?>
+            </th>
+        </tr>
+    </tfoot>
 
     <tbody>
 

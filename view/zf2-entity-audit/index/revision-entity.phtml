@@ -157,6 +157,22 @@
             <th>New</th>
         </tr>
     </thead>
+    <tfoot>
+        <tr>
+            <th colspan="6">
+                <?=
+                $this->paginationControl($paginator,
+                    'Sliding',
+                    'zf2-entity-audit/pagination/revision-entity',
+                    array(
+                        'route' => 'audit/revision-entity',
+                        'revisionEntityId' => $this->revisionEntity->getId(),
+                    )
+                ); ?>
+            </th>
+
+        </tr>
+    </tfoot>
     <tbody>
         <?php
         foreach ($paginator as $rev) {
