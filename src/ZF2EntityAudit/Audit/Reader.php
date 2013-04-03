@@ -16,13 +16,13 @@ class Reader
     private $config;
 
     private $metadataFactory;
-    
+
     private $ZfcUserRepository;
 
     /**
-     * @param EntityManager $em
+     * @param EntityManager      $em
      * @param AuditConfiguration $config
-     * @param MetadataFactory $factory
+     * @param MetadataFactory    $factory
      */
     public function __construct(EntityManager $em, Configuration $config, MetadataFactory $factory)
     {
@@ -39,9 +39,9 @@ class Reader
      * This method does not require the revision to be exact but it also searches for an earlier revision
      * of this entity and always returns the latest revision below or equal the given revision
      *
-     * @param string $className
-     * @param mixed $id
-     * @param int $revision
+     * @param  string $className
+     * @param  mixed  $id
+     * @param  int    $revision
      * @return object
      */
     public function find($className, $id, $revision)
@@ -62,7 +62,7 @@ class Reader
         foreach ($class->identifier AS $idField) {
             if (isset($class->fieldMappings[$idField])) {
                 $columnName = $class->fieldMappings[$idField]['columnName'];
-            } else if (isset($class->associationMappings[$idField])) {
+            } elseif (isset($class->associationMappings[$idField])) {
                 $columnName = $class->associationMappings[$idField]['joinColumns'][0];
             }
 
@@ -121,8 +121,8 @@ class Reader
      *
      * NOTICE: Creates an old version of the entity, HOWEVER related associations are all managed entities!!
      *
-     * @param string $className
-     * @param array $data
+     * @param  string $className
+     * @param  array  $data
      * @return object
      */
     private function createEntity($className, array $data)
@@ -155,7 +155,7 @@ class Reader
                             $associatedId[$targetClass->fieldNames[$targetColumn]] = $joinColumnValue;
                         }
                     }
-                    if ( ! $associatedId) {
+                    if (! $associatedId) {
                         // Foreign key is NULL
                         $class->reflFields[$field]->setValue($entity, null);
                     } else {
@@ -180,8 +180,8 @@ class Reader
     /**
      * Return a list of all revisions.
      *
-     * @param int $limit
-     * @param int $offset
+     * @param  int        $limit
+     * @param  int        $offset
      * @return Revision[]
      */
     public function findRevisionHistory($limit = 20, $offset = 0)
@@ -201,13 +201,14 @@ class Reader
                 $this->ZfcUserRepository->find($row['user_id'])
             );
         }
+
         return $revisions;
     }
 
     /**
      * Return a list of ChangedEntity instances created at the given revision.
      *
-     * @param int $revision
+     * @param  int             $revision
      * @return ChangedEntity[]
      */
     public function findEntitesChangedAtRevision($revision)
@@ -259,13 +260,14 @@ class Reader
                 $changedEntities[] = new ChangedEntity($className, $id, $row[$this->config->getRevisionTypeFieldName()], $entity);
             }
         }
+
         return $changedEntities;
     }
 
     /**
      * Return the revision object for a particular revision.
      *
-     * @param  int $rev
+     * @param  int      $rev
      * @return Revision
      */
     public function findRevision($rev)
@@ -287,8 +289,8 @@ class Reader
     /**
      * Find all revisions that were made of entity class with given id.
      *
-     * @param string $className
-     * @param mixed $id
+     * @param  string     $className
+     * @param  mixed      $id
      * @return Revision[]
      */
     public function findRevisions($className, $id)
@@ -311,7 +313,7 @@ class Reader
                     $whereSQL .= " AND ";
                 }
                 $whereSQL .= "e." . $class->fieldMappings[$idField]['columnName'] . " = ?";
-            } else if (isset($class->associationMappings[$idField])) {
+            } elseif (isset($class->associationMappings[$idField])) {
                 if ($whereSQL) {
                     $whereSQL .= " AND ";
                 }
@@ -339,6 +341,7 @@ class Reader
     protected function getEntityPersister($entity)
     {
         $uow = $this->em->getUnitOfWork();
+
         return $uow->getEntityPersister($entity);
     }
 }

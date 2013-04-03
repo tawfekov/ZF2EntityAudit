@@ -8,7 +8,7 @@ class ChangedEntity
     private $id;
     private $revType;
     private $entity;
-    
+
     public function __construct($className, array $id, $revType, $entity)
     {
         $this->className = $className;
@@ -16,7 +16,7 @@ class ChangedEntity
         $this->revType = $revType;
         $this->entity = $entity;
     }
-    
+
     /**
      * @return string
      */

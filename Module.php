@@ -42,6 +42,7 @@ class Module
                     $config = $sm->get('Config');
                     $auditconfig = new Configuration();
                     $auditconfig->setAuditedEntityClasses($config['zf2-entity-audit']['entities']);
+
                     return $auditconfig;
                 },
 
@@ -56,18 +57,20 @@ class Module
                         if ($auth->hasIdentity()) {
                             $identity = $auth->getIdentity();
                             $auditconfig->setCurrentUser($identity);
-                        } 
+                        }
                         // TODO : need to handle the unauthenticated user action case , 99% i will drop support for unauthenticated user
                     }
                     $auditManager = new Manager($auditconfig);
                     $evm->addEventSubscriber(new CreateSchemaListener($auditManager));
                     $evm->addEventSubscriber(new LogRevisionsListener($auditManager));
+
                     return $auditManager;
                 },
 
                 'auditReader' => function($sm) {
                     $auditManager = $sm->get('auditManager');
                     $entityManager = $sm->get('doctrine.entitymanager.orm_default');
+
                     return $auditManager->createAuditReader($entityManager);
                 },
             ),
@@ -78,13 +81,14 @@ class Module
          return array(
             'factories' => array(
                 'DateTimeFormatter' => function($sm) {
-                    $Servicelocator = $sm->getServiceLocator(); 
+                    $Servicelocator = $sm->getServiceLocator();
                     $config = $Servicelocator->get("Config");
-                    $format = $config['zf2-entity-audit']['ui']['datetime.format']; 
+                    $format = $config['zf2-entity-audit']['ui']['datetime.format'];
                     $formatter = new DateTimeFormatter();
+
                     return $formatter->setDateTimeFormat($format);
                 }
             )
-        );  
+        );
     }
 }

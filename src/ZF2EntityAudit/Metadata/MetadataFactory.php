@@ -2,12 +2,12 @@
 
 namespace ZF2EntityAudit\Metadata;
 
-class MetadataFactory 
+class MetadataFactory
 {
 
     private $auditedEntities = array();
 
-    public function __construct($auditedEntities) 
+    public function __construct($auditedEntities)
     {
         $this->auditedEntities = array_flip($auditedEntities);
     }

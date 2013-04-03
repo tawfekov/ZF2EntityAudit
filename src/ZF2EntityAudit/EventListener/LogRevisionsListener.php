@@ -111,17 +111,18 @@ class LogRevisionsListener implements EventSubscriber
     /**
      * get original entity data, including versioned field, if "version" constraint is used
      *
-     * @param mixed $entity
+     * @param  mixed $entity
      * @return array
      */
     private function getOriginalEntityData($entity)
     {
         $class = $this->em->getClassMetadata(get_class($entity));
         $data = $this->uow->getOriginalEntityData($entity);
-        if( $class->isVersioned ){
+        if ($class->isVersioned) {
             $versionField = $class->versionField;
             $data[$versionField] = $class->reflFields[$versionField]->getValue($entity);
         }
+
         return $data;
     }
 
@@ -141,6 +142,7 @@ class LogRevisionsListener implements EventSubscriber
 
             $this->revisionId = $this->conn->lastInsertId($sequenceName);
         }
+
         return $this->revisionId;
     }
 
@@ -179,8 +181,8 @@ class LogRevisionsListener implements EventSubscriber
 
     /**
      * @param ClassMetadata $class
-     * @param array $entityData
-     * @param string $revType
+     * @param array         $entityData
+     * @param string        $revType
      */
     private function saveRevisionEntityData($class, $entityData, $revType)
     {

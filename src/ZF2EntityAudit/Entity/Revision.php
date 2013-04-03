@@ -2,15 +2,13 @@
 
 namespace ZF2EntityAudit\Entity;
 
-use ZfcUser\Entity\UserInterface;
-
 class Revision
 {
     private $rev;
     private $timestamp;
     private $user;
 
-    function __construct($rev, $timestamp,  $user)
+    public function __construct($rev, $timestamp,  $user)
     {
         $this->rev = $rev;
         $this->timestamp = $timestamp;

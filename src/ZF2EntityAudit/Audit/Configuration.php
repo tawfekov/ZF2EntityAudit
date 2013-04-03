@@ -16,7 +16,7 @@ class Configuration
     private $currentUser = '';
     private $revisionIdFieldType = 'integer';
     private $note = "";
-    
+
     public function getTablePrefix()
     {
         return $this->prefix;
@@ -76,15 +76,15 @@ class Configuration
     {
         return new MetadataFactory($this->auditedEntityClasses);
     }
-    
+
     public function setCurrentUser( $user)
     {
-        if( $user instanceof UserInterface === false ){
+        if ($user instanceof UserInterface === false) {
             throw new \Exception("ZF2EntityAudit Verion 0.2 doesn't support anonymous editing , please use `0.1-stable` anonymous editing   ", 500 );
         }
         $this->currentUser = $user;
     }
-    
+
     public function getCurrentUser()
     {
         return $this->currentUser;

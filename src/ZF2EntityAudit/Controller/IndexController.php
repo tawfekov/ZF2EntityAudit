@@ -7,7 +7,7 @@ use Zend\View\Model\ViewModel;
 use ZF2EntityAudit\Utils\ArrayDiff;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class IndexController extends AbstractActionController 
+class IndexController extends AbstractActionController
 {
 
     /**
@@ -21,8 +21,8 @@ class IndexController extends AbstractActionController
     /**
      * Renders a paginated list of revisions.
      *
-     * @param int $page
-     * @return  \Zend\View\Model\ViewModel
+     * @param  int                        $page
+     * @return \Zend\View\Model\ViewModel
      */
     public function indexAction()
     {
@@ -30,8 +30,9 @@ class IndexController extends AbstractActionController
         $auditReader = $sm->get('auditReader');
         $config = $sm->get("Config");
         $ZF2AuditConfig = $config["zf2-entity-audit"];
-        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
+        $page = (int) $this->getEvent()->getRouteMatch()->getParam('page');
         $revisions = $auditReader->findRevisionHistory($ZF2AuditConfig['ui']['page.limit'], 20 * ($page - 1));
+
         return new ViewModel(array(
             'revisions' => $revisions,
             'auditReader' => $auditReader,
@@ -41,11 +42,11 @@ class IndexController extends AbstractActionController
     /**
      * Shows entities changed in the specified revision.
      *
-     * @param integer $rev
+     * @param  integer                    $rev
      * @return \Zend\View\Model\ViewModel
      *
      */
-    public function viewRevisionAction() 
+    public function viewRevisionAction()
     {
         $rev = (int) $this->getEvent()->getRouteMatch()->getParam('rev');
         $revision = $this->getServiceLocator()->get('auditReader')->findRevision($rev);
@@ -63,17 +64,18 @@ class IndexController extends AbstractActionController
     /**
      * Lists revisions for the supplied entity.
      *
-     * @param string $className
-     * @param string $id
+     * @param  string                     $className
+     * @param  string                     $id
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewEntityAction() 
+    public function viewEntityAction()
     {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
 
         $ids = explode(',', $id);
         $revisions = $this->getServiceLocator()->get('auditReader')->findRevisions($className, $ids);
+
         return new ViewModel(array(
                     'id' => $id,
                     'className' => $className,
@@ -84,12 +86,12 @@ class IndexController extends AbstractActionController
     /**
      * Shows the data for an entity at the specified revision.
      *
-     * @param string $className
-     * @param string $id Comma separated list of identifiers
-     * @param int $rev
+     * @param  string                     $className
+     * @param  string                     $id        Comma separated list of identifiers
+     * @param  int                        $rev
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewdetailAction() 
+    public function viewdetailAction()
     {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
@@ -116,13 +118,13 @@ class IndexController extends AbstractActionController
      * Compares an entity at 2 different revisions.
      *
      *
-     * @param string $className
-     * @param string $id Comma separated list of identifiers
-     * @param null|int $oldRev if null, pulled from the posted data
-     * @param null|int $newRev if null, pulled from the posted data
+     * @param  string   $className
+     * @param  string   $id        Comma separated list of identifiers
+     * @param  null|int $oldRev    if null, pulled from the posted data
+     * @param  null|int $newRev    if null, pulled from the posted data
      * @return Response
      */
-    public function compareAction() 
+    public function compareAction()
     {
         $className = $this->getEvent()->getRouteMatch()->getParam('className');
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
@@ -133,11 +135,11 @@ class IndexController extends AbstractActionController
         $metadata = $em->getClassMetadata($className);
         $posted_data = $this->params()->fromPost();
         if (null === $oldRev) {
-            $oldRev = (int)$posted_data['oldRev'];
+            $oldRev = (int) $posted_data['oldRev'];
         }
 
         if (null === $newRev) {
-            $newRev = (int)$posted_data["newRev"];
+            $newRev = (int) $posted_data["newRev"];
         }
         $ids = explode(',', $id);
         $oldEntity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $oldRev);
@@ -158,7 +160,7 @@ class IndexController extends AbstractActionController
                 ));
     }
 
-    protected function getEntityValues(ClassMetadata $metadata, $entity) 
+    protected function getEntityValues(ClassMetadata $metadata, $entity)
     {
         $fields = $metadata->getFieldNames();
 
@@ -171,4 +173,3 @@ class IndexController extends AbstractActionController
     }
 
 }
-
