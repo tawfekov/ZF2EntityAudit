@@ -89,11 +89,11 @@ class Module
     {
          return array(
             'factories' => array(
-                'AuditDateTimeFormatter' => function($sm) {
+                'auditDateTimeFormatter' => function($sm) {
                     $Servicelocator = $sm->getServiceLocator();
                     $config = $Servicelocator->get("Config");
                     $format = $config['audit']['datetime.format'];
-                    $formatter = new AuditDateTimeFormatter();
+                    $formatter = new DateTimeFormatter();
                     return $formatter->setDateTimeFormat($format);
                 },
 

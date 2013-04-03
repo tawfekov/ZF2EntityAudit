@@ -6,7 +6,7 @@ use Zend\Http\Request;
 use Zend\View\Helper\AbstractHelper;
 
 
-class AuditDateTimeFormatter extends AbstractHelper 
+class DateTimeFormatter extends AbstractHelper 
 {
     
     protected $format;
