@@ -3,6 +3,7 @@
 namespace ZF2EntityAudit\EventListener;
 
 use Doctrine\Common\EventSubscriber
+    , Doctrine\ORM\UnitOfWork
     , Doctrine\ORM\EntityManager
     , Doctrine\ORM\Events
     , Doctrine\ORM\Event\OnFlushEventArgs
@@ -21,7 +22,7 @@ class LogRevision implements EventSubscriber
     private $serviceManager;
     private $config;
     private $revision;
-    private $uow;
+    private $unitOfWork;
 
     public function __construct($serviceManager)
     {
@@ -74,11 +75,29 @@ class LogRevision implements EventSubscriber
     private function resetRevision()
     {
         $this->revision = null;
+        return $this;
     }
 
     private function getRevision()
     {
         return $this->revision;
+    }
+
+    private function setUnitOfWork(UnitOfWork $unitOfWork)
+    {
+        $this->unitOfWork = $unitOfWork;
+        return $this;
+    }
+
+    private function resetUnitOfWork()
+    {
+        $this->unitOfWork = null;
+        return $this;
+    }
+
+    private function getUnitOfWork()
+    {
+        return $this->unitOfWork;
     }
 
     // You must flush the revision for the compound audit key to work
@@ -142,25 +161,25 @@ class LogRevision implements EventSubscriber
         if ($this->getRevision()) return;
         $this->buildRevision();
 
-        foreach ($this->uow->getScheduledEntityInsertions() AS $entity) {
+        foreach ($this->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
             $this->auditEntity($entity, 'INS');
         }
 
-        foreach ($this->uow->getScheduledEntityUpdates() AS $entity) {
+        foreach ($this->getUnitOfWork()->getScheduledEntityUpdates() AS $entity) {
             $this->auditEntity($entity, 'UPD');
         }
 
-        foreach ($this->uow->getScheduledEntityDeletions() AS $entity) {
+        foreach ($this->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
             $this->auditEntity($entity, 'DEL');
         }
 
         $this->getEntityManager()->flush();
         $this->resetRevision();
-        $this->uow = null;
+        $this->resetUnitOfWork();
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        $this->setUnitOfWork(clone $eventArgs->getEntityManager()->getUnitOfWork());
+        if (!$this->getUnitOfWork()) $this->setUnitOfWork(clone $eventArgs->getEntityManager()->getUnitOfWork());
     }
 }

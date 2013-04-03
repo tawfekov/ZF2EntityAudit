@@ -10,7 +10,7 @@
         <tr>
             <th>
                 <a class="btn btn-<?php
-                    switch ($revisionEntity_old->getRevision()->getRevisionType()) {
+                    switch ($revisionEntity_old->getRevisionType()) {
                         case 'INS':
                             echo 'success';
                             break;
@@ -81,7 +81,7 @@
         <tr>
             <th>
                 <a class="btn btn-<?php
-                    switch ($revisionEntity_new->getRevision()->getRevisionType()) {
+                    switch ($revisionEntity_new->getRevisionType()) {
                         case 'INS':
                             echo 'success';
                             break;
@@ -158,7 +158,7 @@
         between
 
             <a class="btn btn-<?php
-                switch ($revisionEntity_old->getRevision()->getRevisionType()) {
+                switch ($revisionEntity_old->getRevisionType()) {
                     case 'INS':
                         echo 'success';
                         break;
@@ -196,7 +196,7 @@
         and
 
             <a class="btn btn-<?php
-                switch ($revisionEntity_new->getRevision()->getRevisionType()) {
+                switch ($revisionEntity_new->getRevisionType()) {
                     case 'INS':
                         echo 'success';
                         break;

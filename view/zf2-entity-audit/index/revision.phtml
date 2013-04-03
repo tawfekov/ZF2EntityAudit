@@ -50,7 +50,7 @@ foreach ($this->revision->getRevisionEntities() as $revisionEntity) {
         <tr>
 
     <a class="btn btn-<?php
-        switch ($this->revision->getRevisionType()) {
+        switch ($revisionEntity->getRevisionType()) {
             case 'INS':
                 echo 'success';
                 break;
