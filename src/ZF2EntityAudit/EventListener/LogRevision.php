@@ -24,7 +24,6 @@ class LogRevision implements EventSubscriber
     private $revision;
     private $entities;
     private $insertEntities;
-    protected $committingRevision;
 
     public function __construct($serviceManager)
     {
@@ -68,34 +67,14 @@ class LogRevision implements EventSubscriber
 
     public function getSubscribedEvents()
     {
-        return array(
-            Events::onFlush
-            , Events::postFlush
-        );
-    }
-
-    private function resetRevision()
-    {
-        $this->revision = null;
-        return $this;
-    }
-
-    private function getRevision()
-    {
-        return $this->revision;
-    }
-
-    private function commitRevision()
-    {
-        $this->committingRevision = true;
-        $this->getEntityManager()->persist($this->getRevision());
-        $this->getEntityManager()->flush();
-        $this->committingRevision = false;
+        return array(Events::onFlush, Events::postFlush);
     }
 
     private function setEntities($entities)
     {
+        if ($this->entities) return $this;
         $this->entities = $entities;
+
         return $this;
     }
 
@@ -126,8 +105,22 @@ class LogRevision implements EventSubscriber
         $this->insertEntities[] = $entityMap;
     }
 
+    private function getRevision()
+    {
+        return $this->revision;
+    }
+
+    private function resetRevision()
+    {
+        $this->revision = null;
+        return $this;
+    }
+
     // You must flush the revision for the compound audit key to work
-    private function buildRevision() {
+    private function buildRevision()
+    {
+        if ($this->revision) return;
+
         $revision = new RevisionEntity();
         if ($this->getConfig()->getUser()) $revision->setUser($this->getConfig()->getUser());
         $revision->setComment($this->getServiceManager()->get('auditService')->getComment());
@@ -149,7 +142,6 @@ class LogRevision implements EventSubscriber
         return $properties;
     }
 
-    // Copy all properties from entity to it's audited version and persist
     private function auditEntity($entity, $revisionType)
     {
         if (!in_array(get_class($entity), $this->getConfig()->getAuditedEntityClasses()))
@@ -179,23 +171,16 @@ class LogRevision implements EventSubscriber
         return array($auditEntity, $revisionEntity);
     }
 
-    /**
-     * This is the workhorse of this class.
-     *
-     * An audit begins with a fresh unit of work.  The unit of work
-     * is stored on the class and after it has been commited
-     * the postFlush walks through the entities it and audits them.
-     * Auditing requires to flush()es, one for the Revison and one
-     * for all the audited entities and revision entities
-     */
     public function postFlush(PostFlushEventArgs $args)
     {
         if ($this->getEntities()) {
             $this->getEntityManager()->beginTransaction();
-            $this->commitRevision();
+
+            $this->getEntityManager()->persist($this->getRevision());
+            $this->getEntityManager()->flush();
 
             // Insert entites will trigger key generation and must be
-            // re-exchanged
+            // re-exchanged (delete entites go out of scope)
             foreach ($this->getInsertEntities() as $entityMap) {
                 $entityMap['auditEntity']->exchangeArray($this->getClassProperties($entityMap['entity']));
                 $entityMap['revisionEntity']->setAuditEntity($entityMap['auditEntity']);
@@ -203,9 +188,8 @@ class LogRevision implements EventSubscriber
 
             foreach ($this->getEntities() as $entity)
                 $this->getEntityManager()->persist($entity);
-
-            $this->resetEntities();
             $this->getEntityManager()->flush();
+
             $this->getEntityManager()->commit();
         }
 
@@ -216,9 +200,8 @@ class LogRevision implements EventSubscriber
 
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        if ($this->committingRevision) return;
-
         $entities = array();
+
         $this->buildRevision();
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
@@ -233,8 +216,6 @@ class LogRevision implements EventSubscriber
             $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
         }
 
-        if ($entities) {
-            $this->setEntities($entities);
-        }
+        $this->setEntities($entities);
     }
 }
