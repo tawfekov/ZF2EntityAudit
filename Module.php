@@ -7,7 +7,7 @@ use Zend\Mvc\MvcEvent
     , ZF2EntityAudit\Service\AuditService
     , ZF2EntityAudit\Loader\AuditAutoloader
     , ZF2EntityAudit\EventListener\LogRevision
-    , ZF2EntityAudit\View\Helper\AuditDateTimeFormatter
+    , ZF2EntityAudit\View\Helper\DateTimeFormatter
     , ZF2EntityAudit\View\Helper\EntityValues
     , Zend\ServiceManager\ServiceManager
     ;
