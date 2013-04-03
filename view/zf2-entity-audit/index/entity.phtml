@@ -16,11 +16,11 @@
     <thead>
         <tr>
             <th colspan="4">
-
+                <?php $paginator = $this->auditEntityPaginator($page, $this->entityClass); ?>
 
                 <?= $this->paginationControl($paginator,
                 'Sliding',
-                'zf2-entity-audit/pagination/audit-pagination',
+                'zf2-entity-audit/pagination/entity',
                     array(
                         'route' => 'audit/entity',
                         'entityClass' => $this->entityClass,

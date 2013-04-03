@@ -92,35 +92,10 @@ class IndexController extends AbstractActionController
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $entityClass = $this->getEvent()->getRouteMatch()->getParam('entityClass');
 
-        if (in_array($entityClass, \ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses())) {
-            $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entityClass);
-        } else {
-            $auditEntityClass = $entityClass;
-        }
-
-        $repository = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity');
-
-        $qb = $repository->createQueryBuilder('revisionEntity');
-        $qb->orderBy('revisionEntity.id', 'DESC');
-
-        $qb->andWhere('revisionEntity.auditEntityClass = ?1')
-            ->setParameter(1, $auditEntityClass);
-
-#            die ($qb->getDql());
-
-        $adapter = new DoctrineAdapter(new ORMPaginator($qb));
-        $paginator = new Paginator($adapter);
-        $paginator->setDefaultItemCountPerPage(20);
-
-        if($page) $paginator->setCurrentPageNumber($page);
-
         return array(
             'entityClass' => $entityClass,
-            'paginator' => $paginator,
+            'page' => $page,
         );
-
-
     }
 
     /**
