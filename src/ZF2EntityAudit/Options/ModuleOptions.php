@@ -15,12 +15,23 @@ class ModuleOptions
 
     public function setDefaults(array $config)
     {
+        $this->setPaginatorLimit(isset($config['tableNamePrefix']) ? $config['paginator.limit']: 20);
         $this->setTableNamePrefix(isset($config['tableNamePrefix']) ? $config['tableNamePrefix']: null);
         $this->setTableNameSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
         $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
+    }
 
+    public function getPaginatorLimit()
+    {
+        return $this->paginatorLimit;
+    }
+
+    public function setPaginatorLimit($rows)
+    {
+        $this->paginatorLimit = $rows;
+        return $this;
     }
 
     public function getTableNamePrefix()

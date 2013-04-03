@@ -2,6 +2,7 @@
 return array(
     'audit' => array(
         'datetime.format' => 'r',
+        'paginator.limit' => 20,
         
         'tableNamePrefix' => '',
         'tableNameSuffix' => '_audit',

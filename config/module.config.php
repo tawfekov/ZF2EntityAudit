@@ -31,6 +31,7 @@ return array(
 
     'view_helpers' => array(
         'invokables' => array(
+            'auditIndexPaginator' => 'ZF2EntityAudit\View\Helper\IndexPaginator',
             'auditRevisionEntityPaginator' => 'ZF2EntityAudit\View\Helper\RevisionEntityPaginator',
             'auditEntityPaginator' => 'ZF2EntityAudit\View\Helper\EntityPaginator',
         ),

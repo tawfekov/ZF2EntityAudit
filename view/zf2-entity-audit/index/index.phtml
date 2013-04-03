@@ -4,11 +4,12 @@
     <thead>
         <tr>
             <th colspan="4">
-<?php echo $this->paginationControl($this->paginator,
-    'Sliding',
-    'zf2-entity-audit/pagination/index', array('route' => 'audit/page')); ?>
+            <?php $paginator = $this->auditIndexPaginator($this->page); ?>
 
-
+            <?php echo $this->paginationControl($paginator,
+                'Sliding',
+                'zf2-entity-audit/pagination/index', array('route' => 'audit/page'));
+            ?>
             </th>
         </tr>
         <tr>
@@ -30,7 +31,7 @@
     </tfoot>
     <tbody>
     <?php
-    foreach ($this->paginator as $revision) {
+    foreach ($paginator as $revision) {
     ?>
         <tr>
             <td>

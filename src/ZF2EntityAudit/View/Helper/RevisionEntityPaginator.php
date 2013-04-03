@@ -31,6 +31,7 @@ final class RevisionEntityPaginator extends AbstractHelper implements ServiceLoc
     public function __invoke($page, $entity) {
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
+        $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
 
         if (gettype($entity) != 'string' and in_array(get_class($entity), $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions')->getAuditedEntityClasses())) {
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
@@ -56,7 +57,7 @@ final class RevisionEntityPaginator extends AbstractHelper implements ServiceLoc
 
         $adapter = new DoctrineAdapter(new ORMPaginator($queryBuilder));
         $paginator = new Paginator($adapter);
-        $paginator->setDefaultItemCountPerPage(20);
+        $paginator->setDefaultItemCountPerPage($auditModuleOptions->getPaginatorLimit());
         $paginator->setCurrentPageNumber($page);
 
         return $paginator;
