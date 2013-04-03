@@ -99,7 +99,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($this->auditService()->getEntityValues($this->revisionEntity->getAuditEntity()) as $field => $value): ?>
+        <?php foreach ($this->auditService()->getEntityValues($this->revisionEntity->getAuditEntity()) as $field => $value) { ?>
             <tr>
                 <td><?php  echo $this->escapeHtml($field); ?></td>
                 <td>
@@ -110,7 +110,9 @@
                     <?php endif; ?>
                 </td>
             </tr>
-        <?php endforeach; ?>
+        <?php
+            }
+        ?>
     </tbody>
 </table>
 
@@ -120,20 +122,32 @@
         array(
         )
     );
-    ?>" method="post">
+    ?>" method="post">  </form>
 
 <?php
     $first = true;
     $oldSet = false;
-    $allRevisions = $this->auditService->getRevisionEntities($this->revisionEntity->getAuditEntity());
-
-    if (sizeof($allRevisions) > 1) {
+    $paginator = $this->auditRevisionEntityPaginator($this->revisionEntity->getAuditEntity(), $page);
 ?>
 <table class="table table-striped table-hover table-bordered ">
     <caption>
         Compare Revision Entities
     </caption>
     <thead>
+        <tr>
+            <th colspan="6">
+                <?=
+                $this->paginationControl($paginator,
+                    'Sliding',
+                    'zf2-entity-audit/pagination/revision-entity',
+                    array(
+                        'route' => 'audit/revision-entity',
+                        'revisionEntityId' => $this->revisionEntity->getId(),
+                    )
+                ); ?>
+            </th>
+
+        </tr>
         <tr>
             <th>Revision</th>
             <th>Entity</th>
@@ -145,7 +159,7 @@
     </thead>
     <tbody>
         <?php
-        foreach ($allRevisions as $rev) {
+        foreach ($paginator as $rev) {
         ?>
             <tr>
                 <td>
@@ -221,7 +235,7 @@
                 <td>
                     <input type="radio" name="revisionEntityId_old" value="<?php  echo $this->escapeHtml($rev->getId()); ?>"
                         <?php
-                        if (sizeof($allRevisions) == 1 or ($rev == $this->revisionEntity and !$first) or (!$oldSet and !$first)) {
+                        if (sizeof($paginator) == 1 or ($rev == $this->revisionEntity and !$first) or (!$oldSet and !$first)) {
                             echo 'checked="checked"';
                             $oldSet = true;
                         }
@@ -245,10 +259,6 @@
     <input type="submit" class="btn btn-primary" value="Compare revisions" />
 
 </form>
-
-<?php
-}
-?>
 
     <a href="<?=
             $this->url(

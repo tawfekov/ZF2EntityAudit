@@ -29,6 +29,12 @@ return array(
         ),
     ),
 
+    'view_helpers' => array(
+        'invokables' => array(
+            'auditRevisionEntityPaginator' => 'ZF2EntityAudit\View\Helper\RevisionEntityPaginator',
+        ),
+    ),
+
     'router' => array(
         'routes' => array(
             'audit' => array(
@@ -74,25 +80,24 @@ return array(
                     'revision-entity' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/revision-entity[/:revisionEntityId]',
+                            'route' => '/revision-entity[/:revisionEntityId][/:page]',
                             'constraints' => array(
                                 'revisionEntityId' => '[0-9]*',
+                                'page' => '[0-9]*',
                             ),
                             'defaults' => array(
                                 'controller' => 'audit',
                                 'action'     => 'revisionEntity',
-                                'revisionEntityId' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                         ),
                     ),
                     'entity' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/entity[/:entityClass]',
+                            'route' => '/entity[/:entityClass][/:page]',
                             'defaults' => array(
                                 'controller' => 'audit',
                                 'action'     => 'entity',
-                                'entityClass' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                         ),
                     ),

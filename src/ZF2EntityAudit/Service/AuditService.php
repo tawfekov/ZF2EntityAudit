@@ -79,8 +79,6 @@ class AuditService extends AbstractHelper
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
             $identifiers = $this->getEntityIdentifierValues($entity);
         } elseif ($entity instanceof AbstractAudit) {
-            // In order to get a list of revison entites when a target has been deleted allow either/or
-            // target/audit entity to be passed
             $auditEntityClass = get_class($entity);
             $identifiers = $this->getEntityIdentifierValues($entity, true);
         } else {

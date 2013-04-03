@@ -6,7 +6,6 @@ use Zend\Mvc\Controller\AbstractActionController
  , DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter
  , Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator
  , Zend\Paginator\Paginator
- , Zend\View\Model\ViewModel
  ;
 
 class IndexController extends AbstractActionController
@@ -63,14 +62,20 @@ class IndexController extends AbstractActionController
      */
     public function revisionEntityAction()
     {
+        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $revisionEntityId = (int) $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
+
         $revisionEntity = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
             ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
 
         if (!$revisionEntity)
             return $this->plugin('redirect')->toRoute('audit');
 
+        $repository = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity');
+
         return array(
+            'page' => $page,
             'revisionEntity' => $revisionEntity,
             'auditService' => $this->getServiceLocator()->get('auditService'),
         );
@@ -84,6 +89,7 @@ class IndexController extends AbstractActionController
      */
     public function entityAction()
     {
+        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $entityClass = $this->getEvent()->getRouteMatch()->getParam('entityClass');
 
         if (in_array($entityClass, \ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses())) {
@@ -92,17 +98,29 @@ class IndexController extends AbstractActionController
             $auditEntityClass = $entityClass;
         }
 
-        $this->getServiceLocator()->get('auditService')->getRevisionEntities($entityClass);
+        $repository = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity');
 
-        $revisionEntities = \ZF2EntityAudit\Module::getServiceManager()
-            ->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')
-            ->findBy(array('auditEntityClass' => $auditEntityClass), array('id' => 'DESC'));
+        $qb = $repository->createQueryBuilder('revisionEntity');
+        $qb->orderBy('revisionEntity.id', 'DESC');
+
+        $qb->andWhere('revisionEntity.auditEntityClass = ?1')
+            ->setParameter(1, $auditEntityClass);
+
+#            die ($qb->getDql());
+
+        $adapter = new DoctrineAdapter(new ORMPaginator($qb));
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage(20);
+
+        if($page) $paginator->setCurrentPageNumber($page);
 
         return array(
             'entityClass' => $entityClass,
-            'revisionEntities' => $revisionEntities,
+            'paginator' => $paginator,
         );
+
+
     }
 
     /**
