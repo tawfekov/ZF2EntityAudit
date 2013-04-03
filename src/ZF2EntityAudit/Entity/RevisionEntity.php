@@ -25,6 +25,9 @@ class RevisionEntity
     // The name of the entity which is audited
     private $targetEntityClass;
 
+    // The type of action, INS, UPD, DEL
+    private $revisionType;
+
     public function getServiceManager()
     {
         return \ZF2EntityAudit\Module::getServiceManager();
@@ -75,17 +78,26 @@ class RevisionEntity
 
     public function setEntityKeys($value)
     {
-        if ($value['revision'] instanceof \ZF2EntityAudit\Entity\Revision) {
-            unset($value['revision']);
-        }
+        unset($value['revision']);
 
         $this->entityKeys = serialize($value);
     }
 
+    public function getRevisionType()
+    {
+        return $this->revisionType;
+    }
+
+    public function setRevisionType($value)
+    {
+        $this->revisionType = $value;
+        return $this;
+    }
+
     public function setAuditEntity(AbstractAudit $entity)
     {
-        $entityService = $this->getServiceManager()->get('entityService');
-        $identifiers = $entityService->getEntityIdentifierValues($entity);
+        $auditService = $this->getServiceManager()->get('auditService');
+        $identifiers = $auditService->getEntityIdentifierValues($entity);
 
         $this->setAuditEntityClass(get_class($entity));
         $this->setTargetEntityClass($entity->getAuditedEntityClass());

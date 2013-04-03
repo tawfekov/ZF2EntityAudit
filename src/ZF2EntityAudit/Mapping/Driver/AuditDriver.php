@@ -30,6 +30,7 @@ final class AuditDriver implements MappingDriver
             $builder->addField('entityKeys', 'string');
             $builder->addField('auditEntityClass', 'string');
             $builder->addField('targetEntityClass', 'string');
+            $builder->addField('revisionType', 'string');
 
             $metadata->setTableName($config->getRevisionEntityTableName());
             return;
@@ -40,7 +41,6 @@ final class AuditDriver implements MappingDriver
             $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
             $builder->addField('comment', 'text', array('nullable' => true));
             $builder->addField('timestamp', 'datetime');
-            $builder->addField('revisionType', 'string');
 
             // Add association between RevisionEntity and Revision
             $builder->addOneToMany('revisionEntities', 'ZF2EntityAudit\\Entity\\RevisionEntity', 'revision');

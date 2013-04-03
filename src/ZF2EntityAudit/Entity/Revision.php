@@ -28,19 +28,6 @@ class Revision
         return $this;
     }
 
-    protected $revisionType;
-
-    public function getRevisionType()
-    {
-        return $this->revisionType;
-    }
-
-    public function setRevisionType($value)
-    {
-        $this->revisionType = $value;
-        return $this;
-    }
-
     protected $timestamp;
 
     public function getTimestamp()
