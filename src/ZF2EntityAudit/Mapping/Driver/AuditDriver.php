@@ -59,6 +59,9 @@ final class AuditDriver implements MappingDriver
         //  Build a discovered many to many join class
         $joinClasses = $config->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
+            $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\\Entity\\Revision');
+            $identifiers = array($config->getRevisionFieldName());
+
             foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
                 $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
                 $identifiers[] = $joinColumn['name'];
@@ -70,7 +73,6 @@ final class AuditDriver implements MappingDriver
             }
 
             $metadata->setTableName($config->getTableNamePrefix() . $joinClasses[$className]['name'] . $config->getTableNameSuffix());
-            $identifiers[] = $config->getRevisionFieldName();
             $metadata->setIdentifier($identifiers);
             return;
         }

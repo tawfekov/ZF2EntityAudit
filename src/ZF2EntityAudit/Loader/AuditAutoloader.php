@@ -63,7 +63,7 @@ class AuditAutoloader extends StandardAutoloader
             MethodGenerator::FLAG_PUBLIC,
             " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
             ");
-
+        $identifiers = array($config->getRevisionFieldName());
 
         //  Build a discovered many to many join class
         $joinClasses = $config->getJoinClasses();
@@ -91,7 +91,6 @@ class AuditAutoloader extends StandardAutoloader
 
 #            print_r($auditClass->generate());die();
             eval($auditClass->generate());
-            $config->addJoinClass($auditClassName, $joinClasses[$className]);
             return;
         }
 
