@@ -34,6 +34,8 @@ return array(
             'auditRevisionPaginator' => 'ZF2EntityAudit\View\Helper\RevisionPaginator',
             'auditRevisionEntityPaginator' => 'ZF2EntityAudit\View\Helper\RevisionEntityPaginator',
             'auditEntityPaginator' => 'ZF2EntityAudit\View\Helper\EntityPaginator',
+            'auditOptions' => 'ZF2EntityAudit\View\Helper\Options',
+            'auditCurrentRevisionEntity' => 'ZF2EntityAudit\View\Helper\CurrentRevisionEntity',
         ),
     ),
 

@@ -136,7 +136,7 @@ final class AuditDriver implements MappingDriver
         $metadataFactory = $entityManager->getMetadataFactory();
 
         $auditEntities = array();
-        foreach ($config->getAuditedEntityClasses() as $name) {
+        foreach ($config->getAuditedEntityClasses() as $name => $targetClassOptions) {
             $auditClassName = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $name);
             $auditEntities[] = $auditClassName;
             $auditedClassMetadata = $metadataFactory->getMetadataFor($name);

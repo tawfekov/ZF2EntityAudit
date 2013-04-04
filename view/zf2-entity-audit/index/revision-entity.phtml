@@ -25,6 +25,7 @@
 
                     @ <?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?>
                 </a>
+
             </td>
             <td>
 
@@ -65,6 +66,14 @@
                             ?>
                         </div>
                     </a>
+
+                <?php
+                    $options = $this->auditOptions($revisionEntity->getTargetEntityClass());
+                    $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
+                ?>
+                <a class="btn btn-info" href="<?=
+                    $this->url($options['route'], $routeOptions);
+                ?>">Data</a>
 
             </td>
 

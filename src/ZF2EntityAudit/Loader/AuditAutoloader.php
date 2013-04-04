@@ -86,7 +86,7 @@ class AuditAutoloader extends StandardAutoloader
 
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?
-        foreach($config->getAuditedEntityClasses() as $targetClass) {
+        foreach($config->getAuditedEntityClasses() as $targetClass => $targetClassOptions) {
              $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
              if ($auditClassName == $className) {
                  $currentClass = $targetClass;

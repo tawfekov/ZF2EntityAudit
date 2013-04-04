@@ -33,7 +33,7 @@ final class EntityPaginator extends AbstractHelper implements ServiceLocatorAwar
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
         $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
 
-        if (in_array($entityClass, \ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses())) {
+        if (in_array($entityClass, array_keys(\ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses()))) {
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entityClass);
         } else {
             $auditEntityClass = $entityClass;

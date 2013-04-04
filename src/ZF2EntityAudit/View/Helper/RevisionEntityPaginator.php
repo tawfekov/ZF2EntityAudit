@@ -28,12 +28,13 @@ final class RevisionEntityPaginator extends AbstractHelper implements ServiceLoc
         return $this;
     }
 
-    public function __invoke($page, $entity) {
+    public function __invoke($page, $entity)
+    {
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
         $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
 
-        if (gettype($entity) != 'string' and in_array(get_class($entity), $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions')->getAuditedEntityClasses())) {
+        if (gettype($entity) != 'string' and in_array(get_class($entity), array_keys($this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions')->getAuditedEntityClasses()))) {
             $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
             $identifiers = $auditService->getEntityIdentifierValues($entity);
         } elseif ($entity instanceof AbstractAudit) {

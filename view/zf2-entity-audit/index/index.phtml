@@ -59,6 +59,7 @@
             foreach ($revision->getRevisionEntities() as $revisionEntity) {
             ?>
             <div>
+
                 <a class="btn btn-<?php
                     switch ($revisionEntity->getRevisionType()) {
                         case 'INS':
@@ -94,6 +95,18 @@
                             ?>
                         </div>
                     </a>
+
+                    <?php
+                    if ($options = $this->auditOptions($revisionEntity->getTargetEntityClass())) {
+                        $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
+                    ?>
+                        <a class="btn btn-info" href="<?=
+                            $this->url($options['route'], $routeOptions);
+                        ?>">Data</a>
+                    <?php
+                    }
+                    ?>
+
                 </div>
             <?php
             }

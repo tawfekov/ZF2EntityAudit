@@ -12,6 +12,10 @@ return array(
         'entities' => array(
             '',
         ),
+        
+        'entityDatamap' => array(
+            '',
+        ),
     ),
 );
 
