@@ -134,6 +134,8 @@ class LogRevision implements EventSubscriber
 
         $reflectedAuditedEntity = new ClassReflection($entity);
 
+        // Get mapping from metadata
+
         foreach($reflectedAuditedEntity->getProperties() as $property) {
             $property->setAccessible(true);
             $value = $property->getValue($entity);
@@ -143,9 +145,16 @@ class LogRevision implements EventSubscriber
                 continue;
             }
 
-            if (gettype($value) == 'object') {
+            // Set values to getId for classes
+            if (method_exists($value, 'getId')) {
                 $value = $value->getId();
             }
+
+            // If a property is an object we probably are not mapping that to
+            // a field.  Do no special handing...
+#            if (gettype($value) == 'object') {
+##                $value = $value->getId();
+#            }
             $properties[$property->getName()] = $value;
         }
 
