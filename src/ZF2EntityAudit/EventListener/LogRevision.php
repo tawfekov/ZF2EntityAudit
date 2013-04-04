@@ -132,9 +132,13 @@ class LogRevision implements EventSubscriber
         $properties = array();
 
         $reflectedAuditedEntity = new ClassReflection($entity);
+
         foreach($reflectedAuditedEntity->getProperties() as $property) {
             $property->setAccessible(true);
-            $properties[$property->getName()] = $property->getValue($entity);
+            $value = $property->getValue($entity);
+
+            if (gettype($value) == 'object') $value = $value->getId();
+            $properties[$property->getName()] = $value;
         }
 
         return $properties;

@@ -71,6 +71,30 @@ final class AuditDriver implements MappingDriver
             if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
         }
 
+        foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+            if (!$mapping['isOwningSide']) continue;
+
+            if (isset($mapping['joinTable'])) {
+                continue;
+#                print_r($mapping['joinTable']);
+#                die('driver');
+            }
+
+
+            if (isset($mapping['joinTableColumns'])) {
+                foreach ($mapping['joinTableColumns'] as $field) {
+                    $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
+                }
+            } elseif (isset($mapping['joinColumnFieldNames'])) {
+                foreach ($mapping['joinColumnFieldNames'] as $field) {
+                    $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
+                }
+            } else {
+                throw new \Exception('Unhandled association mapping');
+            }
+
+        }
+
         $metadata->setTableName($config->getTableNamePrefix() . $auditedClassMetadata->getTableName() . $config->getTableNameSuffix());
         $metadata->setIdentifier($identifiers);
 

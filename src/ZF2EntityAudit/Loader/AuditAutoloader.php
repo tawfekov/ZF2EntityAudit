@@ -58,11 +58,34 @@ class AuditAutoloader extends StandardAutoloader
             $auditClass->addProperty($field, null, PropertyGenerator::FLAG_PROTECTED);
         }
 
+        // add join fields
+        foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+            if (!$mapping['isOwningSide']) continue;
+
+            # FIXME: add support for many to many join
+            if (isset($mapping['joinTable'])) {
+                continue;
+            }
+
+            if (isset($mapping['joinTableColumns'])) {
+                foreach ($mapping['joinTableColumns'] as $field) {
+                    $auditClass->addProperty($mapping['fieldName'], null, PropertyGenerator::FLAG_PROTECTED);
+                    $fields[] = $mapping['fieldName'];
+                }
+            } elseif (isset($mapping['joinColumnFieldNames'])) {
+                foreach ($mapping['joinColumnFieldNames'] as $field) {
+                    $auditClass->addProperty($mapping['fieldName'], null, PropertyGenerator::FLAG_PROTECTED);
+                    $fields[] = $mapping['fieldName'];
+                }
+            }
+        }
+
         // Add exchange array method
         $setters = array();
         foreach ($fields as $fieldName) {
             $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
         }
+
         $auditClass->addMethod(
             'exchangeArray',
             array('data'),
@@ -99,6 +122,7 @@ class AuditAutoloader extends StandardAutoloader
 
 #            echo '<pre>';
 #            echo($auditClass->generate());
+
         eval($auditClass->generate());
 
         return true;
