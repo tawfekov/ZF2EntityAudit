@@ -88,13 +88,15 @@ foreach ($this->revision->getRevisionEntities() as $revisionEntity) {
     </a>
 
     <?php
-        $options = $this->auditOptions($revisionEntity->getTargetEntityClass());
+    if ($options = $this->auditOptions($revisionEntity->getTargetEntityClass())) {
         $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
     ?>
-    <a class="btn btn-info" href="<?=
-        $this->url($options['route'], $routeOptions);
-    ?>">Data</a>
-
+        <a class="btn btn-info" href="<?=
+            $this->url($options['route'], $routeOptions);
+        ?>">Data</a>
+    <?php
+    }
+    ?>
 
 
 <table class="table table-striped table-hover table-bordered ">
