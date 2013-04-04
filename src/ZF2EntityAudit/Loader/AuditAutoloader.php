@@ -33,17 +33,6 @@ class AuditAutoloader extends StandardAutoloader
      */
     public function loadClass($className, $type)
     {
-        /*
-                    foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
-                        if (isset($mapping['joinTable'])) {
-                            $auditEntities[] = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $mapping['joinTable']['name']);
-                            #continue;
-                            #print_r($mapping['joinTable']);
-                            #die('get class names');
-                        }
-                    }
-        */
-
         $config = $this->getServiceManager()->get("auditModuleOptions");
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
 

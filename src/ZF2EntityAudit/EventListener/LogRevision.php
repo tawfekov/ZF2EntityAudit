@@ -22,7 +22,7 @@ class LogRevision implements EventSubscriber
     private $config;
     private $revision;
     private $entities;
-    private $insertEntities;
+    private $reexchangeEntities;
 
     public function __construct($serviceManager)
     {
@@ -88,20 +88,20 @@ class LogRevision implements EventSubscriber
         return $this->entities;
     }
 
-    private function getInsertEntities()
+    private function getReexchangeEntities()
     {
-        if (!$this->insertEntities) $this->insertEntities = array();
-        return $this->insertEntities;
+        if (!$this->reexchangeEntities) $this->reexchangeEntities = array();
+        return $this->reexchangeEntities;
     }
 
-    private function resetInsertEntities()
+    private function resetReexchangeEntities()
     {
-        $this->insertEntities = array();
+        $this->reexchangeEntities = array();
     }
 
-    private function addInsertEntity($entityMap)
+    private function addReexchangeEntity($entityMap)
     {
-        $this->insertEntities[] = $entityMap;
+        $this->reexchangeEntities[] = $entityMap;
     }
 
     private function getRevision()
@@ -168,8 +168,9 @@ class LogRevision implements EventSubscriber
         $revisionEntity->setRevision($this->getRevision());
         $revisionEntity->setRevisionType($revisionType);
 
-        if ($revisionType ==  'INS') {
-            $this->addInsertEntity(array(
+        // Re-exchange data after flush to map generated fields
+        if ($revisionType ==  'INS' or $revisionType ==  'UPD') {
+            $this->addReexchangeEntity(array(
                 'auditEntity' => $auditEntity,
                 'entity' => $entity,
                 'revisionEntity' => $revisionEntity,
@@ -224,7 +225,7 @@ class LogRevision implements EventSubscriber
 
             // Insert entites will trigger key generation and must be
             // re-exchanged (delete entites go out of scope)
-            foreach ($this->getInsertEntities() as $entityMap) {
+            foreach ($this->getReexchangeEntities() as $entityMap) {
                 $entityMap['auditEntity']->exchangeArray($this->getClassProperties($entityMap['entity']));
                 $entityMap['revisionEntity']->setAuditEntity($entityMap['auditEntity']);
             }
@@ -237,7 +238,7 @@ class LogRevision implements EventSubscriber
         }
 
         $this->resetEntities();
-        $this->resetInsertEntities();
+        $this->resetReexchangeEntities();
         $this->resetRevision();
     }
 }
