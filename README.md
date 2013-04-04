@@ -3,6 +3,7 @@ ZF2EntityAudit
 
 An auditing module for Doctrine 2.  Requires ZfcUser to map revisions to users.
 
+
 About
 =====
 
@@ -20,9 +21,12 @@ and two flushes to complete.
 
 Install
 =======
+
 1. Download ZF2EntityAudit with composer 
+
 ```php
 php composer.phar require "tawfekov/zf2entityaudit": "dev-master"
+```
 
 
 2. enable ZF2EntityAudit in `config/application.config.php`: 
@@ -55,7 +59,8 @@ return array(
 );
 ```
 
-4. use doctrine command line tool to update the database and created the auditing tables :
+4. Use the Doctrine command line tool to update the database and create the auditing tables :
+
 ```shell
 vendor/bin/doctrine-module orm:schema-tool:update
 ```
@@ -64,7 +69,7 @@ vendor/bin/doctrine-module orm:schema-tool:update
 Routing
 -------
 
-To map a route to an audited entity include route information in the audit=>entities config
+To map a route to an audited entity include route information in the audit => entities config
 
 ```
     'Db\Entity\song' => array(
@@ -77,6 +82,17 @@ To map a route to an audited entity include route information in the audit=>enti
 ```
 
 Identifier column values from the audited entity will be added to defaults to generate urls through routing.
+
+```
+    <?php
+        $options = $this->auditOptions($revisionEntity->getTargetEntityClass());
+        $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
+    ?>
+    <a class="btn btn-info" href="<?=
+        $this->url($options['route'], $routeOptions);
+    ?>">Data</a>
+```
+
 This is how to map from your application to it's current revision entity:
 
 ```
@@ -95,16 +111,53 @@ This is how to map from your application to it's current revision entity:
     </a>
 ```
 
-Routes are used in audit views 
 
+View Helpers
+------------
+
+Return the audit service.  This is a helper class.  The class is also available via dependency injection factory.
+This class provides the following:
+
+1. setComment();
+    Set the comment for the next flush.  When a comment is set it will be read at the time the audit revision is created and added to the revision as the revision comment.
+
+2. getEntityValues($entity, $cleanRevision = false);
+    Returns all the fields and their values for the given entity.  Does not include many to many relations.
+    $cleanRevision is used internally to strip the revision from the results if an audit entity is passed.
+
+3. getEntityIdentifierValues($entity, $cleanRevision = false);
+    Return all the identifying keys and values for an entity.
+    
+4. getRevisionEntities($entity)
+    Returns all revision entities for the given audited entity or revision entity.
+    
+````
+$view->auditService();
 ```
-    <?php
-        $options = $this->auditOptions($revisionEntity->getTargetEntityClass());
-        $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
-    ?>
-    <a class="btn btn-info" href="<?=
-        $this->url($options['route'], $routeOptions);
-    ?>">Data</a>
+
+Return the latest revision entity for the given entity.
+```
+$view->auditCurrentRevisionEntity($entity);
+```
+
+Return a paginator object attached to every revision for the given audited entity class.  This is not specific to an entity: this returns every revision entity for the class name.
+```
+$view->auditEntityPaginator($page, $entityClassName);
+```
+
+Return the configuration for a specific entity or of not specified returns all entity configurations.
+```
+$view->auditOptions($entityName = null);
+```
+
+Return all revision entities for the given entity.
+```
+$view->auditRevisionEntityPaginator($page, $entity);
+```
+
+Return a paginator for all revisions.
+```
+$view->auditRevisionPaginator($page);
 ```
 
 
