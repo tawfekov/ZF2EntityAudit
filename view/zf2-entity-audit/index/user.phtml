@@ -4,9 +4,20 @@
     <a href="#" class="btn btn-danger">Delete</a>
 </span>
 
-<h1>Audit by user <?= $this->zfcUserDisplayName($user); ?></h1>
-
-<?php $paginator = $this->auditRevisionPaginator($this->page, array('user' => $user->getId())); ?>
+<?php
+if ($user) {
+    $userId = $user->getId();
+?>
+    <h1>Audit by user <?= $this->zfcUserDisplayName($user); ?></h1>
+<?php
+} else {
+    $userId = null;
+?>
+<h1>Audit Anonymous Revisions</h1>
+<?php
+}
+?>
+<?php $paginator = $this->auditRevisionPaginator($this->page, array('user' => $userId)); ?>
 
 <table class="table table-striped table-hover table-bordered">
     <thead>
@@ -120,7 +131,7 @@
                     if ($revision->getUser()) {
                         echo $this->url('audit/user', array('userId' => $revision->getUser()->getId()));
                     } else {
-                        echo '#';
+                        echo $this->url('audit/user', array('userId' => '0'));
                     }
                 ?>" class="btn btn-default">
                     <?php

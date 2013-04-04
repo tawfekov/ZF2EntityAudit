@@ -113,7 +113,7 @@ foreach ($paginator as $revisionEntity) {
                     if ($revisionEntity->getRevision()->getUser()) {
                         echo $this->url('audit/user', array('userId' => $revisionEntity->getRevision()->getUser()->getId()));
                     } else {
-                        echo '#';
+                        echo $this->url('audit/user', array('userId' => '0'));
                     }
                 ?>" class="btn btn-default">
                     <?php

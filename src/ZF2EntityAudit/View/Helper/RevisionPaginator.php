@@ -41,8 +41,12 @@ final class RevisionPaginator extends AbstractHelper implements ServiceLocatorAw
 
         $i = 0;
         foreach($filter as $field => $value) {
-            $qb->andWhere("revision.$field = ?$i");
-            $qb->setParameter($i, $value);
+            if (!is_null($value)) {
+                $qb->andWhere("revision.$field = ?$i");
+                $qb->setParameter($i, $value);
+            } else {
+                $qb->andWhere("revision.$field is NULL");
+            }
         }
 
         $adapter = new DoctrineAdapter(new ORMPaginator($qb));

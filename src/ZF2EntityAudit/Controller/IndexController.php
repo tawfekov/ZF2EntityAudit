@@ -36,9 +36,6 @@ class IndexController extends AbstractActionController
         $user = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
             ->getRepository(\ZF2EntityAudit\Module::getZfcUserEntity())->find($userId);
 
-        if (!$user)
-            return $this->plugin('redirect')->toRoute('audit');
-
         return array(
             'page' => $page,
             'user' => $user,

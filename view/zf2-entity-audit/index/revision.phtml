@@ -27,7 +27,7 @@
                     if ($this->revision->getUser()) {
                         echo $this->url('audit/user', array('userId' => $this->revision->getUser()->getId()));
                     } else {
-                        echo '#';
+                        echo $this->url('audit/user', array('userId' => '0'));
                     }
                 ?>" class="btn btn-default">
                     <?php
