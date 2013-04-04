@@ -15,4 +15,4 @@ before_script:
 
 script:
   - phpunit
-  - php coverage-checker.php clover.xml 55
+  - php coverage-checker.php clover.xml 60

@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
-<phpunit
-        bootstrap="./tests/Bootstrap.php"
-        colors="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        verbose="true"
-        stopOnFailure="false"
-        processIsolation="false"
-        backupGlobals="false"
-        syntaxCheck="true"
-        >
+<phpunit bootstrap="./tests/Bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         verbose="true"
+         stopOnFailure="true"
+         processIsolation="false"
+         backupGlobals="false"
+         syntaxCheck="true">
     <testsuites>
         <testsuite name="ZF2EntityAuditTest">
             <directory>./tests/ZF2EntityAuditTest/</directory>

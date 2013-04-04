@@ -1,5 +1,8 @@
 ##ZF2EntityAudit
 ==============
+
+[![Build Status](https://travis-ci.org/tawfekov/ZF2EntityAudit.png?branch=master)](https://travis-ci.org/tawfekov/ZF2EntityAudit)
+
 An module to audit Doctrine 2 entities in ZF2 and browse the audit log , inspired by https://github.com/simplethings/EntityAudit
 
 ##Documenation

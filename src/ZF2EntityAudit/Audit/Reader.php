@@ -30,7 +30,7 @@ class Reader
         $this->config = $config;
         $this->metadataFactory = $factory;
         $this->platform = $this->em->getConnection()->getDatabasePlatform();
-        $this->ZfcUserRepository = $this->em->getRepository("ZfcUserDoctrineORM\Entity\User");
+        $this->ZfcUserRepository = $this->em->getRepository("ZfcUser\Entity\User");
     }
 
     /**
@@ -47,7 +47,7 @@ class Reader
     public function find($className, $id, $revision)
     {
         if (!$this->metadataFactory->isAudited($className)) {
-            throw AuditException::notAudited($className);
+            throw Exception::notAudited($className);
         }
 
         $class = $this->em->getClassMetadata($className);
@@ -104,7 +104,7 @@ class Reader
         $row = $this->em->getConnection()->fetchAssoc($query, $values);
 
         if (!$row) {
-            throw AuditException::noRevisionFound($class->name, $id, $revision);
+            throw Exception::noRevisionFound($class->name, $id, $revision);
         }
 
         $revisionData = array();
@@ -343,5 +343,9 @@ class Reader
         $uow = $this->em->getUnitOfWork();
 
         return $uow->getEntityPersister($entity);
+    }
+
+    private function findUser($id)
+    {
     }
 }

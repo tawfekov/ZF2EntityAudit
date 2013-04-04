@@ -1,5 +1,6 @@
 <?php
 return array(
+    'output_buffering' => false, // required for testing sessions
     'modules' => array(
         'DoctrineModule',
         'DoctrineORMModule',
