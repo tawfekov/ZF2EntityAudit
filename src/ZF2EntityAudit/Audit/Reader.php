@@ -202,6 +202,7 @@ class Reader
                 $row["note"]
             );
         }
+
         return $revisions;
     }
 
@@ -280,10 +281,10 @@ class Reader
                 $revisionsData[0]['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $revisionsData[0]['timestamp']),
                 $this->ZfcUserRepository->find($revisionsData[0]['user_id'],
-                $row["note"])
+                $revisionsData[0]["note"])
             );
         } else {
-            throw AuditException::invalidRevision($rev);
+            throw Exception::invalidRevision($rev);
         }
     }
 
@@ -297,7 +298,7 @@ class Reader
     public function findRevisions($className, $id)
     {
         if (!$this->metadataFactory->isAudited($className)) {
-            throw AuditException::notAudited($className);
+            throw Exception::notAudited($className);
         }
 
         $class = $this->em->getClassMetadata($className);
@@ -346,5 +347,5 @@ class Reader
 
         return $uow->getEntityPersister($entity);
     }
-    
+
 }

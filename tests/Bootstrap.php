@@ -12,7 +12,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 /* var $loader \Composer\Autoload\ClassLoader */
 $loader->add('ZF2EntityAuditTest\\', __DIR__);
 
-error_reporting(E_ALL | E_STRICT);
+//error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
 
 use Zend\ServiceManager\ServiceManager;

@@ -19,4 +19,9 @@ class Exception extends \Exception
     {
         return new self("No revision '".$rev."' exists.");
     }
+
+    public static function NotSupported()
+    {
+        return new self("ZF2EntityAudit Verion 0.2 doesn't support anonymous editing , please use `0.1-stable` for  anonymous editing");
+    }
 }

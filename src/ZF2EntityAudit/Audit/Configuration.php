@@ -4,6 +4,7 @@ namespace ZF2EntityAudit\Audit;
 
 use ZF2EntityAudit\Metadata\MetadataFactory;
 use ZfcUser\Entity\UserInterface;
+use ZF2EntityAudit\Audit\Exception;
 
 class Configuration
 {
@@ -80,7 +81,7 @@ class Configuration
     public function setCurrentUser( $user)
     {
         if ($user instanceof UserInterface === false) {
-            throw new \Exception("ZF2EntityAudit Verion 0.2 doesn't support anonymous editing , please use `0.1-stable` for  anonymous editing   ", 500 );
+            throw  Exception::NotSupported();
         }
         $this->currentUser = $user;
     }
