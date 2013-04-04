@@ -11,6 +11,7 @@ class ModuleOptions
     private $revisionTableName;
     private $revisionEntityTableName;
     private $auditedEntityClasses;
+    private $joinClasses;
     private $user;
 
     public function setDefaults(array $config)
@@ -21,6 +22,18 @@ class ModuleOptions
         $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
+    }
+
+    public function addJoinClass($className, $mapping)
+    {
+        $this->joinClasses[$className] = $mapping;
+        return $this;
+    }
+
+    public function getJoinClasses()
+    {
+        if (!$this->joinClasses) $this->joinClasses = array();
+        return $this->joinClasses;
     }
 
     public function getPaginatorLimit()

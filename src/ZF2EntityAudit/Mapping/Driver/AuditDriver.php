@@ -56,6 +56,26 @@ final class AuditDriver implements MappingDriver
             return;
         }
 
+        //  Build a discovered many to many join class
+        $joinClasses = $config->getJoinClasses();
+        if (in_array($className, array_keys($joinClasses))) {
+            foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
+                $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
+                $identifiers[] = $joinColumn['name'];
+            }
+
+            foreach ($joinClasses[$className]['inverseJoinColumns'] as $joinColumn) {
+                $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
+                $identifiers[] = $joinColumn['name'];
+            }
+
+            $metadata->setTableName($config->getTableNamePrefix() . $joinClasses[$className]['name'] . $config->getTableNameSuffix());
+            $identifiers[] = $config->getRevisionFieldName();
+            $metadata->setIdentifier($identifiers);
+            return;
+        }
+
+
         // Get the entity this entity audits
         $metadataClassName = $metadata->getName();
         $metadataClass = new $metadataClassName();
@@ -76,8 +96,8 @@ final class AuditDriver implements MappingDriver
 
             if (isset($mapping['joinTable'])) {
                 continue;
-#                print_r($mapping['joinTable']);
-#                die('driver');
+                # print_r($mapping['joinTable']);
+                # die('driver');
             }
 
 
@@ -110,10 +130,23 @@ final class AuditDriver implements MappingDriver
     {
         $serviceManager = \ZF2EntityAudit\Module::getServiceManager();
         $config = $serviceManager->get('auditModuleOptions');
+        $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $metadataFactory = $entityManager->getMetadataFactory();
 
         $auditEntities = array();
-        foreach ($config->getAuditedEntityClasses() as $name)
-            $auditEntities[] = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $name);
+        foreach ($config->getAuditedEntityClasses() as $name) {
+            $auditClassName = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $name);
+            $auditEntities[] = $auditClassName;
+            $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
+
+            foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+                if (isset($mapping['joinTable'])) {
+                    $auditJoinTableClassName = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
+                    $auditEntities[] = $auditJoinTableClassName;
+                    $config->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
+                }
+            }
+        }
 
         // Add revision (manage here rather than separate namespace)
         $auditEntities[] = 'ZF2EntityAudit\\Entity\\Revision';

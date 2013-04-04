@@ -28,24 +28,84 @@ class AuditAutoloader extends StandardAutoloader
     /**
      * Dynamically scope an audit class
      *
-     * @param  string $class
+     * @param  string $className
      * @return false|string
      */
-    public function loadClass($class, $type)
+    public function loadClass($className, $type)
     {
+        /*
+                    foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+                        if (isset($mapping['joinTable'])) {
+                            $auditEntities[] = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $mapping['joinTable']['name']);
+                            #continue;
+                            #print_r($mapping['joinTable']);
+                            #die('get class names');
+                        }
+                    }
+        */
+
         $config = $this->getServiceManager()->get("auditModuleOptions");
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
+
+        $auditClass = new ClassGenerator();
+
+        // Add revision reference getter and setter
+        $auditClass->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
+        $auditClass->addMethod(
+            'get' . $config->getRevisionFieldName(),
+            array(),
+            MethodGenerator::FLAG_PUBLIC,
+            " return \$this->" .  $config->getRevisionFieldName() . ";");
+
+        $auditClass->addMethod(
+            'set' . $config->getRevisionFieldName(),
+            array('value'),
+            MethodGenerator::FLAG_PUBLIC,
+            " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
+            ");
+
+
+        //  Build a discovered many to many join class
+        $joinClasses = $config->getJoinClasses();
+        if (in_array($className, array_keys($joinClasses))) {
+            $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $className);
+            $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
+            $auditClass->setName($className);
+            $auditClass->setExtendedClass('AbstractAudit');
+
+            foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
+                $auditClass->addProperty($joinColumn['name'], null, PropertyGenerator::FLAG_PROTECTED);
+            }
+
+            foreach ($joinClasses[$className]['inverseJoinColumns'] as $joinColumn) {
+                $auditClass->addProperty($joinColumn['name'], null, PropertyGenerator::FLAG_PROTECTED);
+            }
+
+            // Add function to return the entity class this entity audits
+            $auditClass->addMethod(
+                'getAuditedEntityClass',
+                array(),
+                MethodGenerator::FLAG_PUBLIC,
+                " return '" .  addslashes($auditClassName) . "';"
+            );
+
+#            print_r($auditClass->generate());die();
+            eval($auditClass->generate());
+            $config->addJoinClass($auditClassName, $joinClasses[$className]);
+            return;
+        }
+
 
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?
         foreach($config->getAuditedEntityClasses() as $targetClass) {
-             $auditClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
-             if ($auditClass == $class) {
+             $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
+             if ($auditClassName == $className) {
                  $currentClass = $targetClass;
              }
-             $autoloadClasses[] = $auditClass;
+             $autoloadClasses[] = $auditClassName;
         }
-        if (!in_array($class, $autoloadClasses)) return;
+        if (!in_array($className, $autoloadClasses)) return;
 
         // Get fields from target entity
         $metadataFactory = $entityManager->getMetadataFactory();
@@ -53,7 +113,6 @@ class AuditAutoloader extends StandardAutoloader
         $fields = $auditedClassMetadata->getFieldNames();
 
         // Generate audit entity
-        $auditClass = new ClassGenerator();
         foreach ($fields as $field) {
             $auditClass->addProperty($field, null, PropertyGenerator::FLAG_PROTECTED);
         }
@@ -100,21 +159,6 @@ class AuditAutoloader extends StandardAutoloader
             MethodGenerator::FLAG_PUBLIC,
             " return '" .  addslashes($currentClass) . "';"
         );
-
-        // Add revision reference getter and setter
-        $auditClass->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
-        $auditClass->addMethod(
-            'get' . $config->getRevisionFieldName(),
-            array(),
-            MethodGenerator::FLAG_PUBLIC,
-            " return \$this->" .  $config->getRevisionFieldName() . ";");
-
-        $auditClass->addMethod(
-            'set' . $config->getRevisionFieldName(),
-            array('value'),
-            MethodGenerator::FLAG_PUBLIC,
-            " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
-            ");
 
         $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
         $auditClass->setName(str_replace('\\', '_', $currentClass));
