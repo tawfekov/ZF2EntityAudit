@@ -60,7 +60,7 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
             $this->em->getClassMetadata('ZF2EntityAuditTest\Entity\Writer')
         ));
     }
-
+    
     public function testAuditable()
     {
         $user = new Writer("beberlei");
@@ -204,6 +204,32 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $revisions[1]->getRev());
         $this->assertInstanceOf('DateTime', $revisions[1]->getTimestamp());
         $this->assertEquals('MOCKUSER', $revisions[1]->getUser()->getDisplayName());
+    }
+    
+    public function testaddingNote()
+    {
+        
+        $auditManager = $this->auditManager;
+        
+        $user = new Writer("tawfek-daghistani");
+        /// setting the note 
+        $auditManager->getConfiguration()->setNote("first_note");
+
+        $this->em->persist($user);
+        $this->em->flush();
+        /// setting new  note 
+        $auditManager->getConfiguration()->setNote("second_note");
+        $user->setName("Tawfek-Daghistani");
+        $this->em->flush();
+
+        $reader = $this->getAuditReader();
+        $revisions = $reader->findRevisions(get_class($user), $user->getId());
+
+        $this->assertEquals(2, count($revisions));
+        
+        $this->assertEquals("second_note", $revisions[0]->getNote());
+        $this->assertEquals("first_note", $revisions[1]->getNote());
+        
     }
 
     public function tearDown()

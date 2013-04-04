@@ -198,10 +198,10 @@ class Reader
             $revisions[] = new Revision(
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
-                $this->ZfcUserRepository->find($row['user_id'])
+                $this->ZfcUserRepository->find($row['user_id']),
+                $row["note"]
             );
         }
-
         return $revisions;
     }
 
@@ -279,7 +279,8 @@ class Reader
             return new Revision(
                 $revisionsData[0]['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $revisionsData[0]['timestamp']),
-                $this->ZfcUserRepository->find($revisionsData[0]['user_id'])
+                $this->ZfcUserRepository->find($revisionsData[0]['user_id'],
+                $row["note"])
             );
         } else {
             throw AuditException::invalidRevision($rev);
@@ -331,7 +332,8 @@ class Reader
             $revisions[] = new Revision(
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
-                $this->ZfcUserRepository->find($row['user_id'])
+                $this->ZfcUserRepository->find($row['user_id']),
+                $row["note"]
             );
         }
 
@@ -344,8 +346,5 @@ class Reader
 
         return $uow->getEntityPersister($entity);
     }
-
-    private function findUser($id)
-    {
-    }
+    
 }

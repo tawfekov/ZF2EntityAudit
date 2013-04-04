@@ -8,11 +8,12 @@ class Revision
     private $timestamp;
     private $user;
 
-    public function __construct($rev, $timestamp,  $user)
+    public function __construct($rev, $timestamp,  $user , $note = '')
     {
         $this->rev = $rev;
         $this->timestamp = $timestamp;
         $this->user = $user;
+        $this->note = $note;
     }
 
     public function getRev()
@@ -28,5 +29,10 @@ class Revision
     public function getUser()
     {
         return $this->user;
+    }
+
+    public function getNote()
+    {
+        return $this->note;
     }
 }
