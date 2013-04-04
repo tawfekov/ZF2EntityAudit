@@ -122,13 +122,14 @@
         array(
         )
     );
-    ?>" method="post">  </form>
+    ?>" method="post">
 
 <?php
     $first = true;
     $oldSet = false;
     $paginator = $this->auditRevisionEntityPaginator($page, $this->revisionEntity->getAuditEntity());
 ?>
+
 <table class="table table-striped table-hover table-bordered ">
     <caption>
         Compare Revision Entities
@@ -272,6 +273,7 @@
             ?>
     </tbody>
 </table>
+
     <input type="submit" class="btn btn-primary" value="Compare revisions" />
 
 </form>
