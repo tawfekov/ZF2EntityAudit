@@ -35,8 +35,8 @@ return array(
 ```
 
 3. copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit setting as
-```php
 
+```php
 return array(
     'audit' => array(
         'datetime.format' => 'r',
@@ -50,8 +50,8 @@ return array(
         'entities' => array(           
             'Db\Entity\Song' => array(),
             'Db\Entity\Performer' => array(),
-		),
-	),
+        ),
+    ),
 );
 ```
 
@@ -67,44 +67,44 @@ Routing
 To map a route to an audited entity include route information in the audit=>entities config
 
 ```
-	'Db\Entity\song' => array(
-		'route' => 'default',
-		'defaults' => array(
-			'controller' => 'song',
-			'action' => 'detail',
-		),
-	),
+    'Db\Entity\song' => array(
+        'route' => 'default',
+        'defaults' => array(
+            'controller' => 'song',
+            'action' => 'detail',
+        ),
+    ),
 ```
 
 Identifier column values from the audited entity will be added to defaults to generate urls through routing.
 This is how to map from your application to it's current revision entity:
 
 ```
-	<?php
-	$currentRevisionEntity = $this->auditCurrentRevisionEntity($this->song);
-	?>
+    <?php
+    $currentRevisionEntity = $this->auditCurrentRevisionEntity($this->song);
+    ?>
 
-	<a class="btn btn-info" href="<?=
-		$this->url('audit/revision-entity',
-			array(
-				'revisionEntityId' => $currentRevisionEntity->getId()
-			)
-		);
-	?>">
-		<i class="icon-list"></i>
-	</a>
+    <a class="btn btn-info" href="<?=
+        $this->url('audit/revision-entity',
+            array(
+                'revisionEntityId' => $currentRevisionEntity->getId()
+            )
+        );
+    ?>">
+        <i class="icon-list"></i>
+    </a>
 ```
 
 Routes are used in audit views 
 
 ```
-	<?php
-		$options = $this->auditOptions($revisionEntity->getTargetEntityClass());
-		$routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
-	?>
-	<a class="btn btn-info" href="<?=
-		$this->url($options['route'], $routeOptions);
-	?>">Data</a>
+    <?php
+        $options = $this->auditOptions($revisionEntity->getTargetEntityClass());
+        $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
+    ?>
+    <a class="btn btn-info" href="<?=
+        $this->url($options['route'], $routeOptions);
+    ?>">Data</a>
 ```
 
 
