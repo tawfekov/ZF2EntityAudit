@@ -11,7 +11,8 @@ use Doctrine\Common\EventSubscriber
     , ZF2EntityAudit\Entity\Revision as RevisionEntity
     , ZF2EntityAudit\Options\ModuleOptions
     , ZF2EntityAudit\Entity\RevisionEntity as RevisionEntityEntity
-    , Zend\Code\Reflection\ClassReflection;
+    , Zend\Code\Reflection\ClassReflection
+    , Doctrine\ORM\PersistentCollection
     ;
 
 class LogRevision implements EventSubscriber
@@ -137,7 +138,12 @@ class LogRevision implements EventSubscriber
             $property->setAccessible(true);
             $value = $property->getValue($entity);
 
-            if (gettype($value) == 'object') $value = $value->getId();
+            # fixme:  add support for collections
+            if ($value instanceof PersistentCollection) continue;
+
+            if (gettype($value) == 'object') {
+                $value = $value->getId();
+            }
             $properties[$property->getName()] = $value;
         }
 
