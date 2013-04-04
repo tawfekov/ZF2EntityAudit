@@ -139,7 +139,9 @@ class LogRevision implements EventSubscriber
             $value = $property->getValue($entity);
 
             # fixme:  add support for collections
-            if ($value instanceof PersistentCollection) continue;
+            if ($value instanceof PersistentCollection) {
+                continue;
+            }
 
             if (gettype($value) == 'object') {
                 $value = $value->getId();
@@ -195,6 +197,18 @@ class LogRevision implements EventSubscriber
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
             $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
+        }
+
+        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionDeletions() AS $col) {
+            die('deletion.  If you reached this you should just try to figure out the next foreach block first.');
+            print_r($col);die();
+        }
+
+        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionUpdates() AS $collectionToUpdate) {
+            if ($collectionToUpdate instanceof PersistentCollection) {
+                die('Found persistent collection.  How do I persist it to the discoverd many to many audit entity?');
+            }
+
         }
 
         $this->setEntities($entities);
