@@ -115,21 +115,21 @@ This is how to map from your application to it's current revision entity:
 View Helpers
 ------------
 
-Return the audit service.  This is a helper class.  The class is also available via dependency injection factory.
+Return the audit service.  This is a helper class.  The class is also available via dependency injection factory ```auditService```
 This class provides the following:
 
 1. setComment();
-    Set the comment for the next flush.  When a comment is set it will be read at the time the audit revision is created and added to the revision as the revision comment.
+    Set the comment for the next audit transaction.  When a comment is set it will be read at the time the audit Revision is created and added as the comment.
 
 2. getEntityValues($entity, $cleanRevision = false);
     Returns all the fields and their values for the given entity.  Does not include many to many relations.
-    $cleanRevision is used internally to strip the revision from the results if an audit entity is passed.
+    $cleanRevision is used internally to strip the reference to Revision from the results if a RevisionEntity is passed.
 
 3. getEntityIdentifierValues($entity, $cleanRevision = false);
     Return all the identifying keys and values for an entity.
     
 4. getRevisionEntities($entity)
-    Returns all revision entities for the given audited entity or revision entity.
+    Returns all RevisionEntity entities for the given audited entity or RevisionEntity.
     
 ````
 $view->auditService();
@@ -140,22 +140,22 @@ Return the latest revision entity for the given entity.
 $view->auditCurrentRevisionEntity($entity);
 ```
 
-Return a paginator object attached to every revision for the given audited entity class.  This is not specific to an entity: this returns every revision entity for the class name.
+Return a paginator object attached to every RevisionEntity for the given audited entity class.  This is not specific to an entity: this returns every revision entity for the _class name_.
 ```
 $view->auditEntityPaginator($page, $entityClassName);
 ```
 
-Return the configuration for a specific entity or of not specified returns all entity configurations.
+Return the configuration for a specific entity or if not specified returns all entity configurations.  Used internally for routing.
 ```
 $view->auditOptions($entityName = null);
 ```
 
-Return all revision entities for the given entity.
+Return all RevisionEntity entities for the given entity.
 ```
 $view->auditRevisionEntityPaginator($page, $entity);
 ```
 
-Return a paginator for all revisions.
+Return a paginator for all Revision entities.
 ```
 $view->auditRevisionPaginator($page);
 ```
