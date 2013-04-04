@@ -156,7 +156,24 @@
     </caption>
     <thead>
         <tr>
-            <th>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $revisionEntity_old->getRevision()->getId()
+                        )
+                    );
+                ?>">
+
+                    <?= $this->escapeHtml($revisionEntity_old->getRevision()->getId());?>
+                    @ <?php echo $this->AuditDateTimeFormatter($revisionEntity_old->getRevision()->getTimestamp()); ?>
+
+                </a>
+
+
+            </td>
+
+            <td>
                 <a class="btn btn-<?php
                     switch ($revisionEntity_old->getRevisionType()) {
                         case 'INS':
@@ -191,11 +208,7 @@
                 </div>
             </a>
 
-           </th>
-
-            <td>
-                <?php echo $this->AuditDateTimeFormatter($revisionEntity_old->getRevision()->getTimestamp()); ?>
-            </td>
+           </td>
 
         </tr>
 
@@ -227,7 +240,23 @@
 
     <thead>
         <tr>
-            <th>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $revisionEntity_old->getRevision()->getId()
+                        )
+                    );
+                ?>">
+
+                    <?= $this->escapeHtml($revisionEntity_old->getRevision()->getId());?>
+                    @ <?php echo $this->AuditDateTimeFormatter($revisionEntity_old->getRevision()->getTimestamp()); ?>
+
+                </a>
+
+
+            </td>
+            <td>
                 <a class="btn btn-<?php
                     switch ($revisionEntity_new->getRevisionType()) {
                         case 'INS':
@@ -262,12 +291,7 @@
                 </div>
             </a>
 
-           </th>
-
-            <td>
-                <?php echo $this->AuditDateTimeFormatter($revisionEntity_new->getRevision()->getTimestamp()); ?>
-            </td>
-
+           </td>
         </tr>
         <tr>
             <th>Field</th>
