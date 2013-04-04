@@ -13,7 +13,7 @@ use Zend\View\Helper\AbstractHelper
     , ZF2EntityAudit\Entity\AbstractAudit
     ;
 
-final class IndexPaginator extends AbstractHelper implements ServiceLocatorAwareInterface
+final class RevisionPaginator extends AbstractHelper implements ServiceLocatorAwareInterface
 {
     private $serviceLocator;
 
