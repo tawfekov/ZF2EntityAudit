@@ -52,6 +52,18 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $suffix = "suffix";
         $config->setTableSuffix($suffix);
 
+        $fieldName = "fieldName";
+        $config->setRevisionFieldName($fieldName);
+
+
+        $revisionIdFieldType = "string";
+        $config->setRevisionIdFieldType($revisionIdFieldType);
+
+        $tableName = "tableName";
+        $config->setRevisionTableName($tableName);
+
+        $revisionTypeFieldName = "string";
+        $config->setRevisionTypeFieldName($revisionTypeFieldName);
 
         $config->setAuditedEntityClasses(
                         array(
@@ -73,6 +85,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("ZfcUser\Entity\User" , $this->ZfcUserMock);
         $this->assertEquals($prefix ,$config->getTablePrefix());
         $this->assertEquals($suffix ,$config->getTableSuffix());
+        $this->assertEquals($fieldName ,$config->getRevisionFieldName());
+        $this->assertEquals($tableName ,$config->getRevisionTableName());
+        $this->assertEquals($revisionIdFieldType ,$config->getRevisionIdFieldType());
+        $this->assertEquals($revisionTypeFieldName ,$config->getRevisionIdFieldType());
 
     }
 

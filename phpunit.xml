@@ -17,6 +17,11 @@
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory suffix=".php">./src/ZF2EntityAudit/Controller</directory>
+                <directory suffix=".php">./src/ZF2EntityAudit/View</directory>
+                <file>./src/ZF2EntityAudit/Version.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
