@@ -18,9 +18,30 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
+        return array(
+            'page' => $page,
+        );
+    }
+
+    /**
+     * Renders a paginated list of revisions for the given user
+     *
+     * @param int $page
+     */
+    public function userAction()
+    {
+        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
+        $userId = (int)$this->getEvent()->getRouteMatch()->getParam('userId');
+
+        $user = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+            ->getRepository(\ZF2EntityAudit\Module::getZfcUserEntity())->find($userId);
+
+        if (!$user)
+            return $this->plugin('redirect')->toRoute('audit');
 
         return array(
             'page' => $page,
+            'user' => $user,
         );
     }
 

@@ -67,6 +67,20 @@ return array(
                             ),
                         ),
                     ),
+                    'user' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/user[/:userId][/:page]',
+                            'constraints' => array(
+                                'userId' => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'audit',
+                                'action'     => 'user',
+                            ),
+                        ),
+                    ),
+
                     'revisions' => array(
                         'type' => 'Segment',
                         'options' => array(

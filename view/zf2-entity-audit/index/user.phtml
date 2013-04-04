@@ -4,9 +4,9 @@
     <a href="#" class="btn btn-danger">Delete</a>
 </span>
 
-<h1>Audit</h1>
+<h1>Audit by user <?= $this->zfcUserDisplayName($user); ?></h1>
 
-<?php $paginator = $this->auditRevisionPaginator($this->page); ?>
+<?php $paginator = $this->auditRevisionPaginator($this->page, array('user' => $user->getId())); ?>
 
 <table class="table table-striped table-hover table-bordered">
     <thead>

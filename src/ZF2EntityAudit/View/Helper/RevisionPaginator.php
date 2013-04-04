@@ -28,7 +28,8 @@ final class RevisionPaginator extends AbstractHelper implements ServiceLocatorAw
         return $this;
     }
 
-    public function __invoke($page) {
+    public function __invoke($page, $filter = array())
+    {
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
         $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
@@ -37,6 +38,12 @@ final class RevisionPaginator extends AbstractHelper implements ServiceLocatorAw
 
         $qb = $repository->createQueryBuilder('revision');
         $qb->orderBy('revision.id', 'DESC');
+
+        $i = 0;
+        foreach($filter as $field => $value) {
+            $qb->andWhere("revision.$field = ?$i");
+            $qb->setParameter($i, $value);
+        }
 
         $adapter = new DoctrineAdapter(new ORMPaginator($qb));
         $paginator = new Paginator($adapter);
