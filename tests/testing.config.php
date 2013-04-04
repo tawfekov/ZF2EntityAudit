@@ -4,7 +4,7 @@ return array(
         'driver' => array(
             'test_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'cache' => 'apc',
+                'cache' => 'array',
                 'paths' => array(__DIR__ . '/ZF2EntityAuditTest/Entity/')
             ),
             'orm_default' => array(
