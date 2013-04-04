@@ -80,7 +80,13 @@
             <td><?= $this->escapeHtml($this->revisionEntity->getRevision()->getComment()); ?></td>
 
             <td>
-                <a href="#" class="btn btn-default">
+                <a href="<?php
+                    if ($this->revisionEntity->getRevision()->getUser()) {
+                        echo $this->url('audit/user', array('userId' => $this->revisionEntity->getRevision()->getUser()->getId()));
+                    } else {
+                        echo '#';
+                    }
+                ?>" class="btn btn-default">
                     <?php
                         if ($this->revisionEntity->getRevision()->getUser()) {
                             echo $this->gravatar($this->revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
@@ -244,7 +250,13 @@
                 <td><?= $this->escapeHtml($rev->getRevision()->getComment()); ?></td>
 
                 <td>
-                    <a href="#" class="btn btn-default">
+                    <a href="<?php
+                        if ($rev->getRevision()->getUser()) {
+                            echo $this->url('audit/user', array('userId' => $rev->getRevision()->getUser()->getId()));
+                        } else {
+                            echo '#';
+                        }
+                    ?>" class="btn btn-default">
                         <?php
                             if ($rev->getRevision()->getUser()) {
                                 echo $this->gravatar($rev->getRevision()->getUser()->getEmail(), array('img_size' => 24));

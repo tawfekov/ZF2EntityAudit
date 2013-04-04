@@ -109,7 +109,13 @@ foreach ($paginator as $revisionEntity) {
             <td><?= $this->escapeHtml($revisionEntity->getRevision()->getComment()); ?></td>
 
             <td>
-                <a href="#" class="btn btn-default">
+                <a href="<?php
+                    if ($revisionEntity->getRevision()->getUser()) {
+                        echo $this->url('audit/user', array('userId' => $revisionEntity->getRevision()->getUser()->getId()));
+                    } else {
+                        echo '#';
+                    }
+                ?>" class="btn btn-default">
                     <?php
                         if ($revisionEntity->getRevision()->getUser()) {
                             echo $this->gravatar($revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
