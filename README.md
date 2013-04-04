@@ -22,14 +22,14 @@ and two flushes to complete.
 Install
 =======
 
-1. Download ZF2EntityAudit with composer 
+Download ZF2EntityAudit with composer 
 
 ```php
 php composer.phar require "tawfekov/zf2entityaudit": "dev-master"
 ```
 
 
-2. enable ZF2EntityAudit in `config/application.config.php`: 
+Enable ZF2EntityAudit in `config/application.config.php`: 
 ```php
 return array(
     'modules' => array(
@@ -38,7 +38,7 @@ return array(
     ),
 ```
 
-3. copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit setting as
+Copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit setting as
 
 ```php
 return array(
@@ -59,7 +59,7 @@ return array(
 );
 ```
 
-4. Use the Doctrine command line tool to update the database and create the auditing tables :
+Use the Doctrine command line tool to update the database and create the auditing tables :
 
 ```shell
 vendor/bin/doctrine-module orm:schema-tool:update
