@@ -314,6 +314,36 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->auditManager->revertBack($this->em,"ZF2EntityAuditTest\Entity\Writer" , $writer->getId() , "1" , "2"));
 
     }
+    
+    
+    public function testPaginator()
+    {
+        $reader = $this->getAuditReader();
+        $paginator = new \ZF2EntityAudit\Paginator\Dbal($reader);
+        
+        for($i =0 ; $i < 20 ; $i++){
+            $writer = new Writer("tawfek" . rand());
+            $article = new Article("title" , "text" , $writer);
+            $this->em->persist($writer);
+            $this->em->persist($article);
+        }
+        $this->em->flush();
+        $this->assertEquals($reader->countRevisions() , "1");
+        $this->assertEquals($paginator->count() , "1");
+        
+        for($i =0 ; $i < 20 ; $i++){
+            $writer = new Writer("tawfek" . rand());
+            $article = new Article("title" , "text" , $writer);
+            $this->em->persist($writer);
+            $this->em->persist($article);
+            $this->em->flush();
+        }
+        // its 21 because (20 flushes + 1 flush as bluk flush in line 330 )
+        $this->assertEquals($reader->countRevisions() , "21");
+        $this->assertEquals($paginator->count() , "21");
+        $this->assertEquals(count($paginator->getItems(1, 12)) , "12");
+    }
+
 
     public function tearDown()
     {
