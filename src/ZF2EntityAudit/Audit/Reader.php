@@ -340,6 +340,15 @@ class Reader
 
         return $revisions;
     }
+    
+    public function countRevisions()
+    {
+        $conn = $this->em->getConnection();
+        $this->platform = $conn->getDatabasePlatform();
+        $query = "SELECT COUNT(*) as `total` FROM " . $this->config->getRevisionTableName() ;
+        $number = $conn->fetchAll($query);
+        return $number[0]["total"] ;
+    }
 
     protected function getEntityPersister($entity)
     {
