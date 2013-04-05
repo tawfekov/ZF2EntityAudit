@@ -164,8 +164,7 @@ $view->auditRevisionPaginator($page);
 Audit Records
 =============
 
-Routes are added to /audit  This module provides the view layer for browsing the audit log
-from this route.  You can protect this route using any ACL module.  We suggest [BjyAuthorize].
+Routes are added as /audit  This module provides the view layer for browsing the audit log from this route.  
 
 
 ZfcUser 
@@ -174,20 +173,5 @@ ZfcUser
 ZfcUser integration maps revisions to users if a user is logged in.  Auditing of revisions without
 a valid user will still produce an audit record.
 
-
-Contributors
-============
-
-on Github : [tawfekov]
-on Twitter: [@tawfekov]
-
-Thanks also flys to [TomHAnderson] for his [Contributions].
-
-[repository]:https://github.com/tawfekov/ZF2EntityAudit-demo
-[Contributions]:https://github.com/tawfekov/ZF2EntityAudit/graphs/contributors
-[BjyAuthorize]:github.com/bjyoungblood/BjyAuthorize
-[TomHAnderson]:https://github.com/TomHAnderson
-[tawfekov]:https://github.com/tawfekov
-[@tawfekov]:http://twitter.com/tawfekov
 
 Inspired by SimpleThings
