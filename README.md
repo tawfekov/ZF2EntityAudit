@@ -163,7 +163,7 @@ $view->auditRevisionPaginator($page);
 ZfcUser 
 =======
 
-ZfcUser integration maps revisions to users if a user is logged in.  Auditing of revisions without a valid user will still produce an audit record.
+ZfcUser integration maps revisions to users if a user is logged in.  Auditing of revisions without a valid user are mapped as anonymous.
 
 
 Inspired by SimpleThings
