@@ -15,8 +15,7 @@ allow you to find and browse to the latest audit record from a given audited ent
 Revisions pool all audited entities into revision buckets.  Each bucket contains the revision entity for each 
 audited record in a transaction.
 
-Auditing is done in it's own transaction after a flush has been performed.  Auditing takes one transaction
-and two flushes to complete.  
+Auditing is done in it's own transaction after a flush has been performed.  Auditing takes two flushes in one transaction to complete.  
 
 
 Install
@@ -161,17 +160,10 @@ $view->auditRevisionPaginator($page);
 ```
 
 
-Audit Records
-=============
-
-Routes are added as /audit  This module provides the view layer for browsing the audit log from this route.  
-
-
 ZfcUser 
 =======
 
-ZfcUser integration maps revisions to users if a user is logged in.  Auditing of revisions without
-a valid user will still produce an audit record.
+ZfcUser integration maps revisions to users if a user is logged in.  Auditing of revisions without a valid user will still produce an audit record.
 
 
 Inspired by SimpleThings
