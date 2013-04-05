@@ -46,4 +46,10 @@ class Manager
         $evm->addEventSubscriber(new CreateSchemaListener($this));
         $evm->addEventSubscriber(new LogRevisionsListener($this));
     }
+
+    public function revertBack(EntityManager $em,$className,$id,$oldRevId,$newRevId)
+    {
+        return true ;
+    }
+
 }

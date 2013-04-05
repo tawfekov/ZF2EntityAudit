@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping AS ORM;
 
 /**
  * @ORM\Table("article")
+ * @ORM\Entity(repositoryClass = "ZF2EntityAuditTest\Repository\Article" )
  * @ORM\Entity
  */
 class Article
@@ -22,18 +23,29 @@ class Article
     /** @ORM\Column(type="text") */
     private $text;
 
-    /** @ORM\ManyToOne(targetEntity="Writer") */
-    private $author;
+    /** @ORM\ManyToOne(targetEntity="Writer" , inversedBy="articles") */
+    private $writer;
 
-    public function __construct($title, $text, $author)
+    public function __construct($title, $text, $writer)
     {
         $this->title = $title;
         $this->text = $text;
-        $this->author = $author;
+        $this->writer = $writer;
     }
 
     public function setText($text)
     {
         $this->text = $text;
     }
+
+    public function getWriter()
+    {
+        return $this->writer;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
 }

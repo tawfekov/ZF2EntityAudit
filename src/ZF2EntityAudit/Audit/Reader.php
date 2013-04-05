@@ -42,7 +42,7 @@ class Reader
      * @param  string $className
      * @param  mixed  $id
      * @param  int    $revision
-     * @return object
+     * @return Entity
      */
     public function find($className, $id, $revision)
     {

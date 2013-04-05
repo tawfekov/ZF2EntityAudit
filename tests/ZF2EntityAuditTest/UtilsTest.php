@@ -6,7 +6,7 @@ use ZF2EntityAudit\Utils\ArrayDiff;
 
 class UtilsTest extends \PHPUnit_Framework_TestCase
 {
-    
+
     /**
      * @dataProvider dataDiff
      * @param $old
@@ -34,7 +34,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             "1" => "TESTing",
             "2" => "diff_array"
         );
-        
+
         $output = array(
             "0" => array("old" => "" , "new" => "" , "same" => "hello"),
             "1" => array("old" => "testing" , "new" => "TESTing" , "same" => ""),
@@ -46,7 +46,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    static public function dataDiff()
+    public static function dataDiff()
     {
         return array(
             array('Foo', 'foo', '<del>Foo</del> <ins>foo</ins> '),

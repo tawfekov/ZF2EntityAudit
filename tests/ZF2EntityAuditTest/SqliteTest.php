@@ -35,7 +35,7 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
         $this->em = $this->Bootstrap->getServiceManager()->get("doctrine.entitymanager.orm_default");
 
         /// echo sql logger
-        //$this->em->getConfiguration()->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());;
+        ///$this->em->getConfiguration()->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());;
 
         /// let's create the default user
         $this->ZfcUserMock = $this->createUser() ;
@@ -256,6 +256,63 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException("ZF2EntityAudit\Audit\Exception","Class 'ZF2EntityAuditTest\Entity\Write' is not audited.");
         $this->getAuditReader()->findRevisions("ZF2EntityAuditTest\Entity\Write",1);
+    }
+
+    public function testFindingRepositoryClasses()
+    {
+        /// its useless now , but i will work on it soon
+        $WriterRepository = $this->em->getRepository("ZF2EntityAuditTest\Entity\Writer");
+        $ArticleRepository = $this->em->getRepository("ZF2EntityAuditTest\Entity\Article");
+
+        $this->assertEquals("Doctrine\ORM\EntityRepository" , get_class($WriterRepository));
+        $this->assertEquals("Doctrine\ORM\EntityRepository" , get_class($ArticleRepository));
+
+    }
+
+    public function testOneToManay()
+    {
+
+        $writer = new Writer("tawfek-daghistani");
+        $article_1 = new Article("this is title","thisi is the body", $writer);
+        $article_2 = new Article("this is title2","thisi is the body2", $writer);
+        $this->em->persist($writer);
+        $this->em->persist($article_2);
+        $this->em->persist($article_1);
+        $this->em->flush();
+
+        $reader = $this->getAuditReader();
+        $changedEntities = $reader->findEntitesChangedAtRevision("1");
+        $this->assertEquals(count($changedEntities),"3");
+
+
+        $foundRevisions = $reader->findRevisions("ZF2EntityAuditTest\Entity\Writer" , $writer->getId());
+        $this->assertEquals(count($foundRevisions),"1");
+
+        $writer->setName("Tawfekov");
+
+        $this->em->persist($writer);
+        $this->em->flush();
+
+        $foundRevisions = $reader->findRevisions("ZF2EntityAuditTest\Entity\Writer" , $writer->getId());
+        $this->assertEquals(count($foundRevisions),"2");
+
+        $_writer = $article_2->getWriter();
+        $this->assertInstanceOf("ZF2EntityAuditTest\Entity\Writer",$_writer);
+
+    }
+
+    public function testSimpleRevertBack()
+    {
+        $writer = new Writer("tawfekov");
+        $this->em->persist($writer);
+        $this->em->flush();
+
+
+        $writer->setName("Tawfek-Daghistani");
+        $this->em->persist($writer);
+        $this->em->flush();
+        $this->assertTrue($this->auditManager->revertBack($this->em,"ZF2EntityAuditTest\Entity\Writer" , $writer->getId() , "1" , "2"));
+
     }
 
     public function tearDown()
