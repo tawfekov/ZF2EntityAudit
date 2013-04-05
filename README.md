@@ -1,4 +1,4 @@
-ZF2EntityAudit
+SoliantEntityAudit
 ==============
 
 An auditing module for Doctrine 2.  Requires ZfcUser to map revisions to users.
@@ -21,23 +21,23 @@ Auditing is done in it's own transaction after a flush has been performed.  Audi
 Install
 =======
 
-Download ZF2EntityAudit with composer 
+Download SoliantEntityAudit with composer 
 
 ```php
-php composer.phar require "tawfekov/zf2entityaudit": "dev-master"
+php composer.phar require "tawfekov/SoliantEntityAudit": "dev-master"
 ```
 
 
-Enable ZF2EntityAudit in `config/application.config.php`: 
+Enable SoliantEntityAudit in `config/application.config.php`: 
 ```php
 return array(
     'modules' => array(
-        'ZF2EntityAudit'
+        'SoliantEntityAudit'
         ...
     ),
 ```
 
-Copy `config/zf2entityaudit.global.php.dist` to `config/autoload/zf2entityaudit.global.php` and edit setting as
+Copy `config/SoliantEntityAudit.global.php.dist` to `config/autoload/SoliantEntityAudit.global.php` and edit setting as
 
 ```php
 return array(

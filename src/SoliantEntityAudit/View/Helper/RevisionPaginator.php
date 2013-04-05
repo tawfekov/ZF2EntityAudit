@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\View\Helper;
+namespace SoliantEntityAudit\View\Helper;
 
 use Zend\View\Helper\AbstractHelper
     , Doctrine\ORM\EntityManager
@@ -10,10 +10,10 @@ use Zend\View\Helper\AbstractHelper
     , DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter
     , Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator
     , Zend\Paginator\Paginator
-    , ZF2EntityAudit\Entity\AbstractAudit
+    , SoliantEntityAudit\Entity\AbstractAudit
     ;
 
-final class EntityPaginator extends AbstractHelper implements ServiceLocatorAwareInterface
+final class RevisionPaginator extends AbstractHelper implements ServiceLocatorAwareInterface
 {
     private $serviceLocator;
 
@@ -28,28 +28,31 @@ final class EntityPaginator extends AbstractHelper implements ServiceLocatorAwar
         return $this;
     }
 
-    public function __invoke($page, $entityClass) {
+    public function __invoke($page, $filter = array())
+    {
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
         $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
 
-        if (in_array($entityClass, array_keys(\ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses()))) {
-            $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entityClass);
-        } else {
-            $auditEntityClass = $entityClass;
+        $repository = $entityManager->getRepository('SoliantEntityAudit\\Entity\\Revision');
+
+        $qb = $repository->createQueryBuilder('revision');
+        $qb->orderBy('revision.id', 'DESC');
+
+        $i = 0;
+        foreach($filter as $field => $value) {
+            if (!is_null($value)) {
+                $qb->andWhere("revision.$field = ?$i");
+                $qb->setParameter($i, $value);
+            } else {
+                $qb->andWhere("revision.$field is NULL");
+            }
         }
-
-        $repository = $entityManager->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity');
-
-        $qb = $repository->createQueryBuilder('revisionEntity');
-        $qb->orderBy('revisionEntity.id', 'DESC');
-
-        $qb->andWhere('revisionEntity.auditEntityClass = ?1')
-            ->setParameter(1, $auditEntityClass);
 
         $adapter = new DoctrineAdapter(new ORMPaginator($qb));
         $paginator = new Paginator($adapter);
         $paginator->setDefaultItemCountPerPage($auditModuleOptions->getPaginatorLimit());
+
         $paginator->setCurrentPageNumber($page);
 
         return $paginator;

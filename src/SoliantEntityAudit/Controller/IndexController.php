@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\Controller;
+namespace SoliantEntityAudit\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController
  , DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter
@@ -34,7 +34,7 @@ class IndexController extends AbstractActionController
         $userId = (int)$this->getEvent()->getRouteMatch()->getParam('userId');
 
         $user = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository(\ZF2EntityAudit\Module::getZfcUserEntity())->find($userId);
+            ->getRepository(\SoliantEntityAudit\Module::getZfcUserEntity())->find($userId);
 
         return array(
             'page' => $page,
@@ -53,7 +53,7 @@ class IndexController extends AbstractActionController
         $revisionId = (int)$this->getEvent()->getRouteMatch()->getParam('revisionId');
 
         $revision = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\Revision')
+            ->getRepository('SoliantEntityAudit\\Entity\\Revision')
             ->find($revisionId);
 
         if (!$revision)
@@ -73,13 +73,13 @@ class IndexController extends AbstractActionController
         $revisionEntityId = (int) $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
 
         $revisionEntity = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
 
         if (!$revisionEntity)
             return $this->plugin('redirect')->toRoute('audit');
 
         $repository = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity');
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity');
 
         return array(
             'page' => $page,
@@ -121,9 +121,9 @@ class IndexController extends AbstractActionController
         $revisionEntityId_new = $this->getRequest()->getPost()->get('revisionEntityId_new');
 
         $revisionEntity_old = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_old);
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_old);
         $revisionEntity_new = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_new);
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_new);
 
         if (!$revisionEntity_old and !$revisionEntity_new)
             return $this->plugin('redirect')->toRoute('audit');

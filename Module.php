@@ -1,14 +1,14 @@
 <?php
 
-namespace ZF2EntityAudit;
+namespace SoliantEntityAudit;
 
 use Zend\Mvc\MvcEvent
-    , ZF2EntityAudit\Options\ModuleOptions
-    , ZF2EntityAudit\Service\AuditService
-    , ZF2EntityAudit\Loader\AuditAutoloader
-    , ZF2EntityAudit\EventListener\LogRevision
-    , ZF2EntityAudit\View\Helper\DateTimeFormatter
-    , ZF2EntityAudit\View\Helper\EntityValues
+    , SoliantEntityAudit\Options\ModuleOptions
+    , SoliantEntityAudit\Service\AuditService
+    , SoliantEntityAudit\Loader\AuditAutoloader
+    , SoliantEntityAudit\EventListener\LogRevision
+    , SoliantEntityAudit\View\Helper\DateTimeFormatter
+    , SoliantEntityAudit\View\Helper\EntityValues
     , Zend\ServiceManager\ServiceManager
     ;
 
@@ -38,7 +38,7 @@ class Module
 
         $auditAutoloader = new AuditAutoloader();
         $auditAutoloader->setServiceManager($e->getApplication()->getServiceManager());
-        $auditAutoloader->registerNamespace('ZF2EntityAudit\\Entity', __DIR__);
+        $auditAutoloader->registerNamespace('SoliantEntityAudit\\Entity', __DIR__);
         $auditAutoloader->register();
 
         // Subscribe log revision event listener

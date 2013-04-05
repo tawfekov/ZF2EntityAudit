@@ -1,12 +1,12 @@
 <?php
 
-namespace ZF2EntityAudit;
+namespace SoliantEntityAudit;
 
 return array(
     'doctrine' => array(
         'driver' => array(
             __NAMESPACE__ . '_driver' => array(
-                'class' => 'ZF2EntityAudit\Mapping\Driver\AuditDriver',
+                'class' => 'SoliantEntityAudit\Mapping\Driver\AuditDriver',
             ),
 
             'orm_default' => array(
@@ -19,7 +19,7 @@ return array(
 
     'controllers' => array(
         'invokables' => array(
-            'audit' => 'ZF2EntityAudit\Controller\IndexController'
+            'audit' => 'SoliantEntityAudit\Controller\IndexController'
         ),
     ),
 
@@ -31,11 +31,11 @@ return array(
 
     'view_helpers' => array(
         'invokables' => array(
-            'auditRevisionPaginator' => 'ZF2EntityAudit\View\Helper\RevisionPaginator',
-            'auditRevisionEntityPaginator' => 'ZF2EntityAudit\View\Helper\RevisionEntityPaginator',
-            'auditEntityPaginator' => 'ZF2EntityAudit\View\Helper\EntityPaginator',
-            'auditOptions' => 'ZF2EntityAudit\View\Helper\Options',
-            'auditCurrentRevisionEntity' => 'ZF2EntityAudit\View\Helper\CurrentRevisionEntity',
+            'auditRevisionPaginator' => 'SoliantEntityAudit\View\Helper\RevisionPaginator',
+            'auditRevisionEntityPaginator' => 'SoliantEntityAudit\View\Helper\RevisionEntityPaginator',
+            'auditEntityPaginator' => 'SoliantEntityAudit\View\Helper\EntityPaginator',
+            'auditOptions' => 'SoliantEntityAudit\View\Helper\Options',
+            'auditCurrentRevisionEntity' => 'SoliantEntityAudit\View\Helper\CurrentRevisionEntity',
         ),
     ),
 

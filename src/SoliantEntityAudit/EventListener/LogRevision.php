@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\EventListener;
+namespace SoliantEntityAudit\EventListener;
 
 use Doctrine\Common\EventSubscriber
     , Doctrine\ORM\EntityManager
@@ -8,9 +8,9 @@ use Doctrine\Common\EventSubscriber
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\PostFlushEventArgs
     , Zend\ServiceManager\ServiceManager
-    , ZF2EntityAudit\Entity\Revision as RevisionEntity
-    , ZF2EntityAudit\Options\ModuleOptions
-    , ZF2EntityAudit\Entity\RevisionEntity as RevisionEntityEntity
+    , SoliantEntityAudit\Entity\Revision as RevisionEntity
+    , SoliantEntityAudit\Options\ModuleOptions
+    , SoliantEntityAudit\Entity\RevisionEntity as RevisionEntityEntity
     , Zend\Code\Reflection\ClassReflection
     , Doctrine\ORM\PersistentCollection
     ;
@@ -23,6 +23,8 @@ class LogRevision implements EventSubscriber
     private $revision;
     private $entities;
     private $reexchangeEntities;
+    private $collectionUpdates;
+    private $inAuditTransaction;
 
     public function __construct($serviceManager)
     {
@@ -104,6 +106,27 @@ class LogRevision implements EventSubscriber
         $this->reexchangeEntities[] = $entityMap;
     }
 
+    public function addCollectionUpdate($collection)
+    {
+        $this->collectionUpdates[] = $collection;
+    }
+
+    public function getCollectionUpdates()
+    {
+        return $this->collectionUpdates;
+    }
+
+    public function setInAuditTransaction($setting)
+    {
+        $this->inAuditTransaction = $setting;
+        return $this;
+    }
+
+    public function getInAuditTransaction()
+    {
+        return $this->inAuditTransaction;
+    }
+
     private function getRevision()
     {
         return $this->revision;
@@ -140,13 +163,8 @@ class LogRevision implements EventSubscriber
             $property->setAccessible(true);
             $value = $property->getValue($entity);
 
-            # fixme:  add support for collections
-            if ($value instanceof PersistentCollection) {
-                continue;
-            }
-
             // Set values to getId for classes
-            if (method_exists($value, 'getId')) {
+            if ($value instanceof \StdClass and method_exists($value, 'getId')) {
                 $value = $value->getId();
             }
 
@@ -166,7 +184,7 @@ class LogRevision implements EventSubscriber
         if (!in_array(get_class($entity), array_keys($this->getConfig()->getAuditedEntityClasses())))
             return array();
 
-        $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
+        $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
         $auditEntity = new $auditEntityClass();
         $auditEntity->exchangeArray($this->getClassProperties($entity));
 
@@ -216,9 +234,8 @@ class LogRevision implements EventSubscriber
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionUpdates() AS $collectionToUpdate) {
             if ($collectionToUpdate instanceof PersistentCollection) {
-                die('Found persistent collection.  How do I persist it to the discoverd many to many audit entity?');
+                $this->addCollectionUpdate($collectionToUpdate);
             }
-
         }
 
         $this->setEntities($entities);
@@ -226,7 +243,8 @@ class LogRevision implements EventSubscriber
 
     public function postFlush(PostFlushEventArgs $args)
     {
-        if ($this->getEntities()) {
+        if ($this->getEntities() and !$this->getInAuditTransaction()) {
+            $this->setInAuditTransaction(true);
             $this->getEntityManager()->beginTransaction();
 
             $this->getEntityManager()->persist($this->getRevision());
@@ -239,15 +257,30 @@ class LogRevision implements EventSubscriber
                 $entityMap['revisionEntity']->setAuditEntity($entityMap['auditEntity']);
             }
 
-            foreach ($this->getEntities() as $entity)
+            foreach ($this->getEntities() as $entity) {
+
+                // Audit complete collections as a snapshot of an updated entity
+                # FIXME: many to many data are not populated in audit
+                foreach ($this->getCollectionUpdates() as $collection) {
+                    foreach ($this->getClassProperties($entity) as $key => $value) {
+                        if ($value instanceof PersistentCollection) {
+                            die('persistent collection found');
+                            continue;
+                        }
+                    }
+                }
+
                 $this->getEntityManager()->persist($entity);
+            }
+
+
             $this->getEntityManager()->flush();
 
             $this->getEntityManager()->commit();
+            $this->resetEntities();
+            $this->resetReexchangeEntities();
+            $this->resetRevision();
+            $this->setInAuditTransaction(false);
         }
-
-        $this->resetEntities();
-        $this->resetReexchangeEntities();
-        $this->resetRevision();
     }
 }

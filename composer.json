@@ -1,13 +1,11 @@
 {
-    "name": "tawfekov/zf2entityaudit",
-    "description": "Doctrine entity audit module with ZfcUser support",
+    "name": "soliant/entity-audit",
+    "description": "Doctrine 2 Entity Auditing",
     "type": "zf-module",
     "license": "MIT",
     "keywords": [
         "audit",
         "doctrine",
-        "zf2",
-        "persistence"
     ],
     "authors": [
         {
@@ -30,7 +28,7 @@
     },
     "autoload": {
         "psr-0": {
-            "ZF2EntityAudit": "src/"
+            "SoliantEntityAudit": "src/"
         },
         "classmap": [
             "./Module.php"

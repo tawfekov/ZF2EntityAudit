@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\Mapping\Driver;
+namespace SoliantEntityAudit\Mapping\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata
     , Doctrine\Common\Persistence\Mapping\Driver\MappingDriver
@@ -17,16 +17,16 @@ final class AuditDriver implements MappingDriver
      */
     function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        $serviceManager = \ZF2EntityAudit\Module::getServiceManager();
+        $serviceManager = \SoliantEntityAudit\Module::getServiceManager();
 
         $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
         $config = $serviceManager->get('auditModuleOptions');
         $metadataFactory = $entityManager->getMetadataFactory();
         $builder = new ClassMetadataBuilder($metadata);
 
-        if ($className == 'ZF2EntityAudit\\Entity\RevisionEntity') {
+        if ($className == 'SoliantEntityAudit\\Entity\RevisionEntity') {
             $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-            $builder->addManyToOne('revision', 'ZF2EntityAudit\\Entity\\Revision');
+            $builder->addManyToOne('revision', 'SoliantEntityAudit\\Entity\\Revision');
             $builder->addField('entityKeys', 'string');
             $builder->addField('auditEntityClass', 'string');
             $builder->addField('targetEntityClass', 'string');
@@ -37,16 +37,16 @@ final class AuditDriver implements MappingDriver
         }
 
         // Revision is managed here rather than a separate namespace and driver
-        if ($className == 'ZF2EntityAudit\\Entity\\Revision') {
+        if ($className == 'SoliantEntityAudit\\Entity\\Revision') {
             $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
             $builder->addField('comment', 'text', array('nullable' => true));
             $builder->addField('timestamp', 'datetime');
 
             // Add association between RevisionEntity and Revision
-            $builder->addOneToMany('revisionEntities', 'ZF2EntityAudit\\Entity\\RevisionEntity', 'revision');
+            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', 'revision');
 
             // Add assoication between ZfcUser and Revision
-            $zfcUserMetadata = $metadataFactory->getMetadataFor(\ZF2EntityAudit\Module::getZfcUserEntity());
+            $zfcUserMetadata = $metadataFactory->getMetadataFor(\SoliantEntityAudit\Module::getZfcUserEntity());
             $builder
                 ->createManyToOne('user', $zfcUserMetadata->getName())
                 ->addJoinColumn('user_id', $zfcUserMetadata->getSingleIdentifierColumnName())
@@ -59,7 +59,7 @@ final class AuditDriver implements MappingDriver
         //  Build a discovered many to many join class
         $joinClasses = $config->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\\Entity\\Revision');
+            $builder->addManyToOne($config->getRevisionFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
             $identifiers = array($config->getRevisionFieldName());
 
             foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
@@ -84,7 +84,7 @@ final class AuditDriver implements MappingDriver
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
-        $builder->addManyToOne($config->getRevisionFieldName(), 'ZF2EntityAudit\\Entity\\Revision');
+        $builder->addManyToOne($config->getRevisionFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
         $identifiers = array($config->getRevisionFieldName());
 
         // Add fields from target to audit entity
@@ -130,20 +130,20 @@ final class AuditDriver implements MappingDriver
      */
     function getAllClassNames()
     {
-        $serviceManager = \ZF2EntityAudit\Module::getServiceManager();
+        $serviceManager = \SoliantEntityAudit\Module::getServiceManager();
         $config = $serviceManager->get('auditModuleOptions');
         $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
         $metadataFactory = $entityManager->getMetadataFactory();
 
         $auditEntities = array();
         foreach ($config->getAuditedEntityClasses() as $name => $targetClassOptions) {
-            $auditClassName = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $name);
+            $auditClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $name);
             $auditEntities[] = $auditClassName;
             $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
 
             foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
                 if (isset($mapping['joinTable'])) {
-                    $auditJoinTableClassName = "ZF2EntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
+                    $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
                     $auditEntities[] = $auditJoinTableClassName;
                     $config->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
                 }
@@ -151,8 +151,8 @@ final class AuditDriver implements MappingDriver
         }
 
         // Add revision (manage here rather than separate namespace)
-        $auditEntities[] = 'ZF2EntityAudit\\Entity\\Revision';
-        $auditEntities[] = 'ZF2EntityAudit\\Entity\\RevisionEntity';
+        $auditEntities[] = 'SoliantEntityAudit\\Entity\\Revision';
+        $auditEntities[] = 'SoliantEntityAudit\\Entity\\RevisionEntity';
 
         return $auditEntities;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\Entity;
+namespace SoliantEntityAudit\Entity;
 
 use ZfcUser\Entity\UserInterface
     , Doctrine\Common\Collections\ArrayCollection;

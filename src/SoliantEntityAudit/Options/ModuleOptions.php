@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\Options;
+namespace SoliantEntityAudit\Options;
 use ZfcUser\Entity\UserInterface as ZfcUserInterface
     ;
 

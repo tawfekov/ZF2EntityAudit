@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\View\Helper;
+namespace SoliantEntityAudit\View\Helper;
 
 use Zend\View\Helper\AbstractHelper
     , Doctrine\ORM\EntityManager
@@ -10,7 +10,7 @@ use Zend\View\Helper\AbstractHelper
     , DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter
     , Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator
     , Zend\Paginator\Paginator
-    , ZF2EntityAudit\Entity\AbstractAudit
+    , SoliantEntityAudit\Entity\AbstractAudit
     ;
 
 // Return the latest revision entity for the given entity
@@ -33,7 +33,7 @@ final class CurrentRevisionEntity extends AbstractHelper implements ServiceLocat
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
 
-        $revisionEntity = $entityManager->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')->findBy(array(
+        $revisionEntity = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->findBy(array(
             'targetEntityClass' => get_class($entity),
             'entityKeys' => serialize($auditService->getEntityIdentifierValues($entity)),
         ), array('id' => 'DESC'), 1);

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\View\Helper;
+namespace SoliantEntityAudit\View\Helper;
 
 use Zend\View\Helper\AbstractHelper
     , Doctrine\ORM\EntityManager
@@ -10,7 +10,7 @@ use Zend\View\Helper\AbstractHelper
     , DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter
     , Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator
     , Zend\Paginator\Paginator
-    , ZF2EntityAudit\Entity\AbstractAudit
+    , SoliantEntityAudit\Entity\AbstractAudit
     ;
 
 // Return the audit config for the audited entity

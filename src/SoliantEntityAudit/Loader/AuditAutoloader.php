@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\Loader;
+namespace SoliantEntityAudit\Loader;
 
 use Zend\Loader\StandardAutoloader
     , Zend\ServiceManager\ServiceManager
@@ -57,8 +57,8 @@ class AuditAutoloader extends StandardAutoloader
         //  Build a discovered many to many join class
         $joinClasses = $config->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $className);
-            $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
+            $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
+            $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
             $auditClass->setName($className);
             $auditClass->setExtendedClass('AbstractAudit');
 
@@ -87,7 +87,7 @@ class AuditAutoloader extends StandardAutoloader
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?
         foreach($config->getAuditedEntityClasses() as $targetClass => $targetClassOptions) {
-             $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
+             $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
              if ($auditClassName == $className) {
                  $currentClass = $targetClass;
              }
@@ -148,7 +148,7 @@ class AuditAutoloader extends StandardAutoloader
             " return '" .  addslashes($currentClass) . "';"
         );
 
-        $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
+        $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
         $auditClass->setName(str_replace('\\', '_', $currentClass));
         $auditClass->setExtendedClass('AbstractAudit');
 

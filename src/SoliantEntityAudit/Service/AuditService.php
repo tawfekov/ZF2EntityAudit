@@ -1,9 +1,9 @@
 <?php
 
-namespace ZF2EntityAudit\Service;
+namespace SoliantEntityAudit\Service;
 
 use Zend\View\Helper\AbstractHelper
-    , ZF2EntityAudit\Entity\AbstractAudit
+    , SoliantEntityAudit\Entity\AbstractAudit
     ;
 
 class AuditService extends AbstractHelper
@@ -30,7 +30,7 @@ class AuditService extends AbstractHelper
     }
 
     public function getEntityValues($entity, $cleanRevison = false) {
-        $em = \ZF2EntityAudit\Module::getServiceManager()
+        $em = \SoliantEntityAudit\Module::getServiceManager()
             ->get('doctrine.entitymanager.orm_default');
 
         $metadata = $em->getClassMetadata(get_class($entity));
@@ -48,14 +48,14 @@ class AuditService extends AbstractHelper
 
     public function getEntityIdentifierValues($entity, $cleanRevision = false)
     {
-        $entityManager = \ZF2EntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $entityManager = \SoliantEntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $metadataFactory = $entityManager->getMetadataFactory();
 
         // Get entity metadata - Audited entities will always have composite keys
         $metadata = $metadataFactory->getMetadataFor(get_class($entity));
         $values = $metadata->getIdentifierValues($entity);
 
-        if ($cleanRevision and $values['revision'] instanceof \ZF2EntityAudit\Entity\Revision) {
+        if ($cleanRevision and $values['revision'] instanceof \SoliantEntityAudit\Entity\Revision) {
             unset($values['revision']);
         }
 
@@ -73,22 +73,22 @@ class AuditService extends AbstractHelper
      */
     public function getRevisionEntities($entity)
     {
-        $entityManager = \ZF2EntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $entityManager = \SoliantEntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        if (gettype($entity) != 'string' and in_array(get_class($entity), array_keys(\ZF2EntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses()))) {
-            $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
+        if (gettype($entity) != 'string' and in_array(get_class($entity), array_keys(\SoliantEntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedEntityClasses()))) {
+            $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
             $identifiers = $this->getEntityIdentifierValues($entity);
         } elseif ($entity instanceof AbstractAudit) {
             $auditEntityClass = get_class($entity);
             $identifiers = $this->getEntityIdentifierValues($entity, true);
         } else {
-            $auditEntityClass = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $entity);
+            $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $entity);
         }
 
         $search = array('auditEntityClass' => $auditEntityClass);
         if (isset($identifiers)) $search['entityKeys'] = serialize($identifiers);
 
-        return $entityManager->getRepository('ZF2EntityAudit\\Entity\\RevisionEntity')
+        return $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')
             ->findBy($search, array('id' => 'DESC'));
     }
 }

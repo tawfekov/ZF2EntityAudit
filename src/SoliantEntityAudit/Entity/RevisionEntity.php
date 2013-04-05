@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF2EntityAudit\Entity;
+namespace SoliantEntityAudit\Entity;
 
 use ZfcUser\Entity\UserInterface
     , Doctrine\ORM\Mapping\ClassMetadata
@@ -30,7 +30,7 @@ class RevisionEntity
 
     public function getServiceManager()
     {
-        return \ZF2EntityAudit\Module::getServiceManager();
+        return \SoliantEntityAudit\Module::getServiceManager();
     }
 
     public function getId()
