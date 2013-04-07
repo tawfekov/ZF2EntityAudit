@@ -6,7 +6,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ZF2EntityAudit\Utils\ArrayDiff;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use ZF2EntityAudit\Paginator\Dbal as DBALPaginator ;
+use ZF2EntityAudit\Paginator\DbalAdapter;
+use Zend\Paginator\Paginator ;
 class IndexController extends AbstractActionController
 {
 
@@ -31,8 +32,12 @@ class IndexController extends AbstractActionController
         $config = $sm->get("Config");
         $ZF2AuditConfig = $config["zf2-entity-audit"];
         $page = (int) $this->getEvent()->getRouteMatch()->getParam('page');
-        $paginator = new DBALPaginator($auditReader);
-        $paginator->getItems(20 * ($page - 1), $ZF2AuditConfig['ui']['page.limit']);
+        $limit = $ZF2AuditConfig['ui']['page.limit'];
+        $paginator = new Paginator(new DbalAdapter($auditReader->paginateRevisionsQuery()));
+        
+        $paginator->setDefaultItemCountPerPage($limit);
+        $paginator->setCurrentPageNumber($page);
+        
         return new ViewModel(array(
             'paginator'   => $paginator ,
             'auditReader' => $auditReader,

@@ -319,7 +319,9 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
     public function testPaginator()
     {
         $reader = $this->getAuditReader();
-        $paginator = new \ZF2EntityAudit\Paginator\Dbal($reader);
+        $query = $reader->paginateRevisionsQuery();
+        $paginatorAdapter = new \ZF2EntityAudit\Paginator\DbalAdapter($query);
+        $paginator = new \Zend\Paginator\Paginator($paginatorAdapter);
         
         for($i =0 ; $i < 20 ; $i++){
             $writer = new Writer("tawfek" . rand());
@@ -340,8 +342,8 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
         }
         // its 21 because (20 flushes + 1 flush as bluk flush in line 330 )
         $this->assertEquals($reader->countRevisions() , "21");
-        $this->assertEquals($paginator->count() , "21");
-        $this->assertEquals(count($paginator->getItems(1, 12)) , "12");
+        $this->assertEquals($paginator->getAdapter()->count() , "21");
+        $this->assertEquals(count($paginator->getAdapter()->getItems(1, 12)) , "12");
     }
 
 

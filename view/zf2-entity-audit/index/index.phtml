@@ -33,11 +33,11 @@
                             <a href="<?=
                                 $this->url('audit_viewrevision',
                                     array(
-                                        'rev' => $revision->getRev()
+                                        'rev' => $revision["id"]
                                     )
                                 );
                             ?>">
-                                <?php  echo $this->escapeHtml($revision->getRev()); ?>
+                                <?php  echo $this->escapeHtml($revision["id"]); ?>
                             </a>
                         </td>
 
@@ -45,19 +45,19 @@
                             <a href="<?=
                                 $this->url('audit_viewrevision',
                                     array(
-                                        'rev' => $revision->getRev()
+                                        'rev' => $revision["id"]
                                     )
                                 );
                             ?>">
                             
-                                <?php echo $this->DateTimeFormatter($revision->getTimestamp()); ?>
+                                <?php echo $this->DateTimeFormatter(new \DateTime($revision["timestamp"])); ?>
                             
                             </a>
                         </td>
 
                         <td>
                         <?php
-                        $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision->getRev());
+                        $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision["id"]);
                         foreach ($changedEntities as $ce) {
                         ?>
                                 <?php $id = $ce->getId(); ?>
@@ -98,7 +98,7 @@
 
                         <td>
                             <span class="label label-info">
-                                <?php echo  ($this->escapeHtml($revision->getUser()->getEmail())) ?: 'Anonymous'; ?>
+                                <?php echo  ($this->escapeHtml($revision["user_id"])) ?: 'Anonymous'; ?>
                             </span>
                         </td>
                     </tr>
@@ -109,54 +109,6 @@
         </table>
     </div>
     <div class="span12">
-            <?php if ($this->pageCount): ?>
-            <div class="pagination pagination-centered">
-            <ul>
-            <!-- Previous page link -->
-            <?php if (isset($this->previous)): ?>
-                <li>
-                    <a href="<?php echo $this->url($this->route); ?>?page=<?php echo $this->previous; ?>">
-                        <<
-                    </a>
-                </li>
-            <?php else: ?>
-                <li class="disabled">
-                    <a href="#">
-                        <<
-                    </a>
-                </li>
-            <?php endif; ?>
-            <!-- Numbered page links -->
-            <?php foreach ($this->pagesInRange as $page): ?>
-                <?php if ($page != $this->current): ?>
-                    <li>
-                        <a href="<?php echo $this->url($this->route);?>?page=<?php echo $page; ?>">
-                            <?php echo $page; ?>
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="active">
-                        <a href="#"><?php echo $page; ?></a>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-
-            <!-- Next page link -->
-            <?php if (isset($this->next)): ?>
-                <li>
-                    <a href="<?php echo $this->url($this->route); ?>?page=<?php echo $this->next; ?>">
-                        >>
-                    </a>
-                </li>
-            <?php else: ?>
-                <li class="disabled">
-                    <a href="#">
-                        >>
-                    </a>
-                </li>
-            <?php endif; ?>
-            </ul>
-            </div>
-            <?php endif; ?>
+           <?php echo $this->paginationControl($this->paginator, 'Sliding','paginator/control.phtml'); ?>
     </div>
 </div>

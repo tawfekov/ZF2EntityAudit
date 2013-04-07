@@ -349,6 +349,17 @@ class Reader
         $number = $conn->fetchAll($query);
         return $number[0]["total"] ;
     }
+    
+    public function paginateRevisionsQuery()
+    {
+        $conn  = $this->em->getConnection();
+        $query = $conn->createQueryBuilder();
+        $query->select("r.*")
+              ->from($this->config->getRevisionTableName(),"r")
+              ->orderBy("r.id" , "DESC");
+        return $query ;
+    }
+
 
     protected function getEntityPersister($entity)
     {

@@ -52,7 +52,13 @@ class BootStrap
         /// lets create user
         $em = $this->serviceManager->get("doctrine.entitymanager.orm_default");
         $conn = $em->getConnection();
-        $sql = file_get_contents(__DIR__ ."/../vendor/zf-commons/zfc-user/data/schema.sqlite.sql");
+        if(file_exists(__DIR__ ."/../vendor/zf-commons/zfc-user/data/schema.sqlite.sql")){
+            $sql = file_get_contents(__DIR__ ."/../vendor/zf-commons/zfc-user/data/schema.sqlite.sql");
+        }elseif(file_exists(__DIR__ ."/../../../../vendor/zf-commons/zfc-user/data/schema.sqlite.sql")){
+            $sql = file_get_contents(__DIR__ ."/../../../../vendor/zf-commons/zfc-user/data/schema.sqlite.sql");
+        }else{
+            throw new \Exception("please check the zfc user sql file" , 500);
+        }
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();

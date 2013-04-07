@@ -6,9 +6,9 @@ return array(
     'router' => array(
         'routes' => array(
             'audit_index' => array(
-                'type' => 'Literal',
+                'type' => 'Segment',
                 'options' => array(
-                    'route' => '/audit',
+                    'route' => '/audit[/:page]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'zf2entityaudit\Controller',
                         'controller' => 'Index',
@@ -105,8 +105,10 @@ return array(
             'ZF2EntityAudit\Controller\Index' => 'ZF2EntityAudit\Controller\IndexController'
         ),
     ),
-
     'view_manager' => array(
+        'template_map' => array(
+          'paginator/control.phtml' => __DIR__ . '/../view/zf2-entity-audit/paginator/controls.phtml',
+        ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
