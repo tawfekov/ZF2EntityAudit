@@ -17,9 +17,13 @@ return array(
             'orm_default' => array(
                 'configuration' => 'orm_default',
                 'eventmanager'  => 'orm_default',
-                'driverClass'   => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
+                'driverClass'   => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
                 'params' => array(
-                    'memory' => true,
+                    'host'     => 'localhost',
+                    'port'     => '5432',
+                    'user'     => 'postgres',
+                    'password' => '',
+                    'dbname'   => 'zf2entityaudit',
                 ),
             ),
         ),
@@ -27,7 +31,7 @@ return array(
     'zfcuser' => array(
         'zend_db_adapter' => 'zfcuser_doctrine_em',
         'user_entity_class' => 'ZfcUser\Entity\User',
-        'enable_registration' => false,
+        'enable_registration' => true,
         'enable_username' => true,
         'enable_display_name' => true,
         'auth_identity_fields' => array( 'email', 'username' ),

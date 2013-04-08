@@ -13,7 +13,7 @@ class Writer
 {
     /** @ORM\Id
      *	@ORM\Column(type="integer")
-     *	@ORM\GeneratedValue
+     *	@ORM\GeneratedValue(strategy="AUTO")
         */
     private $id;
 

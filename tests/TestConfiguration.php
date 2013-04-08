@@ -11,7 +11,7 @@ return array(
     ),
     'module_listener_options' => array(
         'config_glob_paths' => array(
-            __DIR__ . '/testing.config.php',
+            __DIR__ . "/{$configFileName}",
         ),
         'module_paths' => array(),
     ),

@@ -10,9 +10,16 @@ matrix:
   allow_failures:
     - php: 5.5
 
+env:
+  - DB=mysql
+  - DB=pgsql
+  - DB=sqlite
+
 before_script:
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE zf2entityaudit;'; fi"
+  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'CREATE DATABASE zf2entityaudit;' -U postgres; fi"
   - curl -s https://getcomposer.org/installer | php && php composer.phar update --prefer-source --dev
 
 script:
   - phpunit
-  - php coverage-checker.php clover.xml 60
+  - php coverage-checker.php clover.xml 90
