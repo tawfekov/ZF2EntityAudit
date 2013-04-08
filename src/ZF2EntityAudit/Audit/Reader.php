@@ -340,16 +340,17 @@ class Reader
 
         return $revisions;
     }
-    
+
     public function countRevisions()
     {
         $conn = $this->em->getConnection();
         $this->platform = $conn->getDatabasePlatform();
         $query = "SELECT COUNT(*) as `total` FROM " . $this->config->getRevisionTableName() ;
         $number = $conn->fetchAll($query);
+
         return $number[0]["total"] ;
     }
-    
+
     public function paginateRevisionsQuery()
     {
         $conn  = $this->em->getConnection();
@@ -357,9 +358,9 @@ class Reader
         $query->select("r.*")
               ->from($this->config->getRevisionTableName(),"r")
               ->orderBy("r.id" , "DESC");
+
         return $query ;
     }
-
 
     protected function getEntityPersister($entity)
     {

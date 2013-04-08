@@ -8,7 +8,7 @@ use ZF2EntityAudit\Audit\Manager ;
 use ZF2EntityAudit\EventListener\CreateSchemaListener;
 use ZF2EntityAudit\EventListener\LogRevisionsListener;
 use ZF2EntityAudit\View\Helper\DateTimeFormatter;
-
+use ZF2EntityAudit\View\Helper\User as UserBlock;
 class Module
 {
     public function getAutoloaderConfig()
@@ -87,6 +87,14 @@ class Module
                     $formatter = new DateTimeFormatter();
 
                     return $formatter->setDateTimeFormat($format);
+                },
+                'UserBlock' => function($sm){
+                    $Servicelocator = $sm->getServiceLocator();
+                    $em             = $Servicelocator->get("doctrine.entitymanager.orm_default");
+                    $helper         = new UserBlock();
+                    $helper->setEntityManager($em);
+
+                    return $helper ;
                 }
             )
         );

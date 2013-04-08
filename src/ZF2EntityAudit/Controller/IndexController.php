@@ -34,10 +34,10 @@ class IndexController extends AbstractActionController
         $page = (int) $this->getEvent()->getRouteMatch()->getParam('page');
         $limit = $ZF2AuditConfig['ui']['page.limit'];
         $paginator = new Paginator(new DbalAdapter($auditReader->paginateRevisionsQuery()));
-        
+
         $paginator->setDefaultItemCountPerPage($limit);
         $paginator->setCurrentPageNumber($page);
-        
+
         return new ViewModel(array(
             'paginator'   => $paginator ,
             'auditReader' => $auditReader,

@@ -314,16 +314,16 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->auditManager->revertBack($this->em,"ZF2EntityAuditTest\Entity\Writer" , $writer->getId() , "1" , "2"));
 
     }
-    
-    
+
+
     public function testPaginator()
     {
         $reader = $this->getAuditReader();
         $query = $reader->paginateRevisionsQuery();
         $paginatorAdapter = new \ZF2EntityAudit\Paginator\DbalAdapter($query);
         $paginator = new \Zend\Paginator\Paginator($paginatorAdapter);
-        
-        for($i =0 ; $i < 20 ; $i++){
+
+        for ($i =0 ; $i < 20 ; $i++) {
             $writer = new Writer("tawfek" . rand());
             $article = new Article("title" , "text" , $writer);
             $this->em->persist($writer);
@@ -332,8 +332,8 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
         $this->em->flush();
         $this->assertEquals($reader->countRevisions() , "1");
         $this->assertEquals($paginator->count() , "1");
-        
-        for($i =0 ; $i < 20 ; $i++){
+
+        for ($i =0 ; $i < 20 ; $i++) {
             $writer = new Writer("tawfek" . rand());
             $article = new Article("title" , "text" , $writer);
             $this->em->persist($writer);
