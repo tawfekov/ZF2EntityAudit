@@ -77,7 +77,7 @@ class BootStrap
         }
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetchAll();
+        $stmt->fetchAll();
     }
 
     public function getServiceManager()

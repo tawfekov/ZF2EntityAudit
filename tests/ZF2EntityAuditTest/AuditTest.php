@@ -32,11 +32,10 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->Bootstrap = new Bootstrap();
-        die;
         $this->em = $this->Bootstrap->getServiceManager()->get("doctrine.entitymanager.orm_default");
 
         /// echo sql logger
-        $this->em->getConfiguration()->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());;
+        //$this->em->getConfiguration()->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());;
 
         /// let's create the default user
         $this->ZfcUserMock = $this->createUser() ;
