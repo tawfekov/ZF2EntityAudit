@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping AS ORM;
 use ZF2EntityAuditTest\Entity\Article;
 use ZF2EntityAuditTest\Entity\Writer;
 
-class SqliteTest extends \PHPUnit_Framework_TestCase
+class AuditTest extends \PHPUnit_Framework_TestCase
 {
      /**
       * @var EntityManager
@@ -373,7 +373,6 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
             "email"          => "{$randomness}@google.com"
         );
         $user = $userService->register($data);
-
         return $user;
     }
     private function getSchemaTool()

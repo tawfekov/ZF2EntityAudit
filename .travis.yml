@@ -17,7 +17,8 @@ env:
 
 before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE zf2entityaudit;'; fi"
-  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'CREATE DATABASE zf2entityaudit;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS zf2entityaudit;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'CREATE DATABASE IF NOT EXISTS  zf2entityaudit;' -U postgres; fi"
   - curl -s https://getcomposer.org/installer | php && php composer.phar update --prefer-source --dev
 
 script:

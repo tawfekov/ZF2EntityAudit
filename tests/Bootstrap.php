@@ -19,13 +19,12 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Service\ServiceManagerConfig;
 
-class BootStrap
-{
+class BootStrap {
+
     public $configFileName = "";
     protected $serviceManager = null;
 
-    public function __Construct()
-    {
+    public function __Construct() {
         $env = getenv("DB");
         switch ($env) {
             case $env == "sqlite":
@@ -67,7 +66,6 @@ class BootStrap
         /// lets create user's table
         $em = $this->serviceManager->get("doctrine.entitymanager.orm_default");
         $conn = $em->getConnection();
-
         if (file_exists(__DIR__ . "/../vendor/zf-commons/zfc-user/data/{$dbfilename}")) {
             $sql = file_get_contents(__DIR__ . "/../vendor/zf-commons/zfc-user/data/{$dbfilename}");
         } elseif (file_exists(__DIR__ . "/../../../../vendor/zf-commons/zfc-user/data/{$dbfilename}")) {
@@ -76,12 +74,15 @@ class BootStrap
             throw new \Exception("please check the zfc user sql file", 500);
         }
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->fetchAll();
+        try {
+            $stmt->execute();
+        } catch (Exception $exc) {
+            
+        }
     }
 
-    public function getServiceManager()
-    {
+    public function getServiceManager() {
         return $this->serviceManager;
     }
+
 }
