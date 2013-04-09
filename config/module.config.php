@@ -51,7 +51,7 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/audit/entity[/:id[/:className]]',
-                    'constraints' =>array(
+                    'constraints' => array(
                         'id' => '[0-9]*',
                     ),
                     'defaults' => array(
@@ -67,7 +67,7 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/audit/details[/:id[/:className[/:rev]]]',
-                    'constraints' =>array(
+                    'constraints' => array(
                         'id' => '[0-9]*',
                         'rev' => '[0-9]*',
                     ),
@@ -85,7 +85,7 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/audit/compare[/:className[/:id]]',
-                    'constraints' =>array(
+                    'constraints' => array(
                         'id' => '[0-9]*',
                     ),
                     'defaults' => array(
@@ -99,15 +99,30 @@ return array(
             ),
         ),
     ),
-
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'update-datebase' => array(
+                    'options' => array(
+                        'route' => 'update',
+                        'defaults' => array(
+                            'controller' => 'ZF2EntityAudit\Controller\Console',
+                            'action' => 'update'
+                        )
+                    )
+                )
+            )
+        )
+    ),
     'controllers' => array(
         'invokables' => array(
-            'ZF2EntityAudit\Controller\Index' => 'ZF2EntityAudit\Controller\IndexController'
+            'ZF2EntityAudit\Controller\Index' => 'ZF2EntityAudit\Controller\IndexController',
+            'ZF2EntityAudit\Controller\Console' => 'ZF2EntityAudit\Controller\ConsoleController'            
         ),
     ),
     'view_manager' => array(
         'template_map' => array(
-          'paginator/control.phtml' => __DIR__ . '/../view/zf2-entity-audit/paginator/controls.phtml',
+            'paginator/control.phtml' => __DIR__ . '/../view/zf2-entity-audit/paginator/controls.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',

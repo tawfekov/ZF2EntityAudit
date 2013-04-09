@@ -9,7 +9,12 @@ use ZF2EntityAudit\EventListener\CreateSchemaListener;
 use ZF2EntityAudit\EventListener\LogRevisionsListener;
 use ZF2EntityAudit\View\Helper\DateTimeFormatter;
 use ZF2EntityAudit\View\Helper\User as UserBlock;
-class Module
+
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Zend\Console\Adapter\AdapterInterface as Console;
+
+class Module implements ConsoleUsageProviderInterface
 {
     public function getAutoloaderConfig()
     {
@@ -98,5 +103,11 @@ class Module
                 }
             )
         );
+    }
+
+    public function getConsoleUsage(Console $console) {
+         return array(
+             "update" => "update the database from 0.1 to be  0.2 compatibale "
+          );
     }
 }
