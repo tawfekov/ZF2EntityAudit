@@ -300,7 +300,7 @@ class Reader
         if (!$this->metadataFactory->isAudited($className)) {
             throw Exception::notAudited($className);
         }
-
+        
         $class = $this->em->getClassMetadata($className);
         $tableName = $this->config->getTablePrefix() . $class->table['name'] . $this->config->getTableSuffix();
 

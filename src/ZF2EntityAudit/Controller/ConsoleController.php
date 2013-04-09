@@ -27,7 +27,6 @@ class ConsoleController extends AbstractActionController {
         }
         $sl = $this->getServiceLocator();
         $em = $sl->get("doctrine.entitymanager.orm_default");
-        $users = $em->getRepository("Adsl\Entity\User")->findAll();
         $conn = $em->getConnection();
         $auditConfig = $sl->get("auditConfig");
         $revisionTableName = $auditConfig->getRevisionTableName();
@@ -36,7 +35,8 @@ class ConsoleController extends AbstractActionController {
         foreach ($revsions as $r) {
             try {
                 echo "  --start working on revsion id #{$r["id"]}\n";
-                $currentUser = $em->getRepository("Adsl\Entity\User")->findBy(array("email" => $r["username"]));
+                //// don't forget to update this to your ZFC user entity name
+                $currentUser = $em->getRepository("Application\Entity\User")->findBy(array("email" => $r["username"]));
                 $currentUser = $currentUser[0];
                 $query = $conn->createQueryBuilder();
                 $query->update("$revisionTableName", "r");
