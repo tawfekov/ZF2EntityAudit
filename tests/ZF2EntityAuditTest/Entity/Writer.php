@@ -17,7 +17,7 @@ class Writer
         */
     private $id;
 
-    /** @ORM\Column(type="string") */
+    /** @ORM\Column(type="string", name="writer_name") */
     private $name;
 
     /**

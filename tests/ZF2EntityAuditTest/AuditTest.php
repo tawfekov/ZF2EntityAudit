@@ -61,6 +61,34 @@ class AuditTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
+    public function testAuditReaderDiff()
+    {
+
+        $reader = $this->getAuditReader();
+        $writer = new Writer("Tawfek-Daghistani");
+        $article = new Article("this is title" , "this is body" , $writer);
+        $this->em->persist($writer);
+        $this->em->persist($article);
+        $this->em->flush();
+
+
+        $writer->setName("Tawfek Daghistani");
+        $article->setText("updated article");
+
+        $this->em->persist($writer);
+        $this->em->persist($article);
+        $this->em->flush();
+
+
+        $diff = $reader->diff("ZF2EntityAuditTest\Entity\Writer" , 1 , 2 ,1 );
+        $name_changes = $diff["name"];
+
+        $this->assertEquals($name_changes["new"] , 'Tawfek-Daghistani');
+        $this->assertEquals($name_changes["old"] , 'Tawfek Daghistani');
+        $this->assertEquals($name_changes["same"] , "");
+
+    }
+
     public function testAuditable()
     {
         $user = new Writer("beberlei");
@@ -347,6 +375,8 @@ class AuditTest extends \PHPUnit_Framework_TestCase
     }
 
 
+
+
     public function tearDown()
     {
         return $this->getSchemaTool()->dropDatabase();
@@ -373,6 +403,7 @@ class AuditTest extends \PHPUnit_Framework_TestCase
             "email"          => "{$randomness}@google.com"
         );
         $user = $userService->register($data);
+
         return $user;
     }
     private function getSchemaTool()

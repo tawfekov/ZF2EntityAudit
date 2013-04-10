@@ -7,14 +7,15 @@ use Zend\View\Model\ViewModel;
 use Zend\Console\Request as ConsoleRequest;
 use RuntimeException;
 
-class ConsoleController extends AbstractActionController {
-
-    public function indexAction() {
+class ConsoleController extends AbstractActionController
+{
+    public function indexAction()
+    {
         return new ViewModel();
     }
 
-    public function updateAction() {
-        
+    public function updateAction()
+    {
         echo "- before starting : 1- please take a backup \n";
         echo "                    2- update the all `anonymous` in the revisions table to some exsited user \n";
         echo "- cancel this command and update it then restart it again \n";

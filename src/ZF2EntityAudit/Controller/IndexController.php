@@ -4,10 +4,9 @@ namespace ZF2EntityAudit\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ZF2EntityAudit\Utils\ArrayDiff;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use ZF2EntityAudit\Paginator\DbalAdapter;
 use Zend\Paginator\Paginator ;
+
 class IndexController extends AbstractActionController
 {
 
@@ -98,17 +97,13 @@ class IndexController extends AbstractActionController
      */
     public function viewdetailAction()
     {
-        $className = $this->getEvent()->getRouteMatch()->getParam('className');
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
-        $rev = $this->getEvent()->getRouteMatch()->getParam('rev');
-        $em = $this->getEntityManager();
-        $metadata = $em->getClassMetadata($className);
-
-        $ids = explode(',', $id);
-        $entity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $rev);
-
-        $data = $this->getEntityValues($metadata, $entity);
-        krsort($data);
+        $className  = $this->getEvent()->getRouteMatch()->getParam('className');
+        $id         = $this->getEvent()->getRouteMatch()->getParam('id');
+        $rev        = $this->getEvent()->getRouteMatch()->getParam('rev');
+        $ids        = explode(',', $id);
+        $entity     = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $rev);
+        $data       = $this->getServiceLocator()->get('auditReader')->getEntityValues($className, $entity);
+        ksort($data);
 
         return new ViewModel(array(
                     'id' => $id,
@@ -136,8 +131,6 @@ class IndexController extends AbstractActionController
         $oldRev = $this->getEvent()->getRouteMatch()->getParam('oldRev');
         $newRev = $this->getEvent()->getRouteMatch()->getParam('newRev');
 
-        $em = $this->getEntityManager();
-        $metadata = $em->getClassMetadata($className);
         $posted_data = $this->params()->fromPost();
         if (null === $oldRev) {
             $oldRev = (int) $posted_data['oldRev'];
@@ -147,14 +140,7 @@ class IndexController extends AbstractActionController
             $newRev = (int) $posted_data["newRev"];
         }
         $ids = explode(',', $id);
-        $oldEntity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $oldRev);
-        $oldData = $this->getEntityValues($metadata, $oldEntity);
-
-        $newEntity = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $newRev);
-        $newData = $this->getEntityValues($metadata, $newEntity);
-
-        $differ = new ArrayDiff();
-        $diff = $differ->diff($oldData, $newData);
+        $diff = $this->getServiceLocator()->get('auditReader')->diff($className, $ids, $oldRev, $newRev);
 
         return new ViewModel(array(
                     'className' => $className,
@@ -163,18 +149,6 @@ class IndexController extends AbstractActionController
                     'newRev' => $newRev,
                     'diff' => $diff,
                 ));
-    }
-
-    protected function getEntityValues(ClassMetadata $metadata, $entity)
-    {
-        $fields = $metadata->getFieldNames();
-
-        $return = array();
-        foreach ($fields AS $fieldName) {
-            $return[$fieldName] = $metadata->getFieldValue($entity, $fieldName);
-        }
-
-        return $return;
     }
 
 }

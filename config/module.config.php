@@ -117,7 +117,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'ZF2EntityAudit\Controller\Index' => 'ZF2EntityAudit\Controller\IndexController',
-            'ZF2EntityAudit\Controller\Console' => 'ZF2EntityAudit\Controller\ConsoleController'            
+            'ZF2EntityAudit\Controller\Console' => 'ZF2EntityAudit\Controller\ConsoleController'
         ),
     ),
     'view_manager' => array(

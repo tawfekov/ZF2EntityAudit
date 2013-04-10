@@ -19,12 +19,13 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Service\ServiceManagerConfig;
 
-class BootStrap {
-
+class BootStrap
+{
     public $configFileName = "";
     protected $serviceManager = null;
 
-    public function __Construct() {
+    public function __Construct()
+    {
         $env = getenv("DB");
         switch ($env) {
             case $env == "sqlite":
@@ -77,11 +78,12 @@ class BootStrap {
         try {
             $stmt->execute();
         } catch (Exception $exc) {
-            
+
         }
     }
 
-    public function getServiceManager() {
+    public function getServiceManager()
+    {
         return $this->serviceManager;
     }
 
