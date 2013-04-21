@@ -7,13 +7,15 @@ class Revision
     private $rev;
     private $timestamp;
     private $user;
+    private $ipaddress;
 
-    public function __construct($rev, $timestamp,  $user , $note = '')
+    public function __construct($rev, $timestamp,  $user , $note = '' , $ipaddress = '')
     {
         $this->rev = $rev;
         $this->timestamp = $timestamp;
         $this->user = $user;
         $this->note = $note;
+        $this->ipaddress = $ipaddress;
     }
 
     public function getRev()
@@ -35,4 +37,15 @@ class Revision
     {
         return $this->note;
     }
+
+    public function setIpaddress()
+    {
+        return $this->ipaddress;
+    }
+
+    public function getIpAddress()
+    {
+        return $this->ipaddress;
+    }
+
 }

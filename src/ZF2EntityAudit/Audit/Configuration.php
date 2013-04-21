@@ -17,6 +17,7 @@ class Configuration
     private $currentUser = '';
     private $revisionIdFieldType = 'integer';
     private $note = "";
+    private $ipaddress = "";
 
     public function getTablePrefix()
     {
@@ -109,5 +110,11 @@ class Configuration
     public function getNote()
     {
         return $this->note;
+    }
+
+    public function getIpAddress()
+    {
+        $this->ipaddress = $_SERVER['REMOTE_ADDR']; 
+        return $this->ipaddress ;
     }
 }

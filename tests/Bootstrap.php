@@ -14,6 +14,8 @@ $loader->add('ZF2EntityAuditTest\\', __DIR__);
 
 //error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
+// manually set an ip address
+$_SERVER['REMOTE_ADDR'] = "1.1.1.9";
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\MvcEvent;

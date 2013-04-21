@@ -68,6 +68,7 @@ class CreateSchemaListener implements EventSubscriber
         ));
         $revisionsTable->addColumn('timestamp', 'datetime');
         $revisionsTable->addColumn('note', 'text', array('nullable' => true));
+        $revisionsTable->addColumn('ipaddress', 'text', array('nullable' => true));
         $revisionsTable->addColumn('user_id', 'integer', array('nullable' => true));
         /// TODO :now the table name is static but  it need some way to be able to automatically find it , maybe through configuration class
         $revisionsTable->addForeignKeyConstraint("user", array("user_id"), array("user_id"));

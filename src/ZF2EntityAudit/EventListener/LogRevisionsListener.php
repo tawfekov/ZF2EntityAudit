@@ -134,6 +134,7 @@ class LogRevisionsListener implements EventSubscriber
                 'timestamp'        => $date,
                 'user_id'          => $this->config->getCurrentUser()->getId(),
                 'note'             => $this->config->getNote(),
+                'ipaddress'        => $this->config->getIpAddress()
             ));
 
             $sequenceName = $this->platform->supportsSequences()

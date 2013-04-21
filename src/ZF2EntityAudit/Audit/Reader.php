@@ -194,7 +194,8 @@ class Reader
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
                 $this->ZfcUserRepository->find($row['user_id']),
-                $row["note"]
+                $row["note"],
+                $row["ipaddress"]
             );
         }
 
@@ -272,7 +273,8 @@ class Reader
                 $revisionsData[0]['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $revisionsData[0]['timestamp']),
                 $this->ZfcUserRepository->find($revisionsData[0]['user_id'],
-                $revisionsData[0]["note"])
+                $revisionsData[0]["note"],
+                $revisionsData[0]["ipaddress"])
             );
         } else {
             throw Exception::invalidRevision($rev);
@@ -325,7 +327,8 @@ class Reader
                 $row['id'],
                 \DateTime::createFromFormat($this->platform->getDateTimeFormatString(), $row['timestamp']),
                 $this->ZfcUserRepository->find($row['user_id']),
-                $row["note"]
+                $row["note"],
+                $row["ipaddress"]
             );
         }
 

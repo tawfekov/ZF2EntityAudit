@@ -65,6 +65,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $revisionTypeFieldName = "string";
         $config->setRevisionTypeFieldName($revisionTypeFieldName);
 
+
+        $ipaddress = $config->getIpAddress();
         $config->setAuditedEntityClasses(
                         array(
                           'ZF2EntityAuditTest\Entity\Article',
@@ -89,6 +91,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($tableName ,$config->getRevisionTableName());
         $this->assertEquals($revisionIdFieldType ,$config->getRevisionIdFieldType());
         $this->assertEquals($revisionTypeFieldName ,$config->getRevisionIdFieldType());
+        $this->assertEquals($ipaddress ,"1.1.1.9");
 
     }
 

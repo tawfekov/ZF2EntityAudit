@@ -11,6 +11,7 @@
                     <th>Time of Action</th>
                     <th>Changed Entities</th>
                     <th>User Information</th>
+                    <th>Ip address</th>
                     <th>Advanced Actions</th>
                 </tr>
             </thead>
@@ -97,11 +98,15 @@
                         }
                         ?>
                         </td>
-
                         <td>
-                            
                                 <?php echo $this->UserBlock($revision["user_id"]);?>
-                            
+                        </td>
+                        <td>
+                                <?php if($this->escapeHtml($revision["ipaddress"]) != '' ):?>
+                                <p class="label label-important">
+                                        <?php echo $this->escapeHtml($revision["ipaddress"]);?>
+                                </p>
+                                <?php endif;?>
                         </td>
                         
                         <td>
