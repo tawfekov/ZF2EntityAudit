@@ -17,7 +17,7 @@ class Configuration
     private $currentUser = '';
     private $revisionIdFieldType = 'integer';
     private $note = "";
-    private $ipaddress = "";
+    private $ipaddress = "127.0.0.1";
 
     public function getTablePrefix()
     {
@@ -114,7 +114,9 @@ class Configuration
 
     public function getIpAddress()
     {
-        $this->ipaddress = $_SERVER['REMOTE_ADDR']; 
+        if(isset($_SERVER['REMOTE_ADDR'])){
+            $this->ipaddress = $_SERVER['REMOTE_ADDR']; 
+        }
         return $this->ipaddress ;
     }
 }

@@ -102,6 +102,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $config->setCurrentUser("mockuser");
     }
 
+    public function testCliAuditWithLocalIPAddress()
+    {
+        unset($_SERVER["REMOTE_ADDR"]);
+        $config = new Configuration();
+        $config->setCurrentUser($this->ZfcUserMock);
+        $ipaddress = $config->getIpAddress();
+        $this->assertEquals("127.0.0.1" , $ipaddress);
+    }
     public function tearDown()
     {
         return $this->getSchemaTool()->dropDatabase();
