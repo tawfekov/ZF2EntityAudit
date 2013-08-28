@@ -64,7 +64,7 @@ class CreateSchemaListener implements EventSubscriber
         $schema = $eventArgs->getSchema();
         
         //get the entity meta
-        $meta = $eventArgs->getEntityManager( )->getClassMetadata($this->config->getZfcUserEntityClass());  
+        $meta = $eventArgs->getEntityManager()->getClassMetadata($this->config->getZfcUserEntityClass());  
 
         //get the table name from the entity
         $revisionsTable = $schema->createTable($this->config->getRevisionTableName());
@@ -78,7 +78,7 @@ class CreateSchemaListener implements EventSubscriber
         $revisionsTable->addColumn('user_id', 'integer', array('nullable' => true));
         
         //add the tablename and primary key from the entity meta
-        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), array('user_id'), array($meta->getSingleIdentifierFieldName()));
+        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), array('user_id'), array('user_id'));
         $revisionsTable->setPrimaryKey(array('id'));
     }
 }
