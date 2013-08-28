@@ -31,7 +31,7 @@ class Reader
         $this->config = $config;
         $this->metadataFactory = $factory;
         $this->platform = $this->em->getConnection()->getDatabasePlatform();
-        $this->ZfcUserRepository = $this->em->getRepository("ZfcUser\Entity\User");
+        $this->ZfcUserRepository = $this->em->getRepository($config->getZfcUserEntityClass());
     }
 
     /**

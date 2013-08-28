@@ -9,15 +9,21 @@ use Doctrine\ORM\EntityManager;
 class User extends AbstractHelper
 {
     protected $em;
-
+    
+protected $ZFcUserClassName  ; 
+    
     public function setEntityManager(EntityManager $em)
     {
         $this->em = $em;
     }
-
+    
+    public function setZfcUserEntityClass($className)
+    {
+        $this->ZFcUserClassName = $className ;
+    }
     public function __invoke($userId)
     {
-        $user = $this->em->getRepository("ZfcUser\Entity\User")->find($userId);
+        $user = $this->em->getRepository($this->ZFcUserClassName)->find($userId);
         $html = '<div class="span6">';
         $html .= '<div class="span4" style="float:left;margin-top:5px">';
         if ($user->getDisplayName()) {

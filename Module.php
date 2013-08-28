@@ -46,7 +46,7 @@ class Module implements ConsoleUsageProviderInterface
                     $config = $sm->get('Config');
                     $auditconfig = new Configuration();
                     $auditconfig->setAuditedEntityClasses($config['zf2-entity-audit']['entities']);
-
+                    $auditconfig->setZfcUserEntityClass($config['zf2-entity-audit']['zfcuser.entity_class']);
                     return $auditconfig;
                 },
 
@@ -95,9 +95,10 @@ class Module implements ConsoleUsageProviderInterface
                 'UserBlock' => function($sm){
                     $Servicelocator = $sm->getServiceLocator();
                     $em             = $Servicelocator->get("doctrine.entitymanager.orm_default");
+                    $config = $Servicelocator->get("Config");
                     $helper         = new UserBlock();
                     $helper->setEntityManager($em);
-
+                    $helper->setZfcUserEntityClass($config['zf2-entity-audit']['zfcuser.entity_class']);
                     return $helper ;
                 }
             )

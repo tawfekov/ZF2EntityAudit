@@ -18,6 +18,7 @@ class Configuration
     private $revisionIdFieldType = 'integer';
     private $note = "";
     private $ipaddress = "127.0.0.1";
+    private $entityClass = "ZfcUser\Entity\User";
 
     public function getTablePrefix()
     {
@@ -118,5 +119,14 @@ class Configuration
             $this->ipaddress = $_SERVER['REMOTE_ADDR']; 
         }
         return $this->ipaddress ;
+    }
+    
+    public function getZfcUserEntityClass(){
+        return $this->entityClass ;
+    }
+    
+     public function setZfcUserEntityClass($className){
+         $this->entityClass = $className ;
+         return $this->entityClass ;
     }
 }
