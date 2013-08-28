@@ -74,6 +74,7 @@ class CreateSchemaListener implements EventSubscriber
         ));
         $revisionsTable->addColumn('timestamp', 'datetime');
         $revisionsTable->addColumn('note', 'text', array('nullable' => true));
+        $revisionsTable->addColumn('ipaddress', 'text', array('nullable' => true));
         $revisionsTable->addColumn('user_id', 'integer', array('nullable' => true));
         
         //add the tablename and primary key from the entity meta
