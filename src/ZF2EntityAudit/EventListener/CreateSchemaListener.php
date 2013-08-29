@@ -62,7 +62,13 @@ class CreateSchemaListener implements EventSubscriber
     public function postGenerateSchema(GenerateSchemaEventArgs $eventArgs)
     {
         $schema = $eventArgs->getSchema();
+        
+        //get the entity meta
+        $meta = $eventArgs->getEntityManager()->getClassMetadata($this->config->getZfcUserEntityClass());  
+
+        //get the table name from the entity
         $revisionsTable = $schema->createTable($this->config->getRevisionTableName());
+        
         $revisionsTable->addColumn('id', $this->config->getRevisionIdFieldType(), array(
             'autoincrement' => true,
         ));
@@ -70,8 +76,9 @@ class CreateSchemaListener implements EventSubscriber
         $revisionsTable->addColumn('note', 'text', array('nullable' => true));
         $revisionsTable->addColumn('ipaddress', 'text', array('nullable' => true));
         $revisionsTable->addColumn('user_id', 'integer', array('nullable' => true));
-        /// TODO :now the table name is static but  it need some way to be able to automatically find it , maybe through configuration class
-        $revisionsTable->addForeignKeyConstraint("user", array("user_id"), array("user_id"));
+        
+        //add the tablename and primary key from the entity meta
+        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), array('user_id'), array('user_id'));
         $revisionsTable->setPrimaryKey(array('id'));
     }
 }
