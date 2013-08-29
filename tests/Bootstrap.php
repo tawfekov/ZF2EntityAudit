@@ -1,7 +1,7 @@
 <?php
 
 namespace ZF2EntityAuditTest;
-
+use RuntimeException;
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     $loader = include __DIR__ . '/../vendor/autoload.php';
 } elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
