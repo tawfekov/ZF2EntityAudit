@@ -21,8 +21,8 @@ return array(
                 'params' => array(
                     'host'     => 'localhost',
                     'port'     => '3306',
-                    'user'     => 'root',
-                    'password' => 'mbpdev',
+                    'user'     => 'travis',
+                    'password' => '',
                     'dbname'   => 'zf2entityaudit',
                     'driverOptions' => array(
                         1002=>'SET NAMES utf8'
@@ -33,7 +33,7 @@ return array(
     ),
     'zfcuser' => array(
         'zend_db_adapter' => 'zfcuser_doctrine_em',
-        'user_entity_class' => 'User\Entity\User',
+        'user_entity_class' => 'ZfcUser\Entity\User',
         'enable_registration' => true,
         'enable_username' => true,
         'enable_display_name' => true,
