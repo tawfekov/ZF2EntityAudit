@@ -9,7 +9,7 @@ use ZF2EntityAudit\EventListener\CreateSchemaListener;
 use ZF2EntityAudit\EventListener\LogRevisionsListener;
 use ZF2EntityAudit\View\Helper\DateTimeFormatter;
 use ZF2EntityAudit\View\Helper\User as UserBlock;
-
+use ZF2EntityAudit\View\Helper\Dump ;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
 
@@ -100,6 +100,10 @@ class Module implements ConsoleUsageProviderInterface
                     $helper->setEntityManager($em);
                     $helper->setZfcUserEntityClass($config['zf2-entity-audit']['zfcuser.entity_class']);
                     return $helper ;
+                },
+                'Dump' => function($sm){
+                     $helper = new Dump();
+                     return $helper;
                 }
             )
         );
