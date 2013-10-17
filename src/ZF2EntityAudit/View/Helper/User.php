@@ -3,7 +3,6 @@
 namespace ZF2EntityAudit\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use Zend\View\Helper\Gravatar;
 use Doctrine\ORM\EntityManager;
 
 class User extends AbstractHelper

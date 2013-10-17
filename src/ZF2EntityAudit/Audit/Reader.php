@@ -243,8 +243,6 @@ class Reader
 
             foreach ($revisionsData AS $row) {
                 $id   = array();
-                $data = array();
-
                 foreach ($class->identifier AS $idField) {
                     $id[$idField] = $row[$idField];
                 }
