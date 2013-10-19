@@ -30,7 +30,7 @@ class Module implements ConsoleUsageProviderInterface
     {
         // Initialize the audit manager by creating an instance of it
         $sm = $e->getApplication()->getServiceManager();
-        $auditManager = $sm->get('auditManager');
+        $sm->get('auditManager');
     }
 
     public function getConfig()
@@ -62,7 +62,7 @@ class Module implements ConsoleUsageProviderInterface
                             $identity = $auth->getIdentity();
                             $auditconfig->setCurrentUser($identity);
                         }
-                        // TODO : need to handle the unauthenticated user action case , 99% i will drop support for unauthenticated user
+                        /* need to handle the unauthenticated user action case, do it your own , 99% i will drop support for unauthenticated user auditing  */ 
                     }
                     $auditManager = new Manager($auditconfig);
                     $evm->addEventSubscriber(new CreateSchemaListener($auditManager));
@@ -101,7 +101,7 @@ class Module implements ConsoleUsageProviderInterface
                     $helper->setZfcUserEntityClass($config['zf2-entity-audit']['zfcuser.entity_class']);
                     return $helper ;
                 },
-                'Dump' => function($sm){
+                'Dump' => function(){
                      $helper = new Dump();
                      return $helper;
                 }
