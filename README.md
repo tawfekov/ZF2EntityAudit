@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/tawfekov/zf2entityaudit.png?label=ready&title=Ready)](https://waffle.io/tawfekov/zf2entityaudit)
 #ZF2EntityAudit 
 [![Build Status](https://travis-ci.org/tawfekov/ZF2EntityAudit.png?branch=master)](https://travis-ci.org/tawfekov/ZF2EntityAudit) [![Total Downloads](https://poser.pugx.org/tawfekov/zf2entityaudit/downloads.png)](https://packagist.org/packages/tawfekov/zf2entityaudit)
 
