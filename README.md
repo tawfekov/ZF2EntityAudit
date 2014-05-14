@@ -1,6 +1,7 @@
 #ZF2EntityAudit 
 [![Build Status](https://travis-ci.org/tawfekov/ZF2EntityAudit.png?branch=master)](https://travis-ci.org/tawfekov/ZF2EntityAudit) [![Total Downloads](https://poser.pugx.org/tawfekov/zf2entityaudit/downloads.png)](https://packagist.org/packages/tawfekov/zf2entityaudit)
 [![Stories in Ready](https://badge.waffle.io/tawfekov/zf2entityaudit.png?label=ready&title=Ready)](https://waffle.io/tawfekov/zf2entityaudit)
+[![Dependency Status](https://www.versioneye.com/user/projects/5126433fd5f38f000200136a/badge.png)](https://www.versioneye.com/user/projects/5126433fd5f38f000200136a)
 
 It is a ZF2  module , about 42kb sized , plug and play architecture , super fast & super easy to use , Its job to audit Doctrine 2 entities in ZF2 and provide web interface to browse the audit log , inspired by https://github.com/simplethings/EntityAudit.
 
