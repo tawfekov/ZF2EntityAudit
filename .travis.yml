@@ -12,7 +12,6 @@ php:
 matrix:
   allow_failures:
     - php: 5.3.3
-    - php: 5.5
     - php: hhvm
     - php: hhvm-nightly
     
@@ -27,4 +26,4 @@ before_script:
 
 script:
   - phpunit
-  - php coverage-checker.php clover.xml 90
+  - php coverage-checker.php clover.xml 92
