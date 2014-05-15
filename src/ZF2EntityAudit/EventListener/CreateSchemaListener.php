@@ -73,8 +73,8 @@ class CreateSchemaListener implements EventSubscriber
             'autoincrement' => true,
         ));
         $revisionsTable->addColumn('timestamp', 'datetime');
-        $revisionsTable->addColumn('note', 'text', array('nullable' => true));
-        $revisionsTable->addColumn('ipaddress', 'text', array('nullable' => true));
+        $revisionsTable->addColumn('note', 'text', array('notnull' => false));
+        $revisionsTable->addColumn('ipaddress', 'text', array('notnull' => false));
 
         $localColumnNames = array();
         foreach($meta->getIdentifier() as $primaryKey) {
@@ -83,7 +83,7 @@ class CreateSchemaListener implements EventSubscriber
             $localColumnName = 'user_' . $primaryKey;
             $localColumnNames[] = $localColumnName;
 
-            $revisionsTable->addColumn($localColumnName, $fieldType, array('nullable' => true));
+            $revisionsTable->addColumn($localColumnName, $fieldType, array('notnull' => false));
         }
 
         //add the tablename and primary key from the entity meta
