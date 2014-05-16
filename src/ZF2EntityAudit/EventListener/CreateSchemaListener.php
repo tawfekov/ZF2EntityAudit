@@ -77,17 +77,22 @@ class CreateSchemaListener implements EventSubscriber
         $revisionsTable->addColumn('ipaddress', 'text', array('notnull' => false));
 
         $localColumnNames = array();
+        $foreignColumnNames = array();
         foreach($meta->getIdentifier() as $primaryKey) {
-            $fieldType = $meta->getTypeOfField($primaryKey);
+            $columnName = $meta->getColumnName($primaryKey);
+            $foreignColumnNames[] = $columnName;
 
-            $localColumnName = 'user_' . $primaryKey;
+            $columnName = preg_replace('/user[^a-zA-Z0-9]*/', '', $columnName);
+
+            $localColumnName = 'user_' . $columnName;
             $localColumnNames[] = $localColumnName;
 
+            $fieldType = $meta->getTypeOfField($primaryKey);
             $revisionsTable->addColumn($localColumnName, $fieldType, array('notnull' => false));
         }
 
         //add the tablename and primary key from the entity meta
-        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), $localColumnNames, $meta->getIdentifier());
+        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), $localColumnNames, $foreignColumnNames);
         $revisionsTable->setPrimaryKey(array('id'));
     }
 }
