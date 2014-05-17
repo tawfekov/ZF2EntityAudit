@@ -11,7 +11,6 @@ php:
 
 matrix:
   allow_failures:
-    - php: 5.3.3
     - php: hhvm
     - php: hhvm-nightly
     
@@ -21,6 +20,7 @@ env:
   - DB=sqlite
 
 before_script:
+  - composer self-update
   - phpversion=$(phpenv version); if [[ $phpversion =~ 5\.3\.3.* ]]; then  composer install --dev --prefer-source; else  composer install --dev; fi;
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE zf2entityaudit;'; fi"
   
