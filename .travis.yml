@@ -21,10 +21,9 @@ env:
   - DB=sqlite
 
 before_script:
-  - phpversion=$(phpenv version); if [[ $phpversion =~ 5\.3\.3.* ]]; then composer install --dev --prefer-source; else composer install --dev; fi;
+  - phpversion=$(phpenv version); if [[ $phpversion =~ 5\.3\.3.* ]]; then  curl -s https://getcomposer.org/installer | php &&  php composer.phar install --dev --prefer-source; else  curl -s https://getcomposer.org/installer | php && php composer.phar install --dev; fi;
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE zf2entityaudit;'; fi"
-  - curl -s https://getcomposer.org/installer | php && php composer.phar update --prefer-source --dev
-
+  
 script:
   - phpunit
   - php coverage-checker.php clover.xml 92
