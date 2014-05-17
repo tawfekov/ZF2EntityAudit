@@ -19,10 +19,9 @@ matrix:
 env:
   - DB=mysql
   - DB=sqlite
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y libssl-dev openssl
+
 before_script:
+  - phpversion=$(phpenv version); if [[ $phpversion =~ 5\.3\.3.* ]]; then composer install --dev --prefer-source; else composer install --dev; fi;
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE zf2entityaudit;'; fi"
   - curl -s https://getcomposer.org/installer | php && php composer.phar update --prefer-source --dev
 
