@@ -73,12 +73,26 @@ class CreateSchemaListener implements EventSubscriber
             'autoincrement' => true,
         ));
         $revisionsTable->addColumn('timestamp', 'datetime');
-        $revisionsTable->addColumn('note', 'text', array('nullable' => true));
-        $revisionsTable->addColumn('ipaddress', 'text', array('nullable' => true));
-        $revisionsTable->addColumn('user_id', 'integer', array('nullable' => true));
-        
+        $revisionsTable->addColumn('note', 'text', array('notnull' => false));
+        $revisionsTable->addColumn('ipaddress', 'text', array('notnull' => false));
+
+        $localColumnNames = array();
+        $foreignColumnNames = array();
+        foreach($meta->getIdentifier() as $primaryKey) {
+            $columnName = $meta->getColumnName($primaryKey);
+            $foreignColumnNames[] = $columnName;
+
+            $columnName = preg_replace('/user[^a-zA-Z0-9]*/', '', $columnName);
+
+            $localColumnName = 'user_' . $columnName;
+            $localColumnNames[] = $localColumnName;
+
+            $fieldType = $meta->getTypeOfField($primaryKey);
+            $revisionsTable->addColumn($localColumnName, $fieldType, array('notnull' => false));
+        }
+
         //add the tablename and primary key from the entity meta
-        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), array('user_id'), array('user_id'));
+        $revisionsTable->addForeignKeyConstraint($meta->getTableName(), $localColumnNames, $foreignColumnNames);
         $revisionsTable->setPrimaryKey(array('id'));
     }
 }

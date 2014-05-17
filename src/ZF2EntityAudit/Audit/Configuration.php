@@ -88,6 +88,9 @@ class Configuration
         $this->currentUser = $user;
     }
 
+    /**
+     * @return UserInterface
+     */
     public function getCurrentUser()
     {
         return $this->currentUser;

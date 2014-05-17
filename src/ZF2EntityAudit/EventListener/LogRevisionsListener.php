@@ -130,9 +130,16 @@ class LogRevisionsListener implements EventSubscriber
     {
         if ($this->revisionId === null) {
             $date = date_create("now")->format($this->platform->getDateTimeFormatString());
+
+            if ($this->config->getCurrentUser() != null) {
+                $userId = $this->config->getCurrentUser()->getId();
+            } else {
+                $userId = null;
+            }
+
             $this->conn->insert($this->config->getRevisionTableName(), array(
                 'timestamp'        => $date,
-                'user_id'          => $this->config->getCurrentUser()->getId(),
+                'user_id'          => $userId,
                 'note'             => $this->config->getNote(),
                 'ipaddress'        => $this->config->getIpAddress()
             ));
