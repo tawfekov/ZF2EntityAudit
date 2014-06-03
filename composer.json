@@ -24,7 +24,7 @@
         "doctrine/doctrine-module": "0.8.*",
         "doctrine/doctrine-orm-module": "0.8.*",
         "zf-commons/zfc-user": ">=0.1.1",
-        "zf-commons/zfc-user-doctrine-orm": "0.*"
+        "zf-commons/zfc-user-doctrine-orm": "0.1.*"
     },
     "autoload": {
         "psr-0": {

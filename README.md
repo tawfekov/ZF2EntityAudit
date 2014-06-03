@@ -24,7 +24,6 @@ please refer to the [documentation page]
 #### PHP Unit Testing :
 ZF2EntityAudit tests are executed on every commit on [Travis-ci.org](https://travis-ci.org/tawfekov/ZF2EntityAudit) againt both MYSQL & Sqlite with 94% code coverage .
 
-I'm not an expert in Postgresql though I had provided both tests & configuration but its always fail for some crazy reason. if you have good experience in Postgresql try the following : `DB=pgsql phpunit` & ZF2EntityAudit will try to test itself against Postgresql .
 
 #### Support :
 Please don't be shy and share me with your problems & ideas about this module , I will be more than happy to hear form you .
