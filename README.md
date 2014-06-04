@@ -1,4 +1,5 @@
 #ZF2EntityAudit 
+[![Code Climate](https://codeclimate.com/github/tawfekov/ZF2EntityAudit.png)](https://codeclimate.com/github/tawfekov/ZF2EntityAudit)
 [![Build Status](https://travis-ci.org/tawfekov/ZF2EntityAudit.png?branch=master)](https://travis-ci.org/tawfekov/ZF2EntityAudit) [![Total Downloads](https://poser.pugx.org/tawfekov/zf2entityaudit/downloads.png)](https://packagist.org/packages/tawfekov/zf2entityaudit)
 [![Stories in Ready](https://badge.waffle.io/tawfekov/zf2entityaudit.png?label=ready&title=Ready)](https://waffle.io/tawfekov/zf2entityaudit)
 [![Dependency Status](https://www.versioneye.com/user/projects/5126433fd5f38f000200136a/badge.png)](https://www.versioneye.com/user/projects/5126433fd5f38f000200136a)
