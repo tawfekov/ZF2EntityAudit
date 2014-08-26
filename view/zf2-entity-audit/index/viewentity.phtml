@@ -1,19 +1,19 @@
 <h1>Audit log for <?php  echo $this->escapeHtml($className); ?> identifier <?php  echo $this->escapeHtml($id); ?></h1>
 
 <form action="<?=
-    $this->url('audit_compare',
-        array(
-            'id' => $id ,
-            'className' => str_replace('\\', '_', $className)
-        )
-    );
-    ?>" method="post">
+$this->url('audit_compare',
+    array(
+        'id' => $id ,
+        'className' => str_replace('\\', '_', $className)
+    )
+);
+?>" method="post">
 
-<div class="row">
-    <div class="span12">
-        <table class="table table-striped table-hover table-bordered">
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-striped table-hover table-bordered">
 
-            <thead>
+                <thead>
                 <tr>
                     <th colspan="3">&nbsp;</th>
                     <th colspan="2">Compare</th>
@@ -25,69 +25,69 @@
                     <th>Old</th>
                     <th>New</th>
                 </tr>
-            </thead>
+                </thead>
 
-            <tbody>
+                <tbody>
                 <?php
                 $i = 0;
                 foreach ($revisions  as $revision) {
-                ?>
+                    ?>
 
-                <tr>
-                    <td>
-                        <a href="<?=
+                    <tr>
+                        <td>
+                            <a href="<?=
                             $this->url('audit_viewdetails',
-                            array(
-                                'id' => $id ,
-                                'className' => str_replace('\\', '_', $className),
-                                'rev' =>$revision->getRev()
-                            )
-                        ); ?>">
-                            <?php  echo $this->escapeHtml($revision->getRev()); ?>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<?=
+                                array(
+                                    'id' => $id ,
+                                    'className' => str_replace('\\', '_', $className),
+                                    'rev' =>$revision->getRev()
+                                )
+                            ); ?>">
+                                <?php  echo $this->escapeHtml($revision->getRev()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?=
                             $this->url('audit_viewdetails',
-                            array(
-                                'id' => $id ,
-                                'className' => str_replace('\\', '_', $className),
-                                'rev' =>$revision->getRev()
-                            )
-                        ); ?>">
-                            <?php echo  $this->DateTimeFormatter($revision->getTimestamp()); ?>
-                        </a>
-                    </td>
-                    <td>
+                                array(
+                                    'id' => $id ,
+                                    'className' => str_replace('\\', '_', $className),
+                                    'rev' =>$revision->getRev()
+                                )
+                            ); ?>">
+                                <?php echo  $this->DateTimeFormatter($revision->getTimestamp()); ?>
+                            </a>
+                        </td>
+                        <td>
                         <span class="label label-info">
                             <?php echo  ($revision->getUser()->getEmail()) ?: 'Anonymous'; ?>
                         </span>
-                    </td>
+                        </td>
 
-                    <td>
-                        <input type="radio" name="oldRev" value="<?php  echo $this->escapeHtml($revision->getRev()); ?>"
-                            <?php echo  (sizeof($revisions) == 1 or $i == 1) ? 'checked="checked"': ''; ?> />
-                    </td>
-                    <td>
-                        <input type="radio" name="newRev" value="<?php  echo $this->escapeHtml($revision->getRev()); ?>"
-                            <?php echo  (!$this->escapeHtml($i)) ? 'checked="checked"': ''; ?> />
-                    </td>
-                </tr>
-                <?php
+                        <td>
+                            <input type="radio" name="oldRev" value="<?php  echo $this->escapeHtml($revision->getRev()); ?>"
+                                <?php echo  (sizeof($revisions) == 1 or $i == 1) ? 'checked="checked"': ''; ?> />
+                        </td>
+                        <td>
+                            <input type="radio" name="newRev" value="<?php  echo $this->escapeHtml($revision->getRev()); ?>"
+                                <?php echo  (!$this->escapeHtml($i)) ? 'checked="checked"': ''; ?> />
+                        </td>
+                    </tr>
+                    <?php
                     $i++;
                 }
                 ?>
 
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="span12">
-        <input type="submit" class="btn btn-primary" value="Compare revisions" />
+    <div class="row">
+        <div class="col-lg-12">
+            <input type="submit" class="btn btn-primary" value="Compare revisions" />
+        </div>
     </div>
-</div>
 
 </form>
