@@ -28,7 +28,14 @@
                     <tr>
                         <?php $id = $ce->getId(); ?>
                         <td>
-                            <a href="<?php echo $this->url("audit_viewdetails",array("id" => $id["id"] , "className" => $ce->getClassName(), "rev" =>$revision->getRev() ));?>">
+                            <a href="<?php echo $this->url(
+                                "audit_viewdetails",
+                                array(
+                                    "id" => $id["id"] ,
+                                    "className" => str_replace('\\', '_', $ce->getClassName()),
+                                    "rev" =>$revision->getRev()
+                                )
+                            );?>">
                                 <?php echo $this->escapeHtml($id["id"]);?></a>
                         </td>
                         <td>

@@ -69,7 +69,7 @@
                                         'audit_viewentity',
                                         array(
                                             'id' => $id['id'],
-                                            'className' => $ce->getClassName(),
+                                            'className' => str_replace('\\', '_', $ce->getClassName()),
                                         )
                                     );?>">
                             <span class="label label-<?php

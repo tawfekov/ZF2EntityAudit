@@ -29,7 +29,7 @@
     $this->url('audit_viewentity',
         array(
             'id' => $id,
-            'className' => $className
+            'className' => str_replace('\\', '_', $className)
         )
     );?>">
    View revisions

@@ -4,7 +4,7 @@
     $this->url('audit_compare',
         array(
             'id' => $id ,
-            'className' => $className
+            'className' => str_replace('\\', '_', $className)
         )
     );
     ?>" method="post">
@@ -39,7 +39,7 @@
                             $this->url('audit_viewdetails',
                             array(
                                 'id' => $id ,
-                                'className' => $className,
+                                'className' => str_replace('\\', '_', $className),
                                 'rev' =>$revision->getRev()
                             )
                         ); ?>">
@@ -51,7 +51,7 @@
                             $this->url('audit_viewdetails',
                             array(
                                 'id' => $id ,
-                                'className' => $className,
+                                'className' => str_replace('\\', '_', $className),
                                 'rev' =>$revision->getRev()
                             )
                         ); ?>">
