@@ -1,135 +1,133 @@
 
 
 <div class="row">
-    <div class="span12">
+    <div class="col-lg-12">
         <h1>Audit Log</h1>
         <table class="table table-striped table-hover table-bordered">
             <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Revision</th>
-                    <th>Time of Action</th>
-                    <th>Changed Entities</th>
-                    <th>User Information</th>
-                    <th>Ip address</th>
-                    <th>Advanced Actions</th>
-                </tr>
+            <tr>
+                <th>#</th>
+                <th>Revision</th>
+                <th>Time of Action</th>
+                <th>Changed Entities</th>
+                <th>User Information</th>
+                <th>Ip address</th>
+                <th>Advanced Actions</th>
+            </tr>
             </thead>
 
             <tfoot>
-                <tr>
-                    <td colspan="6">
-                        <span class="label label-success">Insert</span>
-                        <span class="label label-warning">Update</span>
-                        <span class="label label-important">Delete</span>
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="6">
+                    <span class="label label-success">Insert</span>
+                    <span class="label label-warning">Update</span>
+                    <span class="label label-danger">Delete</span>
+                </td>
+            </tr>
             </tfoot>
             <tbody>
-                <?php
-                $i = 1 ;
-                foreach ($this->paginator as $revision) {
+            <?php
+            $i = 1 ;
+            foreach ($this->paginator as $revision) {
                 ?>
-                    <tr>
-                        <td><?php  echo $this->escapeHtml($i);?></td>
-                        <td>
-                            <a href="<?=
-                                $this->url('audit_viewrevision',
-                                    array(
-                                        'rev' => $revision["id"]
-                                    )
-                                );
-                            ?>">
-                                <?php  echo $this->escapeHtml($revision["id"]); ?>
-                            </a>
-                        </td>
+                <tr>
+                    <td><?php  echo $this->escapeHtml($i);?></td>
+                    <td>
+                        <a href="<?=
+                        $this->url('audit_viewrevision',
+                            array(
+                                'rev' => $revision["id"]
+                            )
+                        );
+                        ?>">
+                            <?php  echo $this->escapeHtml($revision["id"]); ?>
+                        </a>
+                    </td>
 
-                        <td>
-                            <a href="<?=
-                                $this->url('audit_viewrevision',
-                                    array(
-                                        'rev' => $revision["id"]
-                                    )
-                                );
-                            ?>">
-                            
-                                <?php echo $this->DateTimeFormatter(new \DateTime($revision["timestamp"])); ?>
-                            
-                            </a>
-                        </td>
+                    <td>
+                        <a href="<?=
+                        $this->url('audit_viewrevision',
+                            array(
+                                'rev' => $revision["id"]
+                            )
+                        );
+                        ?>">
 
-                        <td>
+                            <?php echo $this->DateTimeFormatter(new \DateTime($revision["timestamp"])); ?>
+
+                        </a>
+                    </td>
+
+                    <td>
                         <?php
                         $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision["id"]);
                         foreach ($changedEntities as $ce) {
-                        ?>
-                                <?php $id = $ce->getId(); ?>
-                                <a href="<?=
-                                    $this->url(
-                                        'audit_viewentity',
-                                        array(
-                                            'id' => $id['id'],
-                                            'className' => $ce->getClassName(),
-                                        )
-                                    );?>">
+                            ?>
+                            <?php $id = $ce->getId(); ?>
+                            <a href="<?=
+                            $this->url(
+                                'audit_viewentity',
+                                array(
+                                    'id' => $id['id'],
+                                    'className' => str_replace('\\', '_', $ce->getClassName()),
+                                )
+                            );?>">
                             <span class="label label-<?php
-                                switch ($ce->getRevisionType()) {
-                                    case 'INS':
-                                        echo 'success';
-                                        break;
-                                    case 'UPD':
-                                        echo 'warning';
-                                        break;
-                                    case 'DEL':
-                                        echo 'important';
-                                        break;
-                                    default:
-                                        echo 'info';
-                                }
+                            switch ($ce->getRevisionType()) {
+                                case 'INS':
+                                    echo 'success';
+                                    break;
+                                case 'UPD':
+                                    echo 'warning';
+                                    break;
+                                case 'DEL':
+                                    echo 'danger';
+                                    break;
+                                default:
+                                    echo 'info';
+                            }
                             ?>">
-
-
                                     <?php  echo $this->escapeHtml($ce->getClassName()); ?>
                             </span>
-                                </a>
-                        <br>
-                        <?php
-                        $i++;
+                            </a>
+                            <br>
+                            <?php
+                            $i++;
                         }
                         ?>
-                        </td>
-                        <td>
-                                <?php echo $this->UserBlock($revision["user_id"]);?>
-                        </td>
-                        <td>
-                                <?php if($this->escapeHtml($revision["ipaddress"]) != '' ):?>
-                                <p class="label label-important">
-                                        <?php echo $this->escapeHtml($revision["ipaddress"]);?>
-                                </p>
-                                <?php endif;?>
-                        </td>
-                        
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn btn-danger">Danger</button>
-                                <button class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                  <li><a href="#">Action</a></li>
-                                  <li><a href="#">Another action</a></li>
-                                  <li><a href="#">Something else here</a></li>
-                                  <li class="divider"></li>
-                                  <li><a href="#">Separated link</a></li>
-                                </ul>
-                             </div>
-                        </td>
-                    </tr>
-                <?php
-                }
-                ?>
+                    </td>
+                    <td>
+                        <?php echo $this->UserBlock($revision["user_id"]);?>
+                    </td>
+                    <td>
+                        <?php if($this->escapeHtml($revision["ipaddress"]) != '' ):?>
+                            <p class="label label-danger">
+                                <?php echo $this->escapeHtml($revision["ipaddress"]);?>
+                            </p>
+                        <?php endif;?>
+                    </td>
+
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-danger">Danger</button>
+                            <button class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            <?php
+            }
+            ?>
             </tbody>
         </table>
     </div>
     <div class="span12">
-           <?php echo $this->paginationControl($this->paginator, 'Sliding','paginator/control.phtml'); ?>
+        <?php echo $this->paginationControl($this->paginator, 'Sliding','paginator/control.phtml'); ?>
     </div>
 </div>
