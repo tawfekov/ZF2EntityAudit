@@ -1,5 +1,5 @@
 {
-    "name": "tawfekov/zf2entityaudit",
+    "name": "faoliva/zf2entityaudit",
     "description": "EntityAudit Module for Zend Framework2 , Doctrine2 and web interface ",
     "type": "zf-module",
     "license": "MIT",
