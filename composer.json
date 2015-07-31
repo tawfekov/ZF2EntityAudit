@@ -21,8 +21,8 @@
     "require": {
         "php": ">=5.3.0",
         "zendframework/zendframework" : ">=2.1",
-        "doctrine/doctrine-module": "0.8.*",
-        "doctrine/doctrine-orm-module": "0.8.*",
+        "doctrine/doctrine-module": ">=0.8",
+        "doctrine/doctrine-orm-module": ">=0.8",
         "zf-commons/zfc-user": ">=1.2.1",
         "zf-commons/zfc-user-doctrine-orm": "1.*"
     },
