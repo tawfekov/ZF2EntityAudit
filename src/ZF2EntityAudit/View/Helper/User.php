@@ -34,7 +34,7 @@ class User extends AbstractHelper
         if ($user->getEmail()) {
             $html .= "<strong>Email Address</strong>: {$this->getView()->escapeHtml($user->getEmail())}</p>";
         }
-        $html .= '<span class="label label-info">15 insert</span> ';
+        //$html .= '<span class="label label-info">15 insert</span> ';
         $html .= '<span class="label label-warning">8 updates</span> ';
         $html .= '<span class="label label-danger">15 delete</span> ';
         $html .= '</div>';
