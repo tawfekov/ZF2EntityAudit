@@ -89,15 +89,16 @@
                                     echo 'info';
                             }
                             ?>">
-                                    <?php echo $this->escapeHtml($displayClassName); ?>
+                                <?php echo $this->escapeHtml($displayClassName); ?>
+                                <?php
+                                $entity = $ce->getEntity()
+                                if (method_exists($entity, '__toString')) {
+                                    echo ': ' . $entity->__toString();
+                                } ?>
                             </span>
                             </a>
                             <br>
-                            <?php $entity = $ce->getEntity() ?>
-                            <?php if (method_exists($entity, '__toString')): ?>
-                                <?php echo $entity->__toString() ?>
-                                <br>
-                            <?php endif ?>
+
                             <?php
                             $i++;
                         }
