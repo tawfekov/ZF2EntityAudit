@@ -10,6 +10,7 @@
                 <th>Revision</th>
                 <th>Time of Action</th>
                 <th>Changed Entities</th>
+                <th>Note</th>
                 <th>User Information</th>
                 <th>Ip address</th>
                 <th>Advanced Actions</th>
@@ -101,6 +102,9 @@
                             $i++;
                         }
                         ?>
+                    </td>
+                    <td>
+                        <?php echo $revision['note'] ?>
                     </td>
                     <td>
                         <?php echo $this->UserBlock($revision["user_id"]);?>

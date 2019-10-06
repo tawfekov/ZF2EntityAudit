@@ -9,7 +9,8 @@ return array(
             'ignore.prefix' => 'Application\Entity\\'
         ),
         'zfcuser.integration' => true,
-        'zfcuser.entity_class' => 'ZfcUser\Entity\User'
+        'zfcuser.entity_class' => 'ZfcUser\Entity\User',
+        'noteFormField' => 'auditNote' // Add a form field with this name to any form where an audited entity is edited. If the field has a value and the entity changes, the note will be saved with the revision.
     ),
 );
 

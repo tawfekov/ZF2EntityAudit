@@ -47,6 +47,15 @@ class Module implements ConsoleUsageProviderInterface
                     $auditconfig = new Configuration();
                     $auditconfig->setAuditedEntityClasses($config['zf2-entity-audit']['entities']);
                     $auditconfig->setZfcUserEntityClass($config['zf2-entity-audit']['zfcuser.entity_class']);
+
+                    if (!empty($config['zf2-entity-audit']['note'])) {
+                        $auditconfig->setNote($config['zf2-entity-audit']['note']);
+                    }
+
+                    if (!empty($config['zf2-entity-audit']['noteFormField'])) {
+                        $auditconfig->setNoteFormField($config['zf2-entity-audit']['noteFormField']);
+                    }
+
                     return $auditconfig;
                 },
 
