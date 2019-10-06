@@ -91,6 +91,11 @@
                             </span>
                             </a>
                             <br>
+                            <?php $entity = $ce->getEntity() ?>
+                            <?php if (method_exists($entity, '__toString')): ?>
+                                <?php echo $entity->__toString() ?>
+                                <br>
+                            <?php endif ?>
                             <?php
                             $i++;
                         }
@@ -108,7 +113,7 @@
                     </td>
 
                     <td>
-                        <div class="btn-group">
+                        <!--div class="btn-group" class="display: none">
                             <button class="btn btn-danger">Danger</button>
                             <button class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                             <ul class="dropdown-menu">
@@ -118,7 +123,7 @@
                                 <li class="divider"></li>
                                 <li><a href="#">Separated link</a></li>
                             </ul>
-                        </div>
+                        </div-->
                     </td>
                 </tr>
             <?php
