@@ -42,6 +42,7 @@ class IndexController extends AbstractActionController
         return new ViewModel(array(
             'paginator'   => $paginator ,
             'auditReader' => $auditReader,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 
@@ -62,6 +63,7 @@ class IndexController extends AbstractActionController
         return new ViewModel(array(
             'revision' => $revision,
             'changedEntities' => $changedEntities,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 
@@ -79,11 +81,27 @@ class IndexController extends AbstractActionController
         $ids       = explode(',', $id);
         $revisions = $this->getServiceLocator()->get('auditReader')->findRevisions($className, $ids);
 
+
         return new ViewModel(array(
                     'id' => $id,
                     'className' => $className,
                     'revisions' => $revisions,
+                    'prefixToIgnore' => $this->getPrefixToIgnore()
                 ));
+    }
+
+    protected function getPrefixToIgnore()
+    {
+        $sm             = $this->getServiceLocator() ;
+        $config         = $sm->get("Config");
+        $ZF2AuditConfig = $config["zf2-entity-audit"];
+        $prefixToIgnore = null;
+
+        if (!empty($ZF2AuditConfig['ui']['ignore.prefix'])) {
+            $prefixToIgnore = $ZF2AuditConfig['ui']['ignore.prefix'];
+        }
+
+        return $prefixToIgnore;
     }
 
     /**
@@ -108,6 +126,7 @@ class IndexController extends AbstractActionController
             'className' => $className,
             'entity' => $entity,
             'data' => $data,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 
@@ -147,6 +166,7 @@ class IndexController extends AbstractActionController
             'oldRev' => $oldRev,
             'newRev' => $newRev,
             'diff' => $diff,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 

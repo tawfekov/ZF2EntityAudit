@@ -62,6 +62,7 @@
                         <?php
                         $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision["id"]);
                         foreach ($changedEntities as $ce) {
+                            $displayClassName = str_replace($prefixToIgnore, '', $ce->getClassName());
                             ?>
                             <?php $id = $ce->getId(); ?>
                             <a href="<?=
@@ -87,7 +88,7 @@
                                     echo 'info';
                             }
                             ?>">
-                                    <?php  echo $this->escapeHtml($ce->getClassName()); ?>
+                                    <?php echo $this->escapeHtml($displayClassName); ?>
                             </span>
                             </a>
                             <br>

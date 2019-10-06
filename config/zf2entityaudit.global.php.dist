@@ -5,7 +5,8 @@ return array(
         ),
         'ui' => array(
             'datetime.format' => 'r',
-            'page.limit'    => '20'
+            'page.limit'    => '20',
+            'ignore.prefix' => 'Application\Entity\\'
         ),
         'zfcuser.integration' => true,
         'zfcuser.entity_class' => 'ZfcUser\Entity\User'

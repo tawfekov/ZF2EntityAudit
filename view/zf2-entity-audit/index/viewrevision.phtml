@@ -54,7 +54,8 @@
                                     echo 'info';
                             }
                             ?>">
-                                    <?php echo $this->escapeHtml($ce->getClassName()); ?>
+                                <?php $displayClassName = str_replace($prefixToIgnore, '', $ce->getClassName()) ?>
+                                    <?php echo $this->escapeHtml($displayClassName); ?>
                             </span>
                     </td>
                     <td>
