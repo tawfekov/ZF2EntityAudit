@@ -110,6 +110,15 @@ return array(
                             'action' => 'update'
                         )
                     )
+                ),
+                'ititial-revisions' => array(
+                    'options' => array(
+                        'route' => 'initialize',
+                        'defaults' => array(
+                            'controller' => 'ZF2EntityAudit\Controller\Console',
+                            'action' => 'createInitialRevisions'
+                        )
+                    )
                 )
             )
         )

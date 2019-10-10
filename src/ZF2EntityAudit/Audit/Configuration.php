@@ -71,6 +71,11 @@ class Configuration
         $this->revisionTableName = $revisionTableName;
     }
 
+    public function getAuditedEntityClasses()
+    {
+        return $this->auditedEntityClasses;
+    }
+
     public function setAuditedEntityClasses(array $classes)
     {
         $this->auditedEntityClasses = $classes;

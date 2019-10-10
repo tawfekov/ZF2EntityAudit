@@ -8,6 +8,7 @@ use ZF2EntityAudit\Audit\Manager ;
 use ZF2EntityAudit\EventListener\CreateSchemaListener;
 use ZF2EntityAudit\EventListener\LogRevisionsListener;
 use ZF2EntityAudit\View\Helper\DateTimeFormatter;
+use ZF2EntityAudit\View\Helper\EntityLabel;
 use ZF2EntityAudit\View\Helper\User as UserBlock;
 use ZF2EntityAudit\View\Helper\Dump ;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
@@ -110,6 +111,10 @@ class Module implements ConsoleUsageProviderInterface
                     $helper->setZfcUserEntityClass($config['zf2-entity-audit']['zfcuser.entity_class']);
                     return $helper ;
                 },
+                'EntityLabel' => function($sm){
+                    $helper         = new EntityLabel();
+                    return $helper ;
+                },
                 'Dump' => function(){
                      $helper = new Dump();
                      return $helper;
@@ -121,7 +126,8 @@ class Module implements ConsoleUsageProviderInterface
     public function getConsoleUsage(Console $console)
     {
          return array(
-             "update" => "update the database from 0.1 to be  0.2 compatibale "
+             "update" => "update the database from 0.1 to be  0.2 compatibale ",
+             "initialize" => "create initial revisions for all audited entities that do not have any revision"
           );
     }
 }
