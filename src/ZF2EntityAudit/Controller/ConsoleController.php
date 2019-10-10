@@ -64,43 +64,46 @@ class ConsoleController extends AbstractActionController
 
     public function createInitialRevisionsAction()
     {
+        $request = $this->getRequest();
+        if (!$request instanceof ConsoleRequest) {
+            throw new RuntimeException('You can only use this action from a console!');
+        }
+
+        $userEmail = $this->params()->fromRoute('userEmail');
+        $missingUserMessage = 'You must specifiy the email of a user to own the initial revisions: php public/index.php initialize-revisions example@example.com';
+        if (empty($userEmail)) {
+            throw new RuntimeException($missingUserMessage);
+        }
+
+        $user = $this->getUserRepository()->findOneBy(['email' => $userEmail]);
+
+        if (empty($user)) {
+            throw new RuntimeException($missingUserMessage);
+        }
+
+        $this->getAuditConfig()->setCurrentUser($user);
+
         $log = $this->getLogRvisionListener();
         $uow = $this->getEntityManager()->getUnitOfWork();
 
-        //echo 'Yep!'; die;
         $createdCount = 0;
         foreach ($this->getAuditConfig()->getAuditedEntityClasses() as $className) {
-            echo $className . "\n";
             $class = $this->getEntityManager()->getClassMetadata($className);
             
             foreach ($this->getEntityManager()->getRepository($className)->findAll() as $entity) {
-                echo $entity->getId() . "\n";
                 $entityId = $entity->getId();
-
-                echo $entityId . "\n";
                 $revisions = $this->getAuditReader()->findRevisions($className, $entityId);
 
-
                 if (!count($revisions)) {
-                    echo 'needs revision' . "\n";
-
-
-                    //$data = $uow->getOriginalEntityData($entity);
                     $entityData = $log->getOriginalEntityData($entity);
-                    //var_dump($data); die();
-
-                    //$entityData = $entity->toArray();
 
                     $log->saveRevisionEntityData($class, $entityData, 'INS');
-
-                    die("one only\n");
-                } else {
-                    //$count = count($revisions);
-                    //echo "has $count revisions\n";
+                    $createdCount++;
                 }
-
             }
         }
+
+        echo "Done: Created $createdCount revisions. Each audited entity should have at least one revision now.\n";
     }
 
     /**
@@ -141,5 +144,11 @@ class ConsoleController extends AbstractActionController
         $manager->setEntityManager($this->getEntityManager());
 
         return $manager;
+    }
+
+    protected function getUserRepository()
+    {
+        $className = $this->getAuditConfig()->getZfcUserEntityClass();
+        return $this->getEntityManager()->getRepository($className);
     }
 }

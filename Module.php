@@ -127,7 +127,7 @@ class Module implements ConsoleUsageProviderInterface
     {
          return array(
              "update" => "update the database from 0.1 to be  0.2 compatibale ",
-             "initialize" => "create initial revisions for all audited entities that do not have any revision"
+             "initialize-revisions <userEmail>" => "create initial revisions for all audited entities that do not have any revision"
           );
     }
 }

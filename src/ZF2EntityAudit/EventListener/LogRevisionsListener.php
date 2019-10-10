@@ -224,6 +224,7 @@ class LogRevisionsListener implements EventSubscriber
                 }
             }
         }
+
         $this->conn->executeUpdate($this->getInsertRevisionSQL($class), $params, $types);
     }
 

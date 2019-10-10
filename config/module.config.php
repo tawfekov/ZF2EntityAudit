@@ -111,12 +111,13 @@ return array(
                         )
                     )
                 ),
-                'ititial-revisions' => array(
+                'ititialize-revisions' => array(
                     'options' => array(
-                        'route' => 'initialize',
+                        'route' => 'initialize-revisions <userEmail>',
                         'defaults' => array(
                             'controller' => 'ZF2EntityAudit\Controller\Console',
-                            'action' => 'createInitialRevisions'
+                            'action' => 'createInitialRevisions',
+                            'userEmail' => null
                         )
                     )
                 )
