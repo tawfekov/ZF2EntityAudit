@@ -62,6 +62,7 @@
                     <td>
                         <?php
                         $changedEntities = $this->auditReader->findEntitesChangedAtRevision($revision["id"]);
+                        $entityCount = 0;
                         foreach ($changedEntities as $ce) {
                             $displayClassName = str_replace($prefixToIgnore, '', $ce->getClassName());
                             ?>
@@ -101,6 +102,11 @@
 
                             <?php
                             $i++;
+                            $entityCount++;
+                            if (!empty($auditConfig['ui']['max.entities.per.revision']) &&
+                                $entityCount >= $auditConfig['ui']['max.entities.per.revision']) {
+                                break;
+                            }
                         }
                         ?>
                     </td>

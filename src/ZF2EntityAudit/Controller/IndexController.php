@@ -42,7 +42,8 @@ class IndexController extends AbstractActionController
         return new ViewModel(array(
             'paginator'   => $paginator ,
             'auditReader' => $auditReader,
-            'prefixToIgnore' => $this->getPrefixToIgnore()
+            'prefixToIgnore' => $this->getPrefixToIgnore(),
+            'auditConfig' => $ZF2AuditConfig
         ));
     }
 
