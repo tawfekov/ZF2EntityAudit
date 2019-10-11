@@ -1,4 +1,4 @@
-<h1>Audit log for <?php  echo $this->escapeHtml($className); ?> identifier <?php  echo $this->escapeHtml($id); ?></h1>
+<h1>Audit log for <?php echo $this->escapeHtml($this->entityLabel($entity, $className, $id, $prefixToIgnore)) ?></h1>
 
 <form action="<?=
 $this->url('audit_compare',
@@ -15,13 +15,14 @@ $this->url('audit_compare',
 
                 <thead>
                 <tr>
-                    <th colspan="3">&nbsp;</th>
+                    <th colspan="4">&nbsp;</th>
                     <th colspan="2">Compare</th>
                 </tr>
                 <tr>
                     <th>Revision</th>
                     <th>Timestamp</th>
                     <th>User</th>
+                    <th>Note</th>
                     <th>Old</th>
                     <th>New</th>
                 </tr>
@@ -62,6 +63,10 @@ $this->url('audit_compare',
                         <span class="label label-info">
                             <?php echo  ($revision->getUser()->getEmail()) ?: 'Anonymous'; ?>
                         </span>
+                        </td>
+
+                        <td>
+                            <?php echo $revision->getNote() ?>
                         </td>
 
                         <td>

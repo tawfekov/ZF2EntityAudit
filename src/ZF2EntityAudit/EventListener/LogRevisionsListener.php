@@ -108,13 +108,14 @@ class LogRevisionsListener implements EventSubscriber
         }
     }
 
+
     /**
      * get original entity data, including versioned field, if "version" constraint is used
      *
      * @param  mixed $entity
      * @return array
      */
-    private function getOriginalEntityData($entity)
+    public function getOriginalEntityData($entity)
     {
         $class = $this->em->getClassMetadata(get_class($entity));
         $data = $this->uow->getOriginalEntityData($entity);
@@ -192,7 +193,7 @@ class LogRevisionsListener implements EventSubscriber
      * @param array         $entityData
      * @param string        $revType
      */
-    private function saveRevisionEntityData($class, $entityData, $revType)
+    public function saveRevisionEntityData($class, $entityData, $revType)
     {
         $params = array($this->getRevisionId(), $revType);
         $types = array(\PDO::PARAM_INT, \PDO::PARAM_STR);
@@ -223,6 +224,17 @@ class LogRevisionsListener implements EventSubscriber
                 }
             }
         }
+
         $this->conn->executeUpdate($this->getInsertRevisionSQL($class), $params, $types);
+    }
+
+    public function setEntityManager($entityManager)
+    {
+        $this->em = $entityManager;
+        $this->uow = $entityManager->getUnitOfWork();
+        $this->conn = $this->em->getConnection();
+        $this->platform = $this->conn->getDatabasePlatform();
+
+        return $this;
     }
 }

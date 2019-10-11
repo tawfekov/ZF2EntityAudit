@@ -29,14 +29,14 @@ class User extends AbstractHelper
             $html .= "<p><strong>DisplayName</strong>: {$this->getView()->escapeHtml($user->getDisplayName())}<br/>";
         }
         if ($user->getUserName()) {
-            $html .= "<strong>UserName</strong>: {$this->getView()->escapeHtml($user->getUserName())}<br/>";
+            //$html .= "<strong>UserName</strong>: {$this->getView()->escapeHtml($user->getUserName())}<br/>";
         }
         if ($user->getEmail()) {
             $html .= "<strong>Email Address</strong>: {$this->getView()->escapeHtml($user->getEmail())}</p>";
         }
-        $html .= '<span class="label label-info">15 insert</span> ';
-        $html .= '<span class="label label-warning">8 updates</span> ';
-        $html .= '<span class="label label-danger">15 delete</span> ';
+        //$html .= '<span class="label label-info">15 insert</span> ';
+        //$html .= '<span class="label label-warning">8 updates</span> ';
+        //$html .= '<span class="label label-danger">15 delete</span> ';
         $html .= '</div>';
         $html .= '<div class="col-lg-4">';
         $html .= '<div>'.$this->Gravatar($user->getEmail()).'</div>';

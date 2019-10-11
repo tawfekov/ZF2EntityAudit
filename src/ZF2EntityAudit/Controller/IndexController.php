@@ -42,6 +42,8 @@ class IndexController extends AbstractActionController
         return new ViewModel(array(
             'paginator'   => $paginator ,
             'auditReader' => $auditReader,
+            'prefixToIgnore' => $this->getPrefixToIgnore(),
+            'auditConfig' => $ZF2AuditConfig
         ));
     }
 
@@ -53,15 +55,16 @@ class IndexController extends AbstractActionController
     public function viewRevisionAction()
     {
         $rev = (int) $this->params()->fromRoute('rev');
-        $revision = $this->getServiceLocator()->get('auditReader')->findRevision($rev);
+        $revision = $this->getAuditReader()->findRevision($rev);
         if (!$revision) {
             echo(sprintf('Revision %i not found', $rev));
         }
-        $changedEntities = $this->getServiceLocator()->get('auditReader')->findEntitesChangedAtRevision($rev);
+        $changedEntities = $this->getAuditReader()->findEntitesChangedAtRevision($rev);
 
         return new ViewModel(array(
             'revision' => $revision,
             'changedEntities' => $changedEntities,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 
@@ -77,13 +80,30 @@ class IndexController extends AbstractActionController
         $id        = $this->params()->fromRoute('id');
 
         $ids       = explode(',', $id);
-        $revisions = $this->getServiceLocator()->get('auditReader')->findRevisions($className, $ids);
+        $revisions = $this->getAuditReader()->findRevisions($className, $ids);
+        $entity = $this->getEntityManager()->find($className, $id);
 
         return new ViewModel(array(
                     'id' => $id,
                     'className' => $className,
                     'revisions' => $revisions,
+                    'prefixToIgnore' => $this->getPrefixToIgnore(),
+                    'entity' => $entity
                 ));
+    }
+
+    protected function getPrefixToIgnore()
+    {
+        $sm             = $this->getServiceLocator() ;
+        $config         = $sm->get("Config");
+        $ZF2AuditConfig = $config["zf2-entity-audit"];
+        $prefixToIgnore = null;
+
+        if (!empty($ZF2AuditConfig['ui']['ignore.prefix'])) {
+            $prefixToIgnore = $ZF2AuditConfig['ui']['ignore.prefix'];
+        }
+
+        return $prefixToIgnore;
     }
 
     /**
@@ -98,8 +118,8 @@ class IndexController extends AbstractActionController
         $id        = $this->params()->fromRoute('id');
         $rev       = $this->params()->fromRoute('rev');
         $ids       = explode(',', $id);
-        $entity    = $this->getServiceLocator()->get('auditReader')->find($className, $ids, $rev);
-        $data      = $this->getServiceLocator()->get('auditReader')->getEntityValues($className, $entity);
+        $entity    = $this->getAuditReader()->find($className, $ids, $rev);
+        $data      = $this->getAuditReader()->getEntityValues($className, $entity);
         ksort($data);
 
         return new ViewModel(array(
@@ -108,6 +128,7 @@ class IndexController extends AbstractActionController
             'className' => $className,
             'entity' => $entity,
             'data' => $data,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 
@@ -139,7 +160,7 @@ class IndexController extends AbstractActionController
             $newRev = (int) $posted_data["newRev"];
         }
         $ids = explode(',', $id);
-        $diff = $this->getServiceLocator()->get('auditReader')->diff($className, $ids, $oldRev, $newRev);
+        $diff = $this->getAuditReader()->diff($className, $ids, $oldRev, $newRev);
 
         return new ViewModel(array(
             'className' => $className,
@@ -147,7 +168,15 @@ class IndexController extends AbstractActionController
             'oldRev' => $oldRev,
             'newRev' => $newRev,
             'diff' => $diff,
+            'prefixToIgnore' => $this->getPrefixToIgnore()
         ));
     }
 
+    /**
+     * @return \ZF2EntityAudit\Audit\Reader
+     */
+    protected function getAuditReader()
+    {
+        return $this->getServiceLocator()->get('auditReader');
+    }
 }

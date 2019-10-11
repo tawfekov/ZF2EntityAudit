@@ -1,4 +1,4 @@
-<h1>Comparing <?php echo $this->escapeHtml($className); ?> with identifiers of
+<h1>Comparing <?php echo $this->escapeHtml(str_replace($prefixToIgnore, '', $className)); ?> with identifier of
     <?= $id ?> between revisions <?php echo $this->escapeHtml($oldRev); ?> and <?php echo $this->escapeHtml($newRev); ?> </h1>
 <div class="row">
     <div class="col-lg-12">

@@ -19,6 +19,7 @@ class Configuration
     private $note = "";
     private $ipaddress = "127.0.0.1";
     private $entityClass = "ZfcUser\Entity\User";
+    private $noteFormField = 'auditNote';
 
     public function getTablePrefix()
     {
@@ -70,6 +71,11 @@ class Configuration
         $this->revisionTableName = $revisionTableName;
     }
 
+    public function getAuditedEntityClasses()
+    {
+        return $this->auditedEntityClasses;
+    }
+
     public function setAuditedEntityClasses(array $classes)
     {
         $this->auditedEntityClasses = $classes;
@@ -113,7 +119,24 @@ class Configuration
 
     public function getNote()
     {
+        if (empty($this->note)) {
+            if (!empty($_REQUEST[$this->getNoteFormField()])) {
+                $this->note = $_REQUEST[$this->getNoteFormField()];
+            }
+        }
+
         return $this->note;
+    }
+
+    public function getNoteFormField(): string
+    {
+        return $this->noteFormField;
+    }
+
+    public function setNoteFormField(string $noteFormField): Configuration
+    {
+        $this->noteFormField = $noteFormField;
+        return $this;
     }
 
     public function getIpAddress()
