@@ -133,7 +133,7 @@ class Configuration
         return $this->noteFormField;
     }
 
-    public function setNoteFormField(string $noteFormField)
+    public function setNoteFormField($noteFormField)
     {
         $this->noteFormField = $noteFormField;
         return $this;
