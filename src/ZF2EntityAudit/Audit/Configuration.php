@@ -128,12 +128,12 @@ class Configuration
         return $this->note;
     }
 
-    public function getNoteFormField(): string
+    public function getNoteFormField()
     {
         return $this->noteFormField;
     }
 
-    public function setNoteFormField(string $noteFormField): Configuration
+    public function setNoteFormField($noteFormField)
     {
         $this->noteFormField = $noteFormField;
         return $this;
